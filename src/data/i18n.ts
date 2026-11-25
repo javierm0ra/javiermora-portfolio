@@ -1,4 +1,6 @@
 export type Lang = "es" | "en";
+export type Category = "finance" | "realestate" | "health" | "events";
+export type Filter = "all" | Category;
 
 export interface Strings {
   docTitle: string;
@@ -21,6 +23,10 @@ export interface Strings {
   copied: string;
   foot: string;
   langLabel: string;
+  navLabel: string;
+  filterLabel: string;
+  filters: Record<Filter, string>;
+  stats: { products: string; sectors: string; tech: string };
 }
 
 export const STRINGS: Record<Lang, Strings> = {
@@ -50,6 +56,10 @@ export const STRINGS: Record<Lang, Strings> = {
     copied: "Copiado",
     foot: "Javier Mora. Todos los derechos reservados.",
     langLabel: "Idioma",
+    navLabel: "Secciones",
+    filterLabel: "Filtrar proyectos por sector",
+    filters: { all: "Todos", finance: "Finanzas", realestate: "Inmuebles", health: "Salud", events: "Eventos" },
+    stats: { products: "Productos", sectors: "Sectores", tech: "Tecnologías" },
   },
   en: {
     docTitle: "Javier Mora · Product owner",
@@ -77,5 +87,9 @@ export const STRINGS: Record<Lang, Strings> = {
     copied: "Copied",
     foot: "Javier Mora. All rights reserved.",
     langLabel: "Language",
+    navLabel: "Sections",
+    filterLabel: "Filter projects by sector",
+    filters: { all: "All", finance: "Finance", realestate: "Real estate", health: "Health", events: "Events" },
+    stats: { products: "Products", sectors: "Sectors", tech: "Technologies" },
   },
 };

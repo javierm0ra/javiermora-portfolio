@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Illustration } from "./components/Illustration";
-import { ProjectCard } from "./components/ProjectCard";
-import { PROJECTS } from "./data/projects";
+import { Method } from "./components/Method";
+import { Nav, SECTION_IDS } from "./components/Nav";
+import { ProjectsSection } from "./components/ProjectsSection";
+import { Reveal } from "./components/Reveal";
+import { Stats } from "./components/Stats";
+import { useActiveSection } from "./hooks/useActiveSection";
+import { useHeroParallax } from "./hooks/useHeroParallax";
 import { useLang } from "./hooks/useLang";
+import { useScrollChrome } from "./hooks/useScrollChrome";
 
 const EMAIL = "javiermoramx@gmail.com";
 const GITHUB = "https://github.com/javierm0ra";
@@ -10,6 +16,11 @@ const GITHUB = "https://github.com/javierm0ra";
 export default function App() {
   const { lang, t, setLang } = useLang();
   const [copied, setCopied] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLSpanElement>(null);
+  const scrolled = useScrollChrome(barRef);
+  const active = useActiveSection(SECTION_IDS);
+  useHeroParallax(heroRef);
 
   async function copyEmail() {
     try {
@@ -23,31 +34,27 @@ export default function App() {
 
   return (
     <>
-      <div className="heroBand gut">
+      <div className="progress" aria-hidden="true">
+        <span ref={barRef} />
+      </div>
+      <Nav lang={lang} t={t} setLang={setLang} active={active} scrolled={scrolled} />
+
+      <div className="heroBand gut" id="top" ref={heroRef}>
         <div className="wrap">
-          <nav className="top">
-            <span className="brand">
-              <span className="logo">JM</span>Javier Mora
-            </span>
-            <div className="lang" role="group" aria-label={t.langLabel}>
-              <button type="button" aria-pressed={lang === "es"} onClick={() => setLang("es")}>
-                ES
-              </button>
-              <button type="button" aria-pressed={lang === "en"} onClick={() => setLang("en")}>
-                EN
-              </button>
-            </div>
-          </nav>
           <div className="hero">
             <div>
-              <p className="eyebrow">{t.eyebrow}</p>
-              <h1>
+              <p className="eyebrow rise" style={{ "--d": "0ms" } as React.CSSProperties}>
+                {t.eyebrow}
+              </p>
+              <h1 className="rise" style={{ "--d": "90ms" } as React.CSSProperties}>
                 {t.h1.before}
                 <em>{t.h1.em}</em>
                 {t.h1.after}
               </h1>
-              <p className="lede">{t.lede}</p>
-              <div className="cta">
+              <p className="lede rise" style={{ "--d": "180ms" } as React.CSSProperties}>
+                {t.lede}
+              </p>
+              <div className="cta rise" style={{ "--d": "270ms" } as React.CSSProperties}>
                 <a className="btn primary" href="#proyectos">
                   {t.cta1}
                 </a>
@@ -57,13 +64,13 @@ export default function App() {
               </div>
             </div>
             <div className="stack" aria-hidden="true">
-              <div className="win w1">
+              <div className="win w1" style={{ "--d": "250ms" } as React.CSSProperties}>
                 <Illustration id="kasanode" />
               </div>
-              <div className="win w2">
+              <div className="win w2" style={{ "--d": "380ms" } as React.CSSProperties}>
                 <Illustration id="stabily" />
               </div>
-              <div className="win w3">
+              <div className="win w3" style={{ "--d": "510ms" } as React.CSSProperties}>
                 <Illustration id="ahinosvemos" />
               </div>
             </div>
@@ -74,54 +81,36 @@ export default function App() {
       <main>
         <div className="gut">
           <div className="wrap">
-            <section className="sec" id="proyectos">
-              <h2>{t.projTitle}</h2>
-              <p className="sec-sub">{t.projSub}</p>
-              <div className="grid">
-                {PROJECTS.map((p) => (
-                  <ProjectCard key={p.id} project={p} lang={lang} t={t} />
-                ))}
-              </div>
-            </section>
+            <Stats t={t} />
+            <ProjectsSection lang={lang} t={t} />
           </div>
         </div>
 
-        <div className="band gut" id="metodo">
-          <div className="wrap">
-            <h2>{t.howTitle}</h2>
-            <p className="sec-sub">{t.howSub}</p>
-            <ol className="steps">
-              {t.steps.map((s) => (
-                <li key={s.title}>
-                  <h3>{s.title}</h3>
-                  <p>{s.text}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
+        <Method t={t} />
 
         <div className="gut">
           <div className="wrap">
-            <section className="contact" id="contacto">
-              <div>
-                <h2>{t.ctTitle}</h2>
-                <p>{t.ctText}</p>
-              </div>
-              <div className="contact-links">
-                <a className="mail" href={`mailto:${EMAIL}`}>
-                  {EMAIL}
-                </a>
-                <div className="contact-actions">
-                  <button type="button" className="copy" onClick={copyEmail}>
-                    {copied ? t.copied : t.copy}
-                  </button>
-                  <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer">
-                    github.com/javierm0ra ↗
-                  </a>
+            <Reveal className="contact-wrap">
+              <section className="contact" id="contacto">
+                <div>
+                  <h2>{t.ctTitle}</h2>
+                  <p>{t.ctText}</p>
                 </div>
-              </div>
-            </section>
+                <div className="contact-links">
+                  <a className="mail" href={`mailto:${EMAIL}`}>
+                    {EMAIL}
+                  </a>
+                  <div className="contact-actions">
+                    <button type="button" className="copy" onClick={copyEmail}>
+                      {copied ? t.copied : t.copy}
+                    </button>
+                    <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer">
+                      github.com/javierm0ra ↗
+                    </a>
+                  </div>
+                </div>
+              </section>
+            </Reveal>
             <footer>
               © {new Date().getFullYear()} {t.foot}
             </footer>

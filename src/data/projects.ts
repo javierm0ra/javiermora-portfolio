@@ -1,4 +1,4 @@
-import type { Lang } from "./i18n";
+import type { Category, Lang } from "./i18n";
 
 export type ProjectId = "stabily" | "kasanode" | "kondonode" | "parilink" | "medicatio" | "ahinosvemos";
 
@@ -7,6 +7,7 @@ export interface Project {
   name: string;
   url: string;
   status: "prod";
+  category: Category;
   tags: string[];
   copy: Record<Lang, { desc: string; role: string }>;
 }
@@ -18,6 +19,7 @@ export const PROJECTS: Project[] = [
     name: "Stabily",
     url: "https://stabily.app",
     status: "prod",
+    category: "finance",
     tags: ["React", "TypeScript", "Supabase", "Tailwind"],
     copy: {
       es: {
@@ -35,6 +37,7 @@ export const PROJECTS: Project[] = [
     name: "KasaNode",
     url: "https://kasanode.app",
     status: "prod",
+    category: "realestate",
     tags: ["React", "Supabase", "WhatsApp API", "EasyBroker"],
     copy: {
       es: {
@@ -52,6 +55,7 @@ export const PROJECTS: Project[] = [
     name: "KondoNode",
     url: "https://kondonode.app",
     status: "prod",
+    category: "realestate",
     tags: ["TanStack Start", "Supabase", "Tailwind"],
     copy: {
       es: {
@@ -69,6 +73,7 @@ export const PROJECTS: Project[] = [
     name: "Parilink",
     url: "https://parilink.app",
     status: "prod",
+    category: "events",
     tags: ["TanStack Start", "Stripe", "Supabase", "Cloudflare"],
     copy: {
       es: {
@@ -86,6 +91,7 @@ export const PROJECTS: Project[] = [
     name: "Medicatio",
     url: "https://medicatio.app",
     status: "prod",
+    category: "health",
     tags: ["React", "Supabase", "Tailwind", "shadcn/ui"],
     copy: {
       es: {
@@ -103,7 +109,8 @@ export const PROJECTS: Project[] = [
     name: "Ahí Nos Vemos",
     url: "https://ahinosvemos.pages.dev",
     status: "prod",
-    tags: ["React", "Supabase", "Leaflet", "Cloudflare Pages"],
+    category: "events",
+    tags: ["React", "Supabase", "Leaflet", "Cloudflare"],
     copy: {
       es: {
         desc: "PWA que calcula el punto de reunión más justo entre 2 y 10 personas y sugiere lugares cercanos.",
