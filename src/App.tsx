@@ -42,7 +42,7 @@ export default function App() {
       <div className="progress" aria-hidden="true">
         <span ref={barRef} />
       </div>
-      <Nav lang={lang} t={t} setLang={setLang} active={active} scrolled={scrolled} />
+      <Nav lang={lang} t={t} setLang={setLang} active={active} scrolled={scrolled} aboutLabel={content.about.enabled ? content.about.title[lang] : undefined} />
 
       <div className="heroBand gut" id="top" ref={heroRef}>
         <div className="wrap">
