@@ -34,13 +34,15 @@ function friendly(error: string, c: Content | null): string {
     email: "correo",
     github: "enlace de GitHub",
     linkedin: "enlace de LinkedIn",
+    intro: "introducción",
+    years: "años de experiencia",
     description: "descripción",
     id: "identificador",
   };
   return error
     .replace(/projects\[(\d+)\]/g, (_, n) => `Proyecto ${Number(n) + 1}${c?.projects[Number(n)]?.name ? ` (${c.projects[Number(n)]!.name})` : ""}`)
     .replace(/steps\[(\d+)\]/g, (_, n) => `Paso ${Number(n) + 1}`)
-    .replace(/\.(name|url|desc|role|tags|category|title|text|lede|email|github|linkedin|description|id)\b/g, (_, k: string) => ` → ${names[k]}`)
+    .replace(/\.(name|url|desc|role|tags|category|title|text|lede|email|github|linkedin|description|id|intro)\b/g, (_, k: string) => ` → ${names[k]}`)
     .replace(/\.es\b/g, " (español)")
     .replace(/\.en\b/g, " (inglés)");
 }
@@ -423,6 +425,42 @@ export default function Editor() {
         {draft.availability.enabled && <L2Field label="Texto de la etiqueta" value={draft.availability.text} max={80} onChange={(v) => edit((c) => void (c.availability.text = v))} />}
       </Panel>
 
+      <Panel title="Trayectoria" note="Sección nueva antes de Proyectos, con su enlace en el menú. Los años de experiencia también salen en la tira de cifras de la portada.">
+        <div className="grid2">
+          <Field
+            label="Años de experiencia"
+            type="number"
+            value={String(draft.years)}
+            hint="Número entero. En español se muestra «+13» y en inglés «13+»."
+            onChange={(v) => edit((c) => void (c.years = Math.max(0, Math.min(60, Math.round(Number(v) || 0)))))}
+          />
+        </div>
+        <L2Field label="Título" value={draft.experience.title} max={80} onChange={(v) => edit((c) => void (c.experience.title = v))} />
+        <L2Field label="Introducción" value={draft.experience.intro} max={600} multiline rows={5} onChange={(v) => edit((c) => void (c.experience.intro = v))} />
+        {draft.experience.points.map((pt, i) => (
+          <div className="step-ed" key={i}>
+            <header>
+              <h3>
+                <span className="num">{i + 1}</span> Punto
+              </h3>
+              <div className="row-actions">
+                <button type="button" className="btn-s" disabled={i === 0} aria-label={`Subir punto ${i + 1}`} onClick={() => edit((c) => void ([c.experience.points[i - 1], c.experience.points[i]] = [c.experience.points[i]!, c.experience.points[i - 1]!]))}>
+                  ↑
+                </button>
+                <button type="button" className="btn-s" disabled={i === draft.experience.points.length - 1} aria-label={`Bajar punto ${i + 1}`} onClick={() => edit((c) => void ([c.experience.points[i + 1], c.experience.points[i]] = [c.experience.points[i]!, c.experience.points[i + 1]!]))}>
+                  ↓
+                </button>
+                <ConfirmButton label="Eliminar" confirmLabel="Sí, eliminar" danger disabled={draft.experience.points.length <= 1} onConfirm={() => edit((c) => void c.experience.points.splice(i, 1))} />
+              </div>
+            </header>
+            <L2Field label="Texto" value={pt} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.experience.points[i] = v))} />
+          </div>
+        ))}
+        <button type="button" className="btn-s add" disabled={draft.experience.points.length >= 8} onClick={() => edit((c) => void c.experience.points.push({ es: "", en: "" }))}>
+          + Agregar punto
+        </button>
+      </Panel>
+
       <Panel title="Proyectos" note="El orden de aquí es el orden del sitio. Los proyectos ocultos no se muestran pero se conservan.">
         {draft.projects.map((p, i) => (
           <ProjectEditor
@@ -446,7 +484,7 @@ export default function Editor() {
         ))}
         <div className="row-actions">
           <ConfirmButton
-            label="Cargar textos originales (proyectos y Sobre mí)"
+            label="Cargar textos originales del sitio"
             confirmLabel="Sí, reemplazar textos"
             disabled={!!busy}
             onConfirm={() => {
@@ -465,14 +503,19 @@ export default function Editor() {
                 c.about.title = base.about.title;
                 c.about.role = base.about.role;
                 c.about.text = base.about.text;
+                c.hero.eyebrow = base.hero.eyebrow;
+                c.hero.lede = base.hero.lede;
+                c.sections.ctText = base.sections.ctText;
+                c.experience = base.experience;
+                c.years = base.years;
               });
-              setLoadedNote(`Listo: se cargaron los textos de ${base.projects.length} proyectos y de Sobre mí en el borrador (aún sin guardar). Ahora toca «Guardar borrador» y luego «Publicar».`);
-              setMsg({ kind: "ok", text: `Se cargaron los textos y etiquetas de ${n} proyectos y el texto de Sobre mí. Tus imágenes e íconos no cambian. Guarda el borrador y publica para verlo en el sitio.` });
+              setLoadedNote(`Listo: se cargaron en el borrador los textos de ${base.projects.length} proyectos, Sobre mí, portada, Trayectoria y Contacto (aún sin guardar). Ahora toca «Guardar borrador» y luego «Publicar».`);
+              setMsg({ kind: "ok", text: `Se cargaron los textos y etiquetas de ${n} proyectos, Sobre mí, la portada, Trayectoria y el texto de Contacto. Tus imágenes e íconos no cambian. Guarda el borrador y publica para verlo en el sitio.` });
             }}
           />
         </div>
         {loadedNote && <p className="msg ok">{loadedNote}</p>}
-        <p className="ed-note">Reemplaza la descripción, «lo que definí» y las etiquetas de los proyectos originales, y el título, rol y texto de Sobre mí, por los que vienen con el sitio. No toca imágenes, fotos, íconos, enlaces, orden ni lo que tengas oculto o apagado.</p>
+        <p className="ed-note">Reemplaza por los que vienen con el sitio: descripción, «lo que definí» y etiquetas de los proyectos originales; título, rol y texto de Sobre mí; etiqueta y subtítulo de la portada; Trayectoria y años de experiencia; y la frase de Contacto. No toca imágenes, fotos, íconos, enlaces, orden ni lo que tengas oculto o apagado.</p>
         <button
           type="button"
           className="btn-s add"

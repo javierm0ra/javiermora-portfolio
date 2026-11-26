@@ -220,3 +220,11 @@ footer .privacy { display: block; margin-top: 4px; }
 .about .atext { margin: 0 0 18px; max-width: 62ch; white-space: pre-line; }
 .about .alink { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--blue); text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 640px) { .about { grid-template-columns: 1fr; padding: 26px 22px; gap: 22px; justify-items: start; } .about .photo { width: 120px; height: 120px; } .about-wrap { margin-top: 48px; } }
+
+/* trayectoria */
+.exp-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 0; margin: 0; }
+.exp-list li { list-style: none; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); border-radius: 14px; padding: 18px 20px 18px 20px; font-size: 15px; line-height: 1.5; color: #e7eef9; position: relative; }
+.exp-list li::before { content: ""; display: block; width: 28px; height: 4px; border-radius: 4px; background: var(--orange); margin-bottom: 12px; }
+.exp .sec-sub { max-width: 70ch; font-size: 1.05rem; color: #c9d6ea; }
+@media (max-width: 900px) { .exp-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .exp-list { grid-template-columns: minmax(0, 1fr); } }

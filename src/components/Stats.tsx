@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import type { Strings } from "../data/i18n";
+import type { Lang, Strings } from "../data/i18n";
 import { useSite } from "../data/SiteContext";
 import { prefersReducedMotion } from "../hooks/motion";
 import { useReveal } from "../hooks/useReveal";
-
 
 function Counter({ to, run }: { to: number; run: boolean }) {
   const [value, setValue] = useState(to);
@@ -24,27 +23,24 @@ function Counter({ to, run }: { to: number; run: boolean }) {
   return <span>{value}</span>;
 }
 
-export function Stats({ t }: { t: Strings }) {
-  const { projects } = useSite();
-  // Cifras derivadas de los proyectos visibles: no hay numeros escritos a mano.
-  const COUNTS = {
-    products: projects.length,
-    sectors: new Set(projects.map((p) => p.category)).size,
-    tech: new Set(projects.flatMap((p) => p.tags)).size,
-  };
-  const { ref, shown } = useReveal<HTMLDListElement>();
-  const items: [keyof typeof COUNTS, string][] = [
-    ["products", t.stats.products],
-    ["sectors", t.stats.sectors],
-    ["tech", t.stats.tech],
+export function Stats({ t, lang }: { t: Strings; lang: Lang }) {
+  const { projects, content } = useSite();
+  // Productos y sectores salen de los proyectos visibles; los anos de experiencia se editan en el panel.
+  const items: { key: string; label: string; to: number; before?: string; after?: string }[] = [
+    { key: "years", label: t.stats.years, to: content.years, before: lang === "es" ? "+" : "", after: lang === "es" ? "" : "+" },
+    { key: "products", label: t.stats.products, to: projects.length },
+    { key: "sectors", label: t.stats.sectors, to: new Set(projects.map((p) => p.category)).size },
   ];
+  const { ref, shown } = useReveal<HTMLDListElement>();
   return (
     <dl ref={ref} className={`stats reveal${shown ? " is-in" : ""}`}>
-      {items.map(([key, label]) => (
-        <div key={key} className="stat">
-          <dt>{label}</dt>
+      {items.map((it) => (
+        <div key={it.key} className="stat">
+          <dt>{it.label}</dt>
           <dd>
-            <Counter to={COUNTS[key]} run={shown} />
+            {it.before}
+            <Counter to={it.to} run={shown} />
+            {it.after}
           </dd>
         </div>
       ))}
