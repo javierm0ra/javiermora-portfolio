@@ -21,6 +21,8 @@ export interface Project {
   screens: Screen[];
   /** Imagen propia (subida desde el panel); si existe, reemplaza las pantallas simuladas. */
   image: string | null;
+  /** Icono de la app (subido o incluido en el sitio); null = inicial. */
+  icon?: string | null;
   copy: Record<Lang, { desc: string; role: string }>;
 }
 

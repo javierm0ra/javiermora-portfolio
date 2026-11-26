@@ -1,4 +1,4 @@
-export type TrackType = "view" | "project_click" | "lang" | "contact_copy" | "contact_mail" | "github_click";
+export type TrackType = "view" | "project_click" | "lang" | "contact_copy" | "contact_mail" | "github_click" | "linkedin_click";
 
 /** Clave de localStorage con la que el panel apaga el conteo de las visitas propias. */
 export const NO_TRACK_KEY = "jm-no-track";

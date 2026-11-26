@@ -22,7 +22,32 @@ export interface ContentProject {
   role: L2;
   /** Imagen propia (subida desde el panel). Reemplaza las pantallas simuladas. */
   image: string | null;
+  /** Icono de la app (subido desde el panel). Si es null se usa el del sitio, o la inicial. */
+  icon: string | null;
 }
+
+export interface ContentAbout {
+  enabled: boolean;
+  title: L2;
+  role: L2;
+  text: L2;
+  /** Foto subida desde el panel. */
+  photo: string | null;
+  /** Direccion de LinkedIn (https) o vacio. */
+  linkedin: string;
+}
+
+export const DEFAULT_ABOUT: ContentAbout = {
+  enabled: false,
+  title: { es: "Sobre mí", en: "About me" },
+  role: { es: "Product Owner · Guadalajara, México", en: "Product Owner · Guadalajara, Mexico" },
+  text: {
+    es: "Defino el producto, planeo y apruebo; construyo con IA y verifico cada entrega.",
+    en: "I define the product, plan and approve; I build with AI and verify every delivery.",
+  },
+  photo: null,
+  linkedin: "",
+};
 
 export interface ContentStep {
   title: L2;
@@ -36,6 +61,7 @@ export interface Content {
   sections: { projTitle: L2; projSub: L2; howTitle: L2; howSub: L2; ctTitle: L2; ctText: L2 };
   steps: ContentStep[];
   projects: ContentProject[];
+  about: ContentAbout;
   contact: { email: string; github: string };
   seo: { title: L2; description: L2 };
 }
@@ -127,6 +153,8 @@ export function validateContent(input: unknown): Validation {
       if (!Array.isArray(p.tags) || p.tags.length > LIMITS.maxTags) fail(`projects[${i}].tags`, `maximo ${LIMITS.maxTags} etiquetas`);
       const image = p.image === null || p.image === undefined ? null : str(p.image, `projects[${i}].image`, 60, 1);
       if (image !== null && !IMAGE_URL.test(image)) fail(`projects[${i}].image`, "imagen no valida");
+      const icon = p.icon === null || p.icon === undefined ? null : str(p.icon, `projects[${i}].icon`, 60, 1);
+      if (icon !== null && !IMAGE_URL.test(icon)) fail(`projects[${i}].icon`, "icono no valido");
       return {
         id,
         name: str(p.name, `projects[${i}].name`, 60, 1),
@@ -137,8 +165,26 @@ export function validateContent(input: unknown): Validation {
         desc: l2(p.desc, `projects[${i}].desc`, 400, 1),
         role: l2(p.role, `projects[${i}].role`, 400, 1),
         image,
+        icon,
       };
     });
+
+    // Los documentos guardados antes de existir esta seccion no la traen: se usa la de origen (apagada).
+    const ab = c.about === undefined ? null : obj(c.about, "about");
+    const photo = ab && ab.photo !== null && ab.photo !== undefined ? str(ab.photo, "about.photo", 60, 1) : null;
+    if (photo !== null && !IMAGE_URL.test(photo)) fail("about.photo", "foto no valida");
+    const linkedin = ab && typeof ab.linkedin === "string" && ab.linkedin.trim() !== "" ? httpsUrl(ab.linkedin, "about.linkedin") : "";
+    if (linkedin && !/^https:\/\/([a-z0-9-]+\.)?linkedin\.com\//i.test(linkedin)) fail("about.linkedin", "debe ser una direccion de linkedin.com");
+    const about: ContentAbout = ab
+      ? {
+          enabled: bool(ab.enabled, "about.enabled"),
+          title: l2(ab.title, "about.title", 80, 1),
+          role: l2(ab.role, "about.role", 120),
+          text: l2(ab.text, "about.text", 700, 1),
+          photo,
+          linkedin,
+        }
+      : DEFAULT_ABOUT;
 
     const email = str(contact.email, "contact.email", 120, 3);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fail("contact.email", "no es un correo valido");
@@ -166,6 +212,7 @@ export function validateContent(input: unknown): Validation {
         return { title: l2(s.title, `steps[${i}].title`, 80, 1), text: l2(s.text, `steps[${i}].text`, 300, 1) };
       }),
       projects,
+      about,
       contact: { email, github: httpsUrl(contact.github, "contact.github") },
       seo: { title: l2(seo.title, "seo.title", 70, 1), description: l2(seo.description, "seo.description", 200, 1) },
     };

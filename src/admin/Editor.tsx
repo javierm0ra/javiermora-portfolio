@@ -33,13 +33,14 @@ function friendly(error: string, c: Content | null): string {
     lede: "texto de presentación",
     email: "correo",
     github: "enlace de GitHub",
+    linkedin: "enlace de LinkedIn",
     description: "descripción",
     id: "identificador",
   };
   return error
     .replace(/projects\[(\d+)\]/g, (_, n) => `Proyecto ${Number(n) + 1}${c?.projects[Number(n)]?.name ? ` (${c.projects[Number(n)]!.name})` : ""}`)
     .replace(/steps\[(\d+)\]/g, (_, n) => `Paso ${Number(n) + 1}`)
-    .replace(/\.(name|url|desc|role|tags|category|title|text|lede|email|github|description|id)\b/g, (_, k: string) => ` → ${names[k]}`)
+    .replace(/\.(name|url|desc|role|tags|category|title|text|lede|email|github|linkedin|description|id)\b/g, (_, k: string) => ` → ${names[k]}`)
     .replace(/\.es\b/g, " (español)")
     .replace(/\.en\b/g, " (inglés)");
 }
@@ -115,10 +116,12 @@ interface ProjectProps {
   onMove: (dir: -1 | 1) => void;
   onDelete: () => void;
   onImage: (file: File) => void;
+  onIcon: (file: File) => void;
 }
 
-function ProjectEditor({ project: p, index, total, busy, onChange, onMove, onDelete, onImage }: ProjectProps) {
+function ProjectEditor({ project: p, index, total, busy, onChange, onMove, onDelete, onImage, onIcon }: ProjectProps) {
   const file = useRef<HTMLInputElement>(null);
+  const iconFile = useRef<HTMLInputElement>(null);
   const sector = useId();
   return (
     <article className={`proj-ed${p.hidden ? " is-hidden" : ""}`}>
@@ -163,6 +166,33 @@ function ProjectEditor({ project: p, index, total, busy, onChange, onMove, onDel
       </div>
       <L2Field label="Descripción" value={p.desc} max={400} multiline rows={3} onChange={(desc) => onChange({ ...p, desc })} />
       <L2Field label="Lo que definí" value={p.role} max={400} multiline rows={3} onChange={(role) => onChange({ ...p, role })} />
+
+      <div className="img-ed">
+        <strong>Ícono de la app</strong>
+        <p className="ed-note">Aparece junto al nombre, con esquinas redondeadas. Sin ícono propio se usa el que ya trae el sitio, o la inicial.</p>
+        {p.icon && <img className="icon-prev" src={p.icon} alt={`Ícono de ${p.name}`} />}
+        <div className="row-actions">
+          <input
+            ref={iconFile}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            hidden
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) onIcon(f);
+              e.target.value = "";
+            }}
+          />
+          <button type="button" className="btn-s" disabled={busy} onClick={() => iconFile.current?.click()}>
+            {p.icon ? "Cambiar ícono" : "Subir ícono"}
+          </button>
+          {p.icon && (
+            <button type="button" className="btn-s" onClick={() => onChange({ ...p, icon: null })}>
+              Quitar ícono
+            </button>
+          )}
+        </div>
+      </div>
 
       <div className="img-ed">
         <strong>Imagen</strong>
@@ -297,15 +327,34 @@ export default function Editor() {
     if (w) w.location.href = "/admin/vista-previa";
   }
 
-  async function pickImage(i: number, file: File) {
+  const photoFile = useRef<HTMLInputElement>(null);
+  async function pickPhoto(file: File) {
     setBusy("image");
     setMsg(null);
     try {
-      const blob = await compressImage(file);
+      const blob = await compressImage(file, 200_000, 800);
       const r = await uploadImage(blob);
       if (!r.ok) throw new Error(explain(r.error, r.status));
       edit((c) => {
-        c.projects[i]!.image = r.data.url;
+        c.about.photo = r.data.url;
+      });
+      setMsg({ kind: "ok", text: "Foto subida. Guarda el borrador para conservarla." });
+    } catch (e) {
+      setMsg({ kind: "err", text: e instanceof Error ? e.message : "No se pudo subir la foto." });
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function pickImage(i: number, file: File, field: "image" | "icon" = "image") {
+    setBusy("image");
+    setMsg(null);
+    try {
+      const blob = await compressImage(file, field === "icon" ? 60_000 : undefined, field === "icon" ? 256 : undefined);
+      const r = await uploadImage(blob);
+      if (!r.ok) throw new Error(explain(r.error, r.status));
+      edit((c) => {
+        c.projects[i]![field] = r.data.url;
       });
       setMsg({ kind: "ok", text: `Imagen subida (${Math.round(blob.size / 1000)} KB). Guarda el borrador para conservarla.` });
     } catch (e) {
@@ -387,6 +436,7 @@ export default function Editor() {
             }
             onDelete={() => edit((c) => void c.projects.splice(i, 1))}
             onImage={(f) => void pickImage(i, f)}
+            onIcon={(f) => void pickImage(i, f, "icon")}
           />
         ))}
         <button
@@ -407,12 +457,49 @@ export default function Editor() {
                 desc: { es: "", en: "" },
                 role: { es: "", en: "" },
                 image: null,
+                icon: null,
               });
             })
           }
         >
           + Agregar proyecto
         </button>
+      </Panel>
+
+      <Panel title="Sobre mí" note="Una tarjeta con tu foto, un texto corto y tu LinkedIn, antes de Contacto. Está apagada hasta que la actives.">
+        <label className="check">
+          <input type="checkbox" checked={draft.about.enabled} onChange={(e) => edit((c) => void (c.about.enabled = e.target.checked))} />
+          <span>Mostrar la sección «Sobre mí» en el sitio</span>
+        </label>
+        <L2Field label="Título" value={draft.about.title} max={80} onChange={(v) => edit((c) => void (c.about.title = v))} />
+        <L2Field label="Rol y ciudad" value={draft.about.role} max={120} onChange={(v) => edit((c) => void (c.about.role = v))} />
+        <L2Field label="Texto" value={draft.about.text} max={700} multiline rows={4} onChange={(v) => edit((c) => void (c.about.text = v))} />
+        <Field label="Enlace de LinkedIn" value={draft.about.linkedin} max={300} hint="Opcional. Debe empezar con https://www.linkedin.com/" onChange={(v) => edit((c) => void (c.about.linkedin = v))} />
+        <div className="img-ed">
+          <strong>Foto</strong>
+          {draft.about.photo ? <img src={draft.about.photo} alt="Tu foto" /> : <p className="ed-note">Sin foto: se muestran tus iniciales (JM). Se recorta en cuadrado; usa una donde se vea bien tu cara.</p>}
+          <div className="row-actions">
+            <input
+              ref={photoFile}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              hidden
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void pickPhoto(f);
+                e.target.value = "";
+              }}
+            />
+            <button type="button" className="btn-s" disabled={busy === "image"} onClick={() => photoFile.current?.click()}>
+              {draft.about.photo ? "Cambiar foto" : "Subir foto"}
+            </button>
+            {draft.about.photo && (
+              <button type="button" className="btn-s" onClick={() => edit((c) => void (c.about.photo = null))}>
+                Quitar foto
+              </button>
+            )}
+          </div>
+        </div>
       </Panel>
 
       <Panel title="Cómo trabajo">

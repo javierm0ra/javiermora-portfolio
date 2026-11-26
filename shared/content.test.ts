@@ -13,9 +13,10 @@ const base = (): Content => ({
   projects: [
     {
       id: "stabily", name: "Stabily", url: "https://stabily.app", category: "finance", hidden: false,
-      tags: ["React"], desc: l("Finanzas"), role: l("Reglas"), image: null,
+      tags: ["React"], desc: l("Finanzas"), role: l("Reglas"), image: null, icon: null,
     },
   ],
+  about: { enabled: true, title: l("Yo"), role: l("PO"), text: l("Texto"), photo: null, linkedin: "https://www.linkedin.com/in/yo" },
   contact: { email: "yo@correo.com", github: "https://github.com/yo" },
   seo: { title: l("Titulo"), description: l("Descripcion") },
 });
@@ -72,4 +73,29 @@ test("sniffImage reconoce PNG, JPEG y WEBP por su cabecera", () => {
   assert.equal(sniffImage(Uint8Array.from([0xff, 0xd8, 0xff, 0xe0])), "image/jpeg");
   assert.equal(sniffImage(Uint8Array.from([0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50, 0])), "image/webp");
   assert.equal(sniffImage(Uint8Array.from([0x3c, 0x73, 0x76, 0x67, 0, 0, 0, 0, 0, 0, 0, 0, 0])), null);
+});
+
+test("un documento viejo sin seccion Sobre mi se acepta con la de origen apagada", () => {
+  const c = base() as unknown as Record<string, unknown>;
+  delete c.about;
+  const r = validateContent(c);
+  assert.equal(r.ok, true);
+  if (r.ok) assert.equal(r.value.about.enabled, false);
+});
+
+test("Sobre mi: solo LinkedIn con https y fotos propias del sitio", () => {
+  const a = base();
+  a.about.linkedin = "https://evil.com/in/yo";
+  assert.equal(validateContent(a).ok, false);
+  const b = base();
+  b.about.linkedin = "http://www.linkedin.com/in/yo";
+  assert.equal(validateContent(b).ok, false);
+  const c = base();
+  c.about.photo = "https://evil.com/x.png";
+  assert.equal(validateContent(c).ok, false);
+  const d = base();
+  d.about.linkedin = "";
+  d.about.photo = "/api/img/0123456789abcdef01234567";
+  d.projects[0]!.icon = "/api/img/0123456789abcdef01234567";
+  assert.equal(validateContent(d).ok, true);
 });
