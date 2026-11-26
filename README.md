@@ -23,9 +23,9 @@ Los textos generales (titular, pasos de "Como trabajo", contacto) viven en `src/
 
 ## Panel de visitas (/admin)
 
-Panel protegido con Cloudflare Access que muestra visitas, procedencia, proyectos mas abiertos y mas, sin cookies.
+Panel protegido con Cloudflare Access: **Visitas** (procedencia, proyectos mas abiertos y mas, sin cookies) y **Contenido** (editor con borrador, vista previa y publicar; textos, proyectos e imagenes en espanol e ingles).
 Configuracion paso a paso: [docs/admin-setup.md](docs/admin-setup.md). Codigo: `functions/` (API en Cloudflare Pages Functions
-y base D1, esquema en `migrations/`) y `src/admin/` (panel).
+y base D1, esquema en `migrations/`) `shared/` (modelo y validacion del contenido, compartido con el sitio) y `src/admin/` (panel).
 
 ## Pantallas simuladas de las apps
 

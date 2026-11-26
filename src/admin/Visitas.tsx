@@ -80,19 +80,10 @@ function Kpi({ label, value, note }: { label: string; value: string; note?: stri
   );
 }
 
-export default function Admin() {
+export default function Visitas() {
   const [days, setDays] = useState<(typeof RANGES)[number]>(30);
   const [state, setState] = useState<State>({ status: "loading" });
   const [noTrack, setNoTrack] = useNoTrack();
-
-  useEffect(() => {
-    document.title = "Panel · Javier Mora";
-    const meta = document.createElement("meta");
-    meta.name = "robots";
-    meta.content = "noindex,nofollow";
-    document.head.appendChild(meta);
-    return () => meta.remove();
-  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -119,26 +110,7 @@ export default function Admin() {
   const d = state.status === "ok" ? state.data : null;
 
   return (
-    <div className="admin gut">
-      <div className="admin-wrap">
-        <header className="admin-head">
-          <div>
-            <a className="back" href="/">
-              ← Volver al sitio
-            </a>
-            <h1>Panel</h1>
-            <p className="who">{d ? `Sesión: ${d.admin}` : "Visitas y contenido de tu sitio"}</p>
-          </div>
-          <nav className="tabs" aria-label="Secciones del panel">
-            <span className="tab on" aria-current="page">
-              Visitas
-            </span>
-            <span className="tab off" title="Disponible en la siguiente entrega">
-              Contenido · pronto
-            </span>
-          </nav>
-        </header>
-
+    <>
         {state.status === "error" && <ErrorCard reason={state.reason} http={state.http} />}
 
         {state.status !== "error" && (
@@ -247,8 +219,8 @@ export default function Admin() {
             Sin cookies ni IP: cada visitante es un identificador que cambia cada día, así que no se puede seguir a nadie entre días. El idioma del
             panel es solo español.
           </p>
+          {d && <p className="note">Sesión: {d.admin}</p>}
         </section>
-      </div>
-    </div>
+    </>
   );
 }

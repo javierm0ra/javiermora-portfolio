@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { STRINGS, type Lang, type Strings } from "../data/i18n";
+import { useSite } from "../data/SiteContext";
+import type { Lang, Strings } from "../data/i18n";
 import { track } from "../lib/track";
 
 const KEY = "lang";
@@ -15,12 +16,15 @@ function initialLang(): Lang {
 }
 
 export function useLang(): { lang: Lang; t: Strings; setLang: (l: Lang) => void } {
+  const site = useSite();
   const [lang, setLangState] = useState<Lang>(initialLang);
+  const t = site.strings(lang);
 
   useEffect(() => {
     document.documentElement.lang = lang;
-    document.title = STRINGS[lang].docTitle;
-  }, [lang]);
+    document.title = t.docTitle;
+    document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", site.content.seo.description[lang]);
+  }, [lang, t.docTitle, site.content.seo.description]);
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
@@ -32,5 +36,5 @@ export function useLang(): { lang: Lang; t: Strings; setLang: (l: Lang) => void 
     }
   }, []);
 
-  return { lang, t: STRINGS[lang], setLang };
+  return { lang, t, setLang };
 }

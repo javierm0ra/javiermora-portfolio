@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
 import type { Strings } from "../data/i18n";
-import { PROJECTS } from "../data/projects";
+import { useSite } from "../data/SiteContext";
 import { prefersReducedMotion } from "../hooks/motion";
 import { useReveal } from "../hooks/useReveal";
 
-// Cifras derivadas de los datos de proyectos: no hay numeros escritos a mano.
-const COUNTS = {
-  products: PROJECTS.length,
-  sectors: new Set(PROJECTS.map((p) => p.category)).size,
-  tech: new Set(PROJECTS.flatMap((p) => p.tags)).size,
-};
 
 function Counter({ to, run }: { to: number; run: boolean }) {
   const [value, setValue] = useState(to);
@@ -31,6 +25,13 @@ function Counter({ to, run }: { to: number; run: boolean }) {
 }
 
 export function Stats({ t }: { t: Strings }) {
+  const { projects } = useSite();
+  // Cifras derivadas de los proyectos visibles: no hay numeros escritos a mano.
+  const COUNTS = {
+    products: projects.length,
+    sectors: new Set(projects.map((p) => p.category)).size,
+    tech: new Set(projects.flatMap((p) => p.tags)).size,
+  };
   const { ref, shown } = useReveal<HTMLDListElement>();
   const items: [keyof typeof COUNTS, string][] = [
     ["products", t.stats.products],
