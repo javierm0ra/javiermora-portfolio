@@ -21,6 +21,12 @@ npm run build   # tsc + vite build, salida en dist/
 
 Los textos generales (titular, pasos de "Como trabajo", contacto) viven en `src/data/i18n.ts`.
 
+## Panel de visitas (/admin)
+
+Panel protegido con Cloudflare Access que muestra visitas, procedencia, proyectos mas abiertos y mas, sin cookies.
+Configuracion paso a paso: [docs/admin-setup.md](docs/admin-setup.md). Codigo: `functions/` (API en Cloudflare Pages Functions
+y base D1, esquema en `migrations/`) y `src/admin/` (panel).
+
 ## Pantallas simuladas de las apps
 
 Las tarjetas y el encabezado muestran pantallas de las apps reconstruidas con sus colores, tipografia y textos reales, pero con **datos ficticios** (nunca capturas de produccion).
