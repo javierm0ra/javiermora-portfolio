@@ -1,10 +1,10 @@
 /** Reduce y comprime una imagen en el navegador antes de subirla (maximo ~420 KB, ancho maximo 1400 px). */
-export async function compressImage(file: File, maxBytes = 420_000): Promise<Blob> {
+export async function compressImage(file: File, maxBytes = 420_000, maxWidth = 1400): Promise<Blob> {
   if (!file.type.startsWith("image/")) throw new Error("El archivo no es una imagen.");
   const bitmap = await createImageBitmap(file).catch(() => {
     throw new Error("No se pudo leer la imagen.");
   });
-  let width = Math.min(1400, bitmap.width);
+  let width = Math.min(maxWidth, bitmap.width);
   for (let round = 0; round < 5; round++) {
     const height = Math.max(1, Math.round((bitmap.height * width) / bitmap.width));
     const canvas = document.createElement("canvas");

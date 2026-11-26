@@ -38,7 +38,12 @@ export function ProjectCard({ project, lang, t, index, leaving, hidden }: Props)
       </div>
       <div className="body">
         <div className="row">
-          <h3>{project.name}</h3>
+          <div className="ptitle">
+            <span className="appicon" aria-hidden="true">
+              {project.icon ? <img src={project.icon} alt="" width="48" height="48" loading="lazy" decoding="async" /> : <b>{project.name.charAt(0).toUpperCase()}</b>}
+            </span>
+            <h3>{project.name}</h3>
+          </div>
           <span className="pill good">{t.status[project.status]}</span>
         </div>
         <p className="desc">{copy.desc}</p>

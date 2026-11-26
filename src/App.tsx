@@ -104,6 +104,30 @@ export default function App() {
 
         <Method t={t} />
 
+        {content.about.enabled && (
+          <div className="gut">
+            <div className="wrap">
+              <Reveal className="about-wrap">
+                <section className="about" id="sobre-mi">
+                  <div className="photo" aria-hidden={content.about.photo ? undefined : true}>
+                    {content.about.photo ? <img src={content.about.photo} alt={`Javier Mora`} decoding="async" /> : "JM"}
+                  </div>
+                  <div>
+                    <h2>{content.about.title[lang]}</h2>
+                    {content.about.role[lang] && <p className="arole">{content.about.role[lang]}</p>}
+                    <p className="atext">{content.about.text[lang]}</p>
+                    {content.about.linkedin && (
+                      <a className="alink" href={content.about.linkedin} target="_blank" rel="noopener noreferrer" onClick={() => track("linkedin_click")}>
+                        LinkedIn ↗
+                      </a>
+                    )}
+                  </div>
+                </section>
+              </Reveal>
+            </div>
+          </div>
+        )}
+
         <div className="gut">
           <div className="wrap">
             <Reveal className="contact-wrap">

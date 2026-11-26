@@ -1,4 +1,4 @@
-import type { Content, ContentProject } from "../../shared/content";
+import { DEFAULT_ABOUT, type Content, type ContentProject } from "../../shared/content";
 import { STRINGS, type Lang, type Strings } from "./i18n";
 import { PROJECTS, type Project, type Screen } from "./projects";
 import screensManifest from "./screens.json";
@@ -12,6 +12,9 @@ const DESCRIPTION: Record<Lang, string> = {
   es: "Javier Mora, product owner que construye productos de software con IA. Stabily, KasaNode, KondoNode, Parilink, Medicatio y Ahí Nos Vemos.",
   en: "Javier Mora, product owner who ships software products with AI. Stabily, KasaNode, KondoNode, Parilink, Medicatio and Ahí Nos Vemos.",
 };
+
+/** Iconos que ya vienen con el sitio (public/icons). */
+const BUNDLED_ICONS = new Set(["stabily", "kasanode", "kondonode", "parilink", "medicatio", "ahinosvemos"]);
 
 const both = (pick: (s: Strings) => string) => ({ es: pick(STRINGS.es), en: pick(STRINGS.en) });
 
@@ -51,8 +54,10 @@ export function defaultContent(): Content {
         desc: { es: p.copy.es.desc, en: p.copy.en.desc },
         role: { es: p.copy.es.role, en: p.copy.en.role },
         image: null,
+        icon: null,
       }),
     ),
+    about: structuredClone(DEFAULT_ABOUT),
     contact: { email: DEFAULT_EMAIL, github: DEFAULT_GITHUB },
     seo: { title: both((s) => s.docTitle), description: DESCRIPTION },
   };
@@ -89,6 +94,7 @@ export function buildProjects(content: Content): Project[] {
       tags: p.tags,
       screens: BUNDLED_SCREENS[p.id] ?? [],
       image: p.image,
+      icon: p.icon ?? (BUNDLED_ICONS.has(p.id) ? `/icons/${p.id}.png` : null),
       copy: { es: { desc: p.desc.es, role: p.role.es }, en: { desc: p.desc.en, role: p.role.en } },
     }));
 }

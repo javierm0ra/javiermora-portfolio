@@ -1,7 +1,7 @@
 import { mxDay } from "../_lib/time";
 import type { Env } from "../_lib/types";
 
-const TYPES = new Set(["view", "project_click", "lang", "contact_copy", "contact_mail", "github_click"]);
+const TYPES = new Set(["view", "project_click", "lang", "contact_copy", "contact_mail", "github_click", "linkedin_click"]);
 const BOT = /bot|crawl|spider|slurp|preview|monitor|headless|lighthouse|facebookexternalhit|python|curl|wget|httpclient/i;
 const TARGET = /^[a-z0-9_.-]{1,40}$/i;
 const MAX_BODY = 2048;
