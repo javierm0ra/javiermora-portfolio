@@ -235,11 +235,15 @@ export default function Editor() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState<Busy>("");
   const [msg, setMsg] = useState<Msg>(null);
+  const [loadedNote, setLoadedNote] = useState<string | null>(null);
 
   const apply = useCallback((d: Payload, resetDraft: boolean) => {
     setMeta({ updatedAt: d.updatedAt, publishedAt: d.publishedAt, unpublished: d.unpublished, hasPublished: d.published !== null, hasDraft: d.draft !== null });
     if (resetDraft) {
-      const base = d.draft ?? d.published ?? defaultContent();
+      const raw = d.draft ?? d.published ?? defaultContent();
+      // Un borrador guardado antes de existir alguna seccion (por ejemplo Sobre mi) no la trae: se completa con la de origen.
+      const checked = validateContent(raw);
+      const base = checked.ok ? checked.value : raw;
       setDraft(base);
       setSavedJson(JSON.stringify(base));
     }
@@ -293,6 +297,7 @@ export default function Editor() {
     setDraft(v.value);
     setSavedJson(JSON.stringify(v.value));
     await refresh();
+    setLoadedNote(null);
     setMsg({ kind: "ok", text: "Borrador guardado. Todavía no es público: usa «Publicar» cuando quieras." });
     return true;
   }
@@ -447,6 +452,7 @@ export default function Editor() {
             onConfirm={() => {
               const base = defaultContent();
               let n = 0;
+              setLoadedNote(null);
               edit((c) => {
                 for (const p of c.projects) {
                   const o = base.projects.find((x) => x.id === p.id);
@@ -460,10 +466,12 @@ export default function Editor() {
                 c.about.role = base.about.role;
                 c.about.text = base.about.text;
               });
+              setLoadedNote(`Listo: se cargaron los textos de ${base.projects.length} proyectos y de Sobre mí en el borrador (aún sin guardar). Ahora toca «Guardar borrador» y luego «Publicar».`);
               setMsg({ kind: "ok", text: `Se cargaron los textos y etiquetas de ${n} proyectos y el texto de Sobre mí. Tus imágenes e íconos no cambian. Guarda el borrador y publica para verlo en el sitio.` });
             }}
           />
         </div>
+        {loadedNote && <p className="msg ok">{loadedNote}</p>}
         <p className="ed-note">Reemplaza la descripción, «lo que definí» y las etiquetas de los proyectos originales, y el título, rol y texto de Sobre mí, por los que vienen con el sitio. No toca imágenes, fotos, íconos, enlaces, orden ni lo que tengas oculto o apagado.</p>
         <button
           type="button"
