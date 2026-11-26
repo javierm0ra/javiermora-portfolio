@@ -439,6 +439,29 @@ export default function Editor() {
             onIcon={(f) => void pickImage(i, f, "icon")}
           />
         ))}
+        <div className="row-actions">
+          <ConfirmButton
+            label="Cargar textos y etiquetas originales"
+            confirmLabel="Sí, reemplazar textos"
+            disabled={!!busy}
+            onConfirm={() => {
+              const base = defaultContent();
+              let n = 0;
+              edit((c) => {
+                for (const p of c.projects) {
+                  const o = base.projects.find((x) => x.id === p.id);
+                  if (!o) continue;
+                  p.desc = o.desc;
+                  p.role = o.role;
+                  p.tags = o.tags;
+                  n++;
+                }
+              });
+              setMsg({ kind: "ok", text: `Se cargaron los textos y etiquetas de ${n} proyectos. Tus imágenes e íconos no cambian. Guarda el borrador y publica para verlo en el sitio.` });
+            }}
+          />
+        </div>
+        <p className="ed-note">Reemplaza la descripción, «lo que definí» y las etiquetas de los proyectos originales por los que vienen con el sitio. No toca imágenes, íconos, orden ni proyectos ocultos.</p>
         <button
           type="button"
           className="btn-s add"
