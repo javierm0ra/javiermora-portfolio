@@ -441,7 +441,7 @@ export default function Editor() {
         ))}
         <div className="row-actions">
           <ConfirmButton
-            label="Cargar textos y etiquetas originales"
+            label="Cargar textos originales (proyectos y Sobre mí)"
             confirmLabel="Sí, reemplazar textos"
             disabled={!!busy}
             onConfirm={() => {
@@ -456,12 +456,15 @@ export default function Editor() {
                   p.tags = o.tags;
                   n++;
                 }
+                c.about.title = base.about.title;
+                c.about.role = base.about.role;
+                c.about.text = base.about.text;
               });
-              setMsg({ kind: "ok", text: `Se cargaron los textos y etiquetas de ${n} proyectos. Tus imágenes e íconos no cambian. Guarda el borrador y publica para verlo en el sitio.` });
+              setMsg({ kind: "ok", text: `Se cargaron los textos y etiquetas de ${n} proyectos y el texto de Sobre mí. Tus imágenes e íconos no cambian. Guarda el borrador y publica para verlo en el sitio.` });
             }}
           />
         </div>
-        <p className="ed-note">Reemplaza la descripción, «lo que definí» y las etiquetas de los proyectos originales por los que vienen con el sitio. No toca imágenes, íconos, orden ni proyectos ocultos.</p>
+        <p className="ed-note">Reemplaza la descripción, «lo que definí» y las etiquetas de los proyectos originales, y el título, rol y texto de Sobre mí, por los que vienen con el sitio. No toca imágenes, fotos, íconos, enlaces, orden ni lo que tengas oculto o apagado.</p>
         <button
           type="button"
           className="btn-s add"
@@ -496,7 +499,7 @@ export default function Editor() {
         </label>
         <L2Field label="Título" value={draft.about.title} max={80} onChange={(v) => edit((c) => void (c.about.title = v))} />
         <L2Field label="Rol y ciudad" value={draft.about.role} max={120} onChange={(v) => edit((c) => void (c.about.role = v))} />
-        <L2Field label="Texto" value={draft.about.text} max={700} multiline rows={4} onChange={(v) => edit((c) => void (c.about.text = v))} />
+        <L2Field label="Texto" value={draft.about.text} max={1500} multiline rows={12} onChange={(v) => edit((c) => void (c.about.text = v))} />
         <Field label="Enlace de LinkedIn" value={draft.about.linkedin} max={300} hint="Aparece aquí y también junto a tu correo en Contacto, aunque esta sección esté apagada. Debe empezar con https://www.linkedin.com/" onChange={(v) => edit((c) => void (c.about.linkedin = v))} />
         <div className="img-ed">
           <strong>Foto</strong>

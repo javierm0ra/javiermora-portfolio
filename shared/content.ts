@@ -42,8 +42,8 @@ export const DEFAULT_ABOUT: ContentAbout = {
   title: { es: "Sobre mí", en: "About me" },
   role: { es: "Product Owner · Guadalajara, México", en: "Product Owner · Guadalajara, Mexico" },
   text: {
-    es: "Defino el producto, planeo y apruebo; construyo con IA y verifico cada entrega.",
-    en: "I define the product, plan and approve; I build with AI and verify every delivery.",
+    es: "Soy Product Owner en Guadalajara, México. Mi trabajo empieza con el problema, no con la solución: lo entiendo a fondo, lo convierto en reglas de negocio claras, planeo el alcance y lo apruebo. Después dirijo la construcción con herramientas de IA y verifico cada entrega: reviso los cambios, pido pruebas, confirmo que todo compile y que los datos queden bien antes de publicar.\n\nAsí he llevado a producción seis productos de software: Stabily (finanzas personales), KasaNode (administración inmobiliaria), KondoNode (condominios), Parilink (invitaciones digitales), Medicatio (clínicas médicas) y Ahí Nos Vemos (puntos de reunión). Cada uno tiene sus propias reglas, como contratos y comisiones, cuotas y fondos, presupuestos por quincena o consentimientos médicos, y mi tarea es dejarlas escritas, coherentes y comprobables.\n\nMe importa que cada producto sea claro para quien lo usa, que cuide la privacidad de sus datos y que cada decisión de negocio quede documentada. Trabajo en español de México y mis productos también hablan así.",
+    en: "I'm a Product Owner in Guadalajara, Mexico. My work starts with the problem, not the solution: I understand it in depth, turn it into clear business rules, plan the scope and approve it. Then I direct the build with AI tools and verify every delivery: I review the changes, require tests, confirm everything builds and that the data is right before shipping.\n\nThat is how I've taken six software products to production: Stabily (personal finance), KasaNode (real estate management), KondoNode (condominiums), Parilink (digital invitations), Medicatio (medical clinics) and Ahí Nos Vemos (meeting points). Each has its own rules, such as contracts and commissions, fees and funds, biweekly budgets or medical consents, and my job is to keep them written down, consistent and verifiable.\n\nI care that each product is clear to the people using it, respects their data privacy, and that every business decision is documented. I work in Mexican Spanish and my products speak it too.",
   },
   photo: null,
   linkedin: "https://www.linkedin.com/in/javiermoramx/",
@@ -180,7 +180,7 @@ export function validateContent(input: unknown): Validation {
           enabled: bool(ab.enabled, "about.enabled"),
           title: l2(ab.title, "about.title", 80, 1),
           role: l2(ab.role, "about.role", 120),
-          text: l2(ab.text, "about.text", 700, 1),
+          text: l2(ab.text, "about.text", 1500, 1),
           photo,
           linkedin,
         }
