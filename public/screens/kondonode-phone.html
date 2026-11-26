@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=372">
+<title>kondonode (phone)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap">
+<style>
+/* Pantallas simuladas de KondoNode. Tokens copiados de src/styles.css de la app; datos ficticios. */
+:root {
+  --background: oklch(.981 .002 247); --foreground: oklch(.323 .08 260);
+  --primary: oklch(.567 .125 239); --primary-hover: oklch(.442 .097 240); --primary-texto: oklch(.5 .12 239);
+  --primary-foreground: oklch(1 0 0); --secondary: oklch(.323 .08 260); --secondary-foreground: oklch(.94 .015 254);
+  --muted: oklch(.956 .008 247); --muted-foreground: oklch(.5 .025 260); --accent: oklch(.939 .03 239);
+  --card: oklch(1 0 0); --border: oklch(.905 .017 248); --destructive: oklch(.463 .166 28);
+  --success: oklch(.469 .1 161); --success-bg: oklch(.961 .024 161); --pending: oklch(.477 .112 61); --pending-bg: oklch(.966 .025 80);
+  --sidebar-muted: oklch(.755 .036 254); --shadow: 0 8px 32px oklch(.323 .08 260/.035);
+  --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* presentacion */
+  --stage: #eef3f8; --ink: #1a335d; --soft: #5b6b82;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--stage); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 56px; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1.t { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 8px; text-wrap: balance; }
+.lede { color: var(--soft); max-width: 62ch; margin: 0 0 32px; }
+.stage { display: grid; grid-template-columns: 372px minmax(0, 1fr); gap: 40px; align-items: start; }
+.cap { margin: 14px 0 0; font-size: 13px; color: var(--soft); display: flex; gap: 8px; align-items: center; }
+.cap b { color: var(--ink); font-weight: 700; }
+.tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #fff; border: 1px solid #d5e0ea; color: var(--soft); white-space: nowrap; }
+.fit-outer { width: 100%; }
+.fit-inner { transform-origin: 0 0; }
+@media (max-width: 960px) { .stage { grid-template-columns: minmax(0, 1fr); } .phone-col { max-width: 372px; margin: 0 auto; width: 100%; } }
+
+/* ---------- celular ---------- */
+.phone { width: 372px; padding: 9px; border-radius: 46px; background: #0f1b33; box-shadow: 0 30px 60px -24px rgba(16,36,72,.55); }
+.screen { position: relative; width: 354px; height: 800px; border-radius: 38px; overflow: hidden; background: var(--background); color: var(--foreground); font-size: 14px; line-height: 1.35; }
+.screen *, .desk * { letter-spacing: 0; }
+.statusbar { position: absolute; top: 0; left: 0; right: 0; height: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; color: #fff; font-size: 12px; font-weight: 700; z-index: 5; }
+.statusbar i { display: inline-flex; gap: 5px; }
+.statusbar svg { width: 15px; height: 15px; }
+.topbar { position: absolute; z-index: 4; top: 34px; left: 0; right: 0; display: flex; align-items: center; gap: 6px; padding: 10px 14px; }
+.topbar .l { flex: 1; min-width: 0; }
+.topbar small { display: block; color: #c6d6ea; font-size: 11px; font-weight: 600; }
+.topbar strong { color: #fff; font-size: 15px; font-weight: 800; }
+.circ { width: 38px; height: 38px; border-radius: 50%; background: rgb(255 255 255/.16); color: #fff; display: grid; place-items: center; position: relative; flex: none; }
+.circ svg { width: 18px; height: 18px; }
+.circ .dot { position: absolute; top: 8px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: #e5484d; border: 1.5px solid #274a7b; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 12px; font-weight: 750; display: grid; place-items: center; box-shadow: 0 0 0 2px #fff; flex: none; }
+.hero-marca { background: linear-gradient(160deg, #16294d, #22497a); color: #fff; padding: 112px 20px 70px; border-radius: 0 0 28px 28px; }
+.hero-fila { display: flex; align-items: center; gap: 14px; }
+.hero-emblema { width: 54px; height: 54px; border-radius: 16px; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 18px; flex: none; }
+.hero-textos small { display: block; font-size: 12.5px; font-weight: 600; color: #c6d6ea; }
+.hero-textos h2 { margin: 0; font-size: 24px; font-weight: 800; line-height: 1.2; color: #fff; }
+.hero-rol { display: inline-block; margin-top: 14px; padding: 5px 12px; border-radius: 999px; background: rgb(255 255 255/.16); font-size: 12.5px; font-weight: 700; }
+.hero-estado { position: relative; margin: -48px 20px 0; background: var(--card); border-radius: 22px; padding: 18px; box-shadow: 0 10px 28px rgb(16 36 72/.16); }
+.hero-etiqueta { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .04em !important; color: var(--muted-foreground); }
+.hero-monto { display: block; font-size: 32px; font-weight: 800; margin: 4px 0 2px; color: var(--secondary); }
+.hero-estado p { margin: 0; font-size: 13px; color: var(--muted-foreground); }
+.hero-botones { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.hero-primario { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border: 0; border-radius: 14px; background: var(--primary); color: #fff; font: inherit; font-weight: 800; }
+.hero-primario svg { width: 18px; height: 18px; }
+.hero-enlace { min-height: 44px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary-texto); font-size: 13.5px; }
+.hero-atajos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 10px 14px 4px; }
+.hero-atajos div { display: flex; flex-direction: column; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; line-height: 1.2; text-align: center; }
+.hero-atajos span { width: 52px; height: 52px; border-radius: 18px; background: var(--accent); color: var(--primary-texto); display: grid; place-items: center; }
+.hero-atajos svg { width: 22px; height: 22px; }
+.hoy { padding: 14px 20px 0; }
+.hoy h3 { margin: 0 0 10px; font-size: 16px; font-weight: 800; color: var(--secondary); }
+.tarj { display: flex; gap: 12px; align-items: center; background: var(--card); border-radius: 16px; box-shadow: var(--shadow); padding: 13px 14px; margin-bottom: 10px; }
+.tarj .ic { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; flex: none; background: var(--accent); color: var(--primary-texto); }
+.tarj .ic svg { width: 19px; height: 19px; }
+.tarj strong { display: block; font-size: 13.5px; font-weight: 800; }
+.tarj span.d { display: block; font-size: 12px; color: var(--muted-foreground); }
+.mobile-nav { position: absolute; left: 0; right: 0; bottom: 0; height: 74px; display: flex; justify-content: space-around; padding: 7px 5px; background: var(--card); border-top: 1px solid var(--border); }
+.mobile-nav div { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 11px; font-weight: 600; color: var(--muted-foreground); }
+.mobile-nav .on { color: var(--primary-texto); font-weight: 800; }
+.nav-pill { position: relative; width: 52px; height: 32px; border-radius: 16px; display: grid; place-items: center; }
+.on .nav-pill { background: var(--accent); }
+.nav-pill svg { width: 22px; height: 22px; }
+.nav-pill .nd { position: absolute; top: 3px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: #e5484d; border: 1.5px solid #fff; }
+
+/* ---------- escritorio ---------- */
+.laptop { border-radius: 14px; background: #fff; border: 1px solid #d5e0ea; box-shadow: 0 30px 60px -28px rgba(16,36,72,.45); overflow: hidden; }
+.chrome { height: 38px; background: #e8eef4; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid #d5e0ea; }
+.chrome i { width: 11px; height: 11px; border-radius: 50%; background: #c9d4df; }
+.chrome span { margin-left: 10px; flex: 1; max-width: 380px; height: 24px; border-radius: 12px; background: #fff; color: var(--soft); font-size: 12px; display: flex; align-items: center; padding: 0 12px; }
+.desk { position: relative; width: 1100px; height: 700px; overflow: hidden; background: var(--background); color: var(--foreground); font-size: 14px; line-height: 1.35; }
+.sidebar { position: absolute; top: 0; bottom: 0; left: 0; width: 248px; background: var(--secondary); color: var(--secondary-foreground); padding: 24px 16px; display: flex; flex-direction: column; }
+.sb-brand { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 800; color: #fff; }
+.sb-brand img { width: 38px; height: 38px; background: #fff; border-radius: 10px; padding: 3px; object-fit: contain; }
+.switch { margin: 18px 0 4px; padding: 10px 12px; border-radius: 10px; background: rgb(255 255 255/.08); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: space-between; color: #fff; }
+.switch svg { width: 14px; height: 14px; color: var(--sidebar-muted); }
+.sb-nav { margin-top: 6px; display: flex; flex-direction: column; gap: 5px; }
+.cap2 { font-size: 11px; color: var(--sidebar-muted); padding: 16px 12px 6px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em !important; }
+.link { display: flex; gap: 12px; align-items: center; height: 42px; padding: 0 13px; border-radius: 9px; color: var(--secondary-foreground); font-size: 12px; font-weight: 550; }
+.link svg { width: 18px; height: 18px; }
+.link.on { background: var(--primary); color: #fff; font-weight: 700; }
+.sb-person { margin-top: auto; display: flex; gap: 10px; align-items: center; padding: 10px 9px; font-size: 12px; font-weight: 700; color: #fff; }
+.sb-person small { display: block; color: var(--sidebar-muted); font-weight: 500; font-size: 11px; }
+.sb-person .avatar { box-shadow: none; }
+.main { position: absolute; left: 248px; top: 0; right: 0; bottom: 0; }
+.dtop { height: 66px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; }
+.dtop small { display: block; color: var(--muted-foreground); font-size: 12px; }
+.dtop strong { font-size: 15px; }
+.dtop .r { display: flex; align-items: center; gap: 14px; }
+.sbtn { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--border); color: var(--muted-foreground); font-size: 12px; background: var(--card); }
+.sbtn svg { width: 16px; height: 16px; }
+.sbtn kbd { font: inherit; font-size: 11px; border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; }
+.dcirc { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: var(--primary-texto); display: grid; place-items: center; }
+.dcirc svg { width: 18px; height: 18px; }
+.content { padding: 28px 32px; }
+.eyebrow { font-size: 11px; font-weight: 700; color: var(--muted-foreground); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .06em !important; }
+.content h1 { margin: 0; font-size: 32px; font-weight: 800; line-height: 1.2; color: var(--secondary); }
+.content .sub { margin-top: 8px; font-size: 13px; color: var(--muted-foreground); }
+.mes-nav { display: flex; align-items: center; gap: 8px; margin: 22px 0 12px; }
+.mes-nav h2 { margin: 0; font-size: 18px; min-width: 160px; text-align: center; }
+.ibtn { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--foreground); }
+.ibtn svg { width: 18px; height: 18px; }
+.status { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 650; padding: 6px 10px; border-radius: 20px; background: var(--success-bg); color: var(--success); }
+.obtn { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); font-size: 12.5px; font-weight: 700; margin-left: 8px; }
+.obtn svg { width: 16px; height: 16px; }
+.nota { font-size: 12.5px; color: var(--muted-foreground); margin: 0 0 18px; }
+.fund-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.fund-card { background: var(--card); border-radius: 18px; box-shadow: var(--shadow); padding: 22px; display: flex; flex-direction: column; gap: 6px; }
+.fund-card .eyebrow { margin: 0; }
+.fund-balance { font-size: 28px; font-weight: 800; }
+.fund-card small { font-size: 12px; color: var(--success); font-weight: 650; }
+.two { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; margin-top: 22px; }
+.directory { background: var(--card); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+.dh { padding: 22px 26px; border-bottom: 1px solid var(--muted); }
+.dh h3 { margin: 0; font-size: 16px; font-weight: 700; }
+.dbody { padding: 14px 26px 20px; }
+.cierre-leyenda { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted-foreground); margin: 4px 0 4px; }
+.cierre-leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; }
+.dbody svg.chart { width: 100%; height: auto; color: var(--muted-foreground); }
+.bar { transform-box: fill-box; transform-origin: 50% 100%; animation: grow .8s cubic-bezier(.2,.8,.2,1) backwards; animation-delay: calc(var(--i) * 70ms); }
+@keyframes grow { from { transform: scaleY(0); } }
+.lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.lista li { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 11px 16px; font-size: 12.5px; border: 1px solid var(--muted); }
+.lista small { color: var(--muted-foreground); }
+@media (prefers-reduced-motion: reduce) { .bar { animation: none; } }
+
+
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+<style>
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+</head>
+<body>
+<div class="phone">
+            <div class="screen">
+              <div class="statusbar"><span>9:41</span><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M2 20h.01M7 20v-4M12 20V10M17 20V4"></path></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path></svg></i></div>
+              <div class="topbar">
+                <div class="l"><small>Residencial Los Pinos</small><strong>Inicio</strong></div>
+                <span class="circ"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" class="lucide lucide-search"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span>
+                <span class="circ"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg><span class="dot"></span></span>
+                <span class="avatar">MT</span>
+              </div>
+              <section class="hero-marca">
+                <div class="hero-fila">
+                  <span class="hero-emblema">RP</span>
+                  <div class="hero-textos"><small>Residencial Los Pinos</small><h2>Hola, María</h2></div>
+                </div>
+                <span class="hero-rol">Propietaria · Unidad 12</span>
+              </section>
+              <section class="hero-estado">
+                <span class="hero-etiqueta">SALDO POR PAGAR</span>
+                <strong class="hero-monto">$1,850.00</strong>
+                <p>Vence el 5 dic 2026</p>
+                <div class="hero-botones">
+                  <div class="hero-primario"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wallet-cards" class="lucide lucide-wallet-cards"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2"></path><path d="M3 11h3c.8 0 1.6.3 2.1.9l1.1.9c1.6 1.6 4.1 1.6 5.7 0l1.1-.9c.5-.5 1.3-.9 2.1-.9H21"></path></svg>Registrar mi pago</div>
+                  <div class="hero-enlace">Ver mi estado de cuenta</div>
+                </div>
+              </section>
+              <nav class="hero-atajos">
+                <div><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="credit-card" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg></span>Registrar pago</div>
+                <div><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="calendar-days" class="lucide lucide-calendar-days"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path><path d="M16 18h.01"></path></svg></span>Reservar terraza</div>
+                <div><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="megaphone" class="lucide lucide-megaphone"><path d="m3 11 18-5v12L3 14v-3z"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path></svg></span>Comunicados</div>
+                <div><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="qr-code" class="lucide lucide-qr-code"><rect width="5" height="5" x="3" y="3" rx="1"></rect><rect width="5" height="5" x="16" y="3" rx="1"></rect><rect width="5" height="5" x="3" y="16" rx="1"></rect><path d="M21 16h-3a2 2 0 0 0-2 2v3"></path><path d="M21 21v.01"></path><path d="M12 7v3a2 2 0 0 1-2 2H7"></path><path d="M3 12h.01"></path><path d="M12 3h.01"></path><path d="M12 16v.01"></path><path d="M16 12h1"></path><path d="M21 12v.01"></path><path d="M12 21v-1"></path></svg></span>Crear pase</div>
+              </nav>
+              <section class="hoy" aria-label="Para ti hoy">
+                <h3>Para ti hoy</h3>
+                <div class="tarj"><span class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="megaphone" class="lucide lucide-megaphone"><path d="m3 11 18-5v12L3 14v-3z"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path></svg></span><div><strong>2 comunicados sin leer</strong><span class="d">Tu administración publicó algo para ti.</span></div></div>
+                <div class="tarj"><span class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></span><div><strong>1 aviso nuevo</strong><span class="d">Pagos, reservas y otras novedades de tu unidad.</span></div></div>
+              </section>
+              <nav class="mobile-nav">
+                <div class="on"><span class="nav-pill"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="home" class="lucide lucide-home"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span>Inicio</div>
+                <div><span class="nav-pill"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="credit-card" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg></span>Mi cuenta</div>
+                <div><span class="nav-pill"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="megaphone" class="lucide lucide-megaphone"><path d="m3 11 18-5v12L3 14v-3z"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path></svg><span class="nd"></span></span>Avisos</div>
+                <div><span class="nav-pill"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="calendar-range" class="lucide lucide-calendar-range"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M16 2v4"></path><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M17 14h-6"></path><path d="M13 18H7"></path><path d="M7 14h.01"></path><path d="M17 18h.01"></path></svg></span>Agenda</div>
+                <div><span class="nav-pill"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="grid-2x2" class="lucide lucide-grid-2x2"><path d="M12 3v18"></path><path d="M3 12h18"></path><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg></span>Más</div>
+              </nav>
+            </div>
+          </div>
+</body>
+</html>

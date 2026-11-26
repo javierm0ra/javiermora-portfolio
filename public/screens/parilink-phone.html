@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=372">
+<title>parilink (phone)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&amp;family=Playfair+Display:wght@400;500;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+/* Pantallas simuladas de Parilink. Tokens de src/styles.css y paletas de lib/parilink/catalog.ts; datos ficticios. */
+:root {
+  --background: oklch(1 0 0); --foreground: oklch(.18 .03 250); --card: oklch(1 0 0); --primary: oklch(.49 .13 254);
+  --secondary: oklch(.96 .025 250); --muted: oklch(.97 .012 250); --muted-foreground: oklch(.5 .03 250); --border: oklch(.92 .015 250);
+  --display: "Fredoka", "Nunito", ui-sans-serif, system-ui, sans-serif; --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --stage: #eef3f8; --ink: #1a335d; --soft: #5b6b82; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--stage); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 56px; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1.t { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; letter-spacing: -.01em; margin: 0 0 8px; text-wrap: balance; font-family: var(--display); }
+.lede { color: var(--soft); max-width: 62ch; margin: 0 0 32px; }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 372px; gap: 40px; align-items: start; }
+.cap { margin: 14px 0 0; font-size: 13px; color: var(--soft); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.cap b { color: var(--ink); font-weight: 700; }
+.tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #fff; border: 1px solid #d5e0ea; color: var(--soft); white-space: nowrap; }
+.fit-outer { width: 100%; } .fit-inner { transform-origin: 0 0; }
+@media (max-width: 960px) { .stage { grid-template-columns: minmax(0, 1fr); } .phone-col { max-width: 372px; margin: 0 auto; width: 100%; } }
+svg { flex: none; }
+.laptop { border-radius: 14px; background: #fff; border: 1px solid #d5e0ea; box-shadow: 0 30px 60px -28px rgba(16,36,72,.45); overflow: hidden; }
+.chrome { height: 38px; background: #e8eef4; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid #d5e0ea; }
+.chrome i { width: 11px; height: 11px; border-radius: 50%; background: #c9d4df; }
+.chrome span { margin-left: 10px; flex: 1; max-width: 380px; height: 24px; border-radius: 12px; background: #fff; color: var(--soft); font-size: 12px; display: flex; align-items: center; padding: 0 12px; }
+.phone { width: 372px; padding: 9px; border-radius: 46px; background: #0f1b33; box-shadow: 0 30px 60px -24px rgba(16,36,72,.55); }
+.screen { position: relative; width: 354px; height: 780px; border-radius: 38px; overflow: hidden; }
+.statusbar { position: absolute; top: 0; left: 0; right: 0; height: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 12px; font-weight: 700; z-index: 5; color: #f0e6c8; }
+.statusbar svg { width: 15px; height: 15px; }
+
+/* ---------- asistente (escritorio) ---------- */
+.app { position: relative; width: 1100px; height: 700px; overflow: hidden; background: var(--background); color: var(--foreground); font-size: 14px; line-height: 1.4; }
+.hd { height: 64px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 28px; gap: 24px; }
+.logo { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
+.logo img { width: 32px; height: 32px; object-fit: contain; } .logo .l { color: var(--primary); }
+.steps { display: flex; align-items: center; gap: 6px; margin: 0 auto; }
+.stp { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: var(--muted-foreground); }
+.stp b { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: var(--muted); color: var(--muted-foreground); }
+.stp.done b { background: var(--primary); color: #fff; } .stp.done { color: var(--foreground); }
+.stp.on b { background: var(--primary); color: #fff; box-shadow: 0 0 0 4px oklch(.49 .13 254/.15); } .stp.on { color: var(--primary); }
+.stp svg { width: 13px; height: 13px; }
+.line { width: 22px; height: 2px; background: var(--border); border-radius: 2px; } .line.done { background: var(--primary); }
+.av { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+.body { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 32px; padding: 22px 28px; height: calc(100% - 64px); }
+.left { min-width: 0; display: flex; flex-direction: column; }
+.left h2 { margin: 0 0 12px; font-family: var(--display); font-size: 24px; font-weight: 600; }
+.chips { display: flex; gap: 8px; margin-bottom: 16px; }
+.chip { height: 30px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border); font-size: 12.5px; font-weight: 600; display: flex; align-items: center; color: var(--muted-foreground); background: #fff; }
+.chip.on { background: var(--secondary); color: var(--primary); border-color: var(--primary); }
+.dg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.dc { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #fff; transition: transform .15s, border-color .15s; }
+.dc:hover { transform: translateY(-2px); border-color: var(--primary); }
+.dc.sel { border: 2px solid var(--primary); box-shadow: 0 0 0 3px oklch(.49 .13 254/.12); }
+.sw { height: 112px; display: grid; place-items: center; text-align: center; padding: 10px; }
+.sw .mini { width: 100%; max-width: 92px; border-radius: 8px; padding: 9px 6px; font-family: "Playfair Display", Georgia, serif; }
+.sw .mini small { display: block; font-family: var(--font); font-size: 6.5px; letter-spacing: .25em; text-transform: uppercase; }
+.sw .mini strong { display: block; font-size: 17px; font-weight: 500; line-height: 1.1; margin-top: 2px; }
+.sw .mini i { display: block; height: 2px; width: 28px; margin: 6px auto 0; border-radius: 2px; }
+.dn { padding: 8px 10px; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.dn svg { width: 15px; height: 15px; color: var(--primary); }
+.nav { margin-top: auto; display: flex; justify-content: space-between; padding-top: 12px; }
+.bt { height: 40px; padding: 0 22px; border-radius: 12px; font-weight: 700; font-size: 14px; display: flex; align-items: center; }
+.bt.o { border: 1px solid var(--border); background: #fff; } .bt.p { background: var(--primary); color: #fff; }
+.right { display: flex; flex-direction: column; align-items: center; }
+.rl { font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+.pv { width: 256px; height: 520px; padding: 7px; border-radius: 34px; background: #0f1b33; box-shadow: 0 18px 40px -16px rgba(16,36,72,.5); }
+.pvs { width: 100%; height: 100%; border-radius: 28px; overflow: hidden; position: relative; }
+
+/* ---------- invitacion ---------- */
+.inv { font-family: "Inter", system-ui, sans-serif; height: 100%; overflow: hidden; }
+.inv .hero { aspect-ratio: 3 / 2.5; position: relative; -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, #000 62%, transparent 100%); }
+.inv .card { position: relative; margin: -42px 14px 0; padding: 20px 16px; border-radius: 16px; text-align: center; }
+.inv .card + .card { margin-top: 12px; }
+.inv .ev { text-transform: uppercase; letter-spacing: .3em; font-size: 11px; }
+.inv .nm { font-family: "Playfair Display", Georgia, serif; font-size: 38px; line-height: 1.1; margin-top: 6px; font-weight: 500; }
+.inv .par { margin-top: 12px; font-size: 10.5px; text-transform: uppercase; letter-spacing: .18em; }
+.inv .parn { font-size: 13px; margin-top: 2px; }
+.inv .msg { margin-top: 12px; font-size: 13px; line-height: 1.55; }
+.inv .fch { margin-top: 12px; font-family: "Playfair Display", Georgia, serif; font-size: 15px; }
+.inv .lb { text-transform: uppercase; letter-spacing: .18em; font-size: 10.5px; margin-bottom: 4px; }
+.inv .vn { font-family: "Playfair Display", Georgia, serif; font-size: 17px; }
+.inv .ad { font-size: 12px; margin-top: 3px; opacity: .85; }
+@media (prefers-reduced-motion: reduce) { .dc { transition: none; } .dc:hover { transform: none; } }
+
+
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+<style>
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen" id="invphone"><div class="statusbar"><span>9:41</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path></svg></div><div class="inv" style="background:linear-gradient(135deg,#3a2870,#0e1230);color:#f0e6c8">
+    <div class="hero" style="background:radial-gradient(circle at 30% 25%, #6a55c4 0, transparent 38%), radial-gradient(circle at 72% 60%, #2a3a8a 0, transparent 45%), linear-gradient(160deg,#3a2870,#0e1230)"><i style="position:absolute;left:22%;top:18%;width:2px;height:2px;border-radius:50%;background:#f0e6c8;opacity:.8"></i><i style="position:absolute;left:70%;top:12%;width:3px;height:3px;border-radius:50%;background:#f0e6c8;opacity:.8"></i><i style="position:absolute;left:84%;top:34%;width:2px;height:2px;border-radius:50%;background:#f0e6c8;opacity:.8"></i><i style="position:absolute;left:14%;top:46%;width:3px;height:3px;border-radius:50%;background:#f0e6c8;opacity:.8"></i><i style="position:absolute;left:50%;top:28%;width:2px;height:2px;border-radius:50%;background:#f0e6c8;opacity:.8"></i><i style="position:absolute;left:90%;top:8%;width:3px;height:3px;border-radius:50%;background:#f0e6c8;opacity:.8"></i></div>
+    <div class="card" style="background:#0a0c1f">
+      <div class="ev" style="color:#7a8ee6">XV años</div>
+      <div class="nm" style="color:#f0c64a">Valeria</div>
+      <div class="par" style="color:#7a8ee6">Con la bendición de sus padres</div>
+      <div class="parn">Carlos Mendoza y Mariana Ríos</div>
+      <div class="msg">Hoy comienzo una nueva etapa y quiero compartirla contigo. Tu presencia hará este día inolvidable.</div>
+      <div class="fch" style="color:#f0c64a">Sábado 14 de marzo de 2027</div>
+    </div>
+    
+    <div class="card" style="background:#0a0c1f">
+      <div class="lb" style="color:#f0c64a">Ceremonia</div>
+      <div class="vn">Parroquia San Judas Tadeo</div>
+      <div class="ad">18:00 h · Av. Las Rosas 245, Col. Jardines</div>
+    </div>
+    <div class="card" style="background:#0a0c1f">
+      <div class="lb" style="color:#f0c64a">Recepción 🥂</div>
+      <div class="vn">Salón Jardín Las Palmas</div>
+      <div class="ad">20:00 h · Camino Real 1200, Zapopan</div>
+    </div>
+    <div class="card" style="background:#0a0c1f">
+      <div class="lb" style="color:#f0c64a">Dress Code</div>
+      <div class="ad" style="font-style:italic">Una orientación para tu vestimenta</div>
+      <div class="vn" style="margin-top:4px">Formal</div>
+    </div>
+  </div></div></div>
+</body>
+</html>

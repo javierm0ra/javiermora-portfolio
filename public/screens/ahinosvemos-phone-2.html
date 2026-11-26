@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=372">
+<title>ahinosvemos (phone-2)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+/* Pantallas simuladas de Ahí Nos Vemos. Colores de src/index.css de la app; datos ficticios. */
+:root {
+  --primario: #177eb9; --azul: #1a335d; --fondo: #f8f9fa; --borde: #dfe6ee; --sec: #5b6b82; --lugar: #f08c2e;
+  --listo: #1d7a45; --listo-bg: #e5f4ea;
+  --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --stage: #eef3f8; --soft: #5b6b82; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--stage); color: var(--azul); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 56px; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1.t { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 8px; text-wrap: balance; }
+.lede { color: var(--soft); max-width: 62ch; margin: 0 0 32px; }
+.stage { display: grid; grid-template-columns: repeat(2, 372px); gap: 48px; justify-content: center; align-items: start; }
+.cap { margin: 14px 0 0; font-size: 13px; color: var(--soft); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.cap b { color: var(--azul); font-weight: 700; }
+.tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #fff; border: 1px solid #d5e0ea; color: var(--soft); white-space: nowrap; }
+.fit-outer { width: 100%; } .fit-inner { transform-origin: 0 0; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 372px); } }
+svg { flex: none; }
+.phone { width: 372px; padding: 9px; border-radius: 46px; background: #0f1b33; box-shadow: 0 30px 60px -24px rgba(16,36,72,.55); }
+.screen { position: relative; width: 354px; height: 780px; border-radius: 38px; overflow: hidden; background: var(--fondo); color: var(--azul); font-size: 14px; line-height: 1.4; }
+.statusbar { height: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 12px; font-weight: 700; background: #fff; }
+.statusbar svg { width: 15px; height: 15px; }
+.hdr { background: #fff; border-bottom: 1px solid var(--borde); padding: 12px 20px 16px; }
+.logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+.logo img { width: 36px; height: 36px; border-radius: 9px; }
+.hdr h1 { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.15; }
+.hdr p { margin: 4px 0 0; font-size: 13.5px; color: var(--sec); }
+.hdr .hr { display: flex; align-items: center; gap: 6px; }
+.hdr .hr svg { width: 14px; height: 14px; }
+.cats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.cats span { border-radius: 999px; background: rgb(23 126 185/.1); padding: 4px 12px; font-size: 13px; font-weight: 500; color: var(--azul); }
+.main { padding: 16px 20px; display: grid; gap: 14px; }
+.card { border: 1px solid var(--borde); background: #fff; border-radius: 16px; padding: 16px; }
+.prog { padding: 16px 12px 14px; }
+.prog ol { display: flex; margin: 0; padding: 0; list-style: none; }
+.prog li { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.prog b { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: var(--borde); color: var(--sec); }
+.prog b svg { width: 16px; height: 16px; }
+.prog .ok b { background: var(--listo); color: #fff; } .prog .now b { background: var(--primario); color: #fff; box-shadow: 0 0 0 4px rgb(23 126 185/.2); }
+.prog span { font-size: 12px; font-weight: 500; color: var(--sec); } .prog .ok span { color: var(--listo); font-weight: 600; } .prog .now span { color: var(--primario); font-weight: 700; }
+.wait { border: 1px solid rgb(23 126 185/.3); background: rgb(23 126 185/.1); border-radius: 16px; padding: 16px; display: grid; gap: 12px; }
+.wait h2 { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; }
+.wait p { margin: 4px 0 0; font-size: 14px; color: var(--sec); line-height: 1.35; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border-radius: 12px; background: var(--primario); color: #fff; font-weight: 600; font-size: 15px; }
+.btn svg { width: 20px; height: 20px; }
+.btn.o { background: #fff; color: var(--primario); border: 1px solid var(--primario); }
+.ph { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.ph h2 { margin: 0; font-size: 16px; font-weight: 600; } .ph span { font-size: 13.5px; color: var(--sec); }
+.pl { list-style: none; margin: 0; padding: 0; border: 1px solid var(--borde); border-radius: 12px; background: #fff; }
+.pl li { display: flex; align-items: center; gap: 12px; padding: 12px; } .pl li + li { border-top: 1px solid var(--borde); }
+.pl .a { width: 40px; height: 40px; border-radius: 50%; background: rgb(23 126 185/.1); color: var(--primario); font-weight: 600; display: grid; place-items: center; flex: none; }
+.pl .n { flex: 1; min-width: 0; } .pl .n b { display: block; font-weight: 500; } .pl .n b em { font-style: normal; font-weight: 400; color: var(--sec); } .pl .n small { display: block; font-size: 12px; color: var(--sec); }
+.ok2 { border-radius: 999px; background: var(--listo-bg); color: var(--listo); font-size: 13.5px; font-weight: 500; padding: 4px 12px; }
+.pend { border-radius: 999px; background: var(--fondo); color: var(--sec); font-size: 13.5px; padding: 4px 12px; }
+.inv h2 { margin: 0; font-size: 16px; font-weight: 600; } .inv p { margin: 2px 0 10px; font-size: 14px; color: var(--sec); line-height: 1.35; }
+.lnk { background: var(--fondo); border-radius: 8px; padding: 8px 12px; font-size: 13.5px; color: var(--sec); word-break: break-all; margin-bottom: 10px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.two .btn { min-height: 44px; font-size: 14.5px; }
+.two .btn svg { width: 18px; height: 18px; }
+
+/* resultados */
+.vt { display: grid; gap: 8px; }
+.vt .top { display: flex; align-items: baseline; justify-content: space-between; } .vt h2 { margin: 0; font-size: 16px; font-weight: 600; } .vt .top span { font-size: 13.5px; color: var(--sec); }
+.bar { height: 8px; border-radius: 8px; background: var(--borde); overflow: hidden; } .bar i { display: block; height: 100%; width: 67%; background: var(--primario); border-radius: 8px; transform-origin: 0 50%; animation: fill .9s cubic-bezier(.2,.8,.2,1) backwards; }
+@keyframes fill { from { transform: scaleX(0); } }
+.vt p { margin: 0; font-size: 14px; display: flex; gap: 8px; align-items: flex-start; } .vt p svg { width: 16px; height: 16px; color: var(--lugar); flex: none; margin-top: 2px; }
+.help { font-size: 14px; color: var(--sec); padding: 12px; border: 1px solid var(--borde); border-radius: 12px; background: #fff; line-height: 1.4; }
+.map { position: relative; height: 236px; border-radius: 12px; border: 1px solid var(--borde); overflow: hidden; background: #e9efe4; }
+.map svg.bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.zoom { position: absolute; top: 10px; left: 10px; background: #fff; border-radius: 6px; box-shadow: 0 1px 4px rgb(0 0 0/.3); overflow: hidden; z-index: 2; }
+.zoom div { width: 26px; height: 26px; display: grid; place-items: center; font-size: 16px; font-weight: 600; color: #333; } .zoom div + div { border-top: 1px solid #ccc; }
+.attr { position: absolute; right: 0; bottom: 0; background: rgb(255 255 255/.8); font-size: 9px; padding: 1px 5px; color: #444; z-index: 2; }
+.pin { position: absolute; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; background: var(--lugar); color: #fff; font-weight: 700; font-size: 13px; display: grid; place-items: center; border: 2px solid #fff; box-shadow: 0 2px 6px rgb(0 0 0/.3); animation: drop .6s cubic-bezier(.2,.8,.2,1) backwards; animation-delay: var(--d); z-index: 1; }
+.pin.mid { background: var(--primario); width: 34px; height: 34px; } .pin.mid svg { width: 18px; height: 18px; }
+@keyframes drop { from { opacity: 0; transform: translate(-50%, -150%); } }
+.sub { margin: 4px 0 -4px; font-size: 16px; font-weight: 600; }
+.pc { border: 2px solid var(--primario); box-shadow: 0 0 0 3px rgb(23 126 185/.2); background: #fff; border-radius: 12px; overflow: hidden; }
+.pc .h { display: flex; gap: 12px; padding: 12px; }
+.pc .num { width: 32px; height: 32px; border-radius: 50%; background: var(--lugar); color: #fff; font-weight: 700; display: grid; place-items: center; flex: none; }
+.pc .h b { display: block; font-weight: 600; } .pc .h small { display: block; font-size: 13.5px; color: var(--sec); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; }
+.chips span { border-radius: 999px; padding: 2px 8px; font-size: 12px; font-weight: 600; }
+.chips .g { background: rgb(240 140 46/.15); color: var(--azul); } .chips .b { background: rgb(23 126 185/.1); color: var(--primario); }
+.pc .vo { margin-top: 4px; font-size: 12px; color: var(--sec); }
+.pc .d { border-top: 1px solid var(--borde); padding: 10px 12px; font-size: 13.5px; }
+.pc .d li { display: flex; justify-content: space-between; gap: 10px; list-style: none; } .pc .d ul { margin: 0; padding: 0; display: grid; gap: 4px; }
+.pc .d li span:first-child { color: var(--sec); } .pc .d li b { font-weight: 600; } .pc .d li b em { font-style: normal; font-weight: 400; color: var(--sec); }
+.pc .d p { margin: 8px 0 0; } .pc .d p span { color: var(--sec); }
+.pc .act { border-top: 1px solid var(--borde); padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pc .act .btn { min-height: 42px; font-size: 14px; } .pc .act .btn.full { grid-column: span 2; }
+.pc .act .btn.ok3 { background: var(--listo-bg); color: var(--listo); }
+@media (prefers-reduced-motion: reduce) { .bar i, .pin { animation: none; } }
+
+
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+<style>
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen">
+          <div class="statusbar"><span>9:42</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path></svg></div>
+          <div class="main" style="padding-top:14px">
+            <section class="card vt">
+              <div class="top"><h2>Votos</h2><span>2 de 3 personas</span></div>
+              <div class="bar"><i></i></div>
+              <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="trophy" class="lucide lucide-trophy"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg><span>Va ganando: <strong>Café Tertulia</strong> (2 votos)</span></p>
+            </section>
+            <div class="help">Toca un lugar para verlo en el mapa y vota por tu favorito. Puedes cambiar tu voto hasta que se confirme el lugar.</div>
+            <div class="map">
+              <svg class="bg" viewBox="0 0 320 236" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <rect width="320" height="236" fill="#e9efe4"></rect>
+                <rect x="206" y="14" width="86" height="58" rx="8" fill="#cfe3c4"></rect><rect x="18" y="150" width="70" height="56" rx="8" fill="#cfe3c4"></rect>
+                <path d="M-10 120 C80 96 160 150 330 90" stroke="#fff" stroke-width="12" fill="none"></path>
+                <path d="M118 -10 C138 70 98 130 128 250" stroke="#fff" stroke-width="9" fill="none"></path>
+                <path d="M230 -10 L248 250" stroke="#fff" stroke-width="7" fill="none"></path>
+                <path d="M-10 190 L330 176" stroke="#f6f1d6" stroke-width="6" fill="none"></path>
+                <path d="M40 -10 L70 250" stroke="#fbfbf6" stroke-width="5" fill="none"></path>
+              </svg>
+              <div class="zoom"><div>+</div><div>−</div></div>
+              <span class="pin mid" style="left:44%;top:52%;--d:0ms"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map-pin" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+              <span class="pin" style="left:50%;top:46%;--d:150ms">1</span>
+              <span class="pin" style="left:32%;top:64%;--d:260ms">2</span>
+              <span class="pin" style="left:66%;top:60%;--d:370ms">3</span>
+              <span class="attr">© OpenStreetMap</span>
+            </div>
+            <h2 class="sub">Lugares sugeridos</h2>
+            <div class="pc">
+              <div class="h"><span class="num">1</span><span><b>Café Tertulia</b><small>Cafés · Av. Vallarta 1450</small>
+                <span class="chips"><span class="g">Más votado</span><span class="b">2 votos</span></span>
+                <div class="vo">Votaron: Daniela, Marco</div></span></div>
+              <div class="d"><ul>
+                <li><span>Daniela (tú)</span><b>1.8 km <em>· 7 min</em></b></li>
+                <li><span>Marco</span><b>2.1 km <em>· 9 min</em></b></li>
+                <li><span>Sofía</span><b>1.7 km <em>· 8 min</em></b></li>
+              </ul><p><span>Diferencia máx.: </span><b>400 m</b></p></div>
+              <div class="act">
+                <div class="btn o"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="navigation" class="lucide lucide-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>Google Maps</div><div class="btn o"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="navigation" class="lucide lucide-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>Waze</div>
+                <div class="btn full ok3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check-circle-2" class="lucide lucide-check-circle-2"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>Tu voto</div>
+              </div>
+            </div>
+          </div>
+        </div></div>
+</body>
+</html>

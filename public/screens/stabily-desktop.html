@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1102">
+<title>stabily (desktop)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
+<style>
+/* Pantallas simuladas de Stabily. Tokens de src/index.css de la app; datos ficticios. */
+:root {
+  --background: hsl(200 20% 97%); --foreground: hsl(205 25% 15%); --card: #fff; --primary: hsl(201 79% 41%);
+  --secondary: hsl(200 15% 92%); --muted: hsl(200 10% 94%); --muted-foreground: hsl(205 10% 45%); --accent: hsl(201 50% 90%);
+  --destructive: hsl(0 72% 51%); --success: hsl(142 72% 40%); --warning: hsl(38 92% 50%); --border: hsl(200 15% 88%);
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --stage: #eef3f8; --ink: #1a335d; --soft: #5b6b82;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--stage); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 56px; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1.t { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 8px; text-wrap: balance; }
+.lede { color: var(--soft); max-width: 62ch; margin: 0 0 32px; }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 372px; gap: 40px; align-items: start; }
+.cap { margin: 14px 0 0; font-size: 13px; color: var(--soft); display: flex; gap: 8px; align-items: center; }
+.cap b { color: var(--ink); font-weight: 700; }
+.tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #fff; border: 1px solid #d5e0ea; color: var(--soft); white-space: nowrap; }
+.fit-outer { width: 100%; }
+.fit-inner { transform-origin: 0 0; }
+@media (max-width: 960px) { .stage { grid-template-columns: minmax(0, 1fr); } .phone-col { max-width: 372px; margin: 0 auto; width: 100%; } }
+svg { flex: none; }
+
+/* marco de escritorio */
+.laptop { border-radius: 14px; background: #fff; border: 1px solid #d5e0ea; box-shadow: 0 30px 60px -28px rgba(16,36,72,.45); overflow: hidden; }
+.chrome { height: 38px; background: #e8eef4; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid #d5e0ea; }
+.chrome i { width: 11px; height: 11px; border-radius: 50%; background: #c9d4df; }
+.chrome span { margin-left: 10px; flex: 1; max-width: 380px; height: 24px; border-radius: 12px; background: #fff; color: var(--soft); font-size: 12px; display: flex; align-items: center; padding: 0 12px; }
+/* marco de celular */
+.phone { width: 372px; padding: 9px; border-radius: 46px; background: #0f1b33; box-shadow: 0 30px 60px -24px rgba(16,36,72,.55); }
+.screen { position: relative; width: 354px; height: 780px; border-radius: 38px; overflow: hidden; background: var(--background); color: var(--foreground); font-size: 14px; line-height: 1.35; }
+.statusbar { height: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 12px; font-weight: 700; background: var(--card); }
+.statusbar svg { width: 15px; height: 15px; }
+
+/* app */
+.app { position: relative; width: 1100px; height: 700px; overflow: hidden; background: var(--background); color: var(--foreground); font-size: 14px; line-height: 1.35; }
+.hdr { height: 60px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; padding: 0 24px; }
+.hdr .brand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 17px; letter-spacing: -.01em; }
+.hdr .brand img { width: 30px; height: 30px; border-radius: 8px; }
+.hdr .spacer { flex: 1; }
+.ib { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--muted-foreground); }
+.ib svg { width: 19px; height: 19px; }
+.av { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+.menu-btn { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; font-weight: 600; background: var(--card); }
+.menu-btn svg { width: 16px; height: 16px; }
+.body { padding: 20px 28px; }
+.toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.toolbar h2 { margin: 0; font-size: 20px; font-weight: 700; }
+.period { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.pill { height: 34px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); padding: 0 14px; display: flex; align-items: center; font-size: 13px; font-weight: 600; }
+.seg { display: flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--card); }
+.seg span { padding: 0 14px; height: 34px; display: flex; align-items: center; font-size: 13px; font-weight: 600; color: var(--muted-foreground); }
+.seg .on { background: var(--primary); color: #fff; }
+.cards5 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.gc { background: rgb(255 255 255/.8); border: 1px solid rgb(0 0 0/.06); border-color: color-mix(in srgb, var(--border) 50%, transparent); border-radius: 12px; box-shadow: 0 10px 15px -3px rgb(0 0 0/.08), 0 4px 6px -4px rgb(0 0 0/.06); }
+.sc { padding: 14px 16px; }
+.sc .top { display: flex; align-items: center; justify-content: space-between; }
+.sc .k { font-size: 12px; font-weight: 500; color: var(--muted-foreground); }
+.sc .ic { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--accent); color: var(--primary); }
+.sc .ic svg { width: 15px; height: 15px; }
+.sc .v { margin-top: 8px; font-size: 20px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.sc .d { margin-top: 4px; font-size: 11px; color: var(--muted-foreground); }
+.sc.pos .v { color: var(--success); }
+.sc.warn .v { color: hsl(38 92% 36%); }
+.sec { margin-top: 16px; }
+.sec .hd { padding: 14px 18px 8px; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
+.sec .hd small { font-size: 12px; font-weight: 500; color: var(--muted-foreground); }
+.tbl { padding: 0 18px 12px; font-variant-numeric: tabular-nums; }
+.tr { display: grid; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid hsl(200 15% 90%); font-size: 13px; }
+.tr.h { border-top: 0; padding-top: 2px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted-foreground); }
+.g-inc { grid-template-columns: 2fr 1fr 1fr 1fr 1.4fr; }
+.g-exp { grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr 1.6fr; }
+.r { text-align: right; }
+.chip { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--muted); color: var(--muted-foreground); }
+.chip.fx { background: var(--accent); color: hsl(201 79% 30%); }
+.bar { height: 6px; border-radius: 6px; background: var(--muted); overflow: hidden; display: inline-block; width: 44px; vertical-align: middle; margin-right: 6px; }
+.bar i { display: block; height: 100%; background: var(--primary); border-radius: 6px; transform-origin: 0 50%; animation: fill .8s cubic-bezier(.2,.8,.2,1) backwards; }
+.bar i.full { background: var(--success); }
+@keyframes fill { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .bar i { animation: none; } }
+
+/* celular */
+.mh { height: 56px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; padding: 0 14px; }
+.mh .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 16px; flex: 1; justify-content: center; }
+.mh .brand img { width: 26px; height: 26px; border-radius: 7px; }
+.mb { padding: 14px 16px; }
+.mb h2 { margin: 0 0 12px; font-size: 20px; font-weight: 700; }
+.sum3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.sum3 .gc { padding: 10px 8px; text-align: center; }
+.sum3 .k { font-size: 10px; color: var(--muted-foreground); font-weight: 500; }
+.sum3 .v { font-size: 13px; font-weight: 800; margin-top: 3px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.ccard { position: relative; aspect-ratio: 1.586 / 1; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 15px -3px rgb(0 0 0/.18), 0 4px 6px -4px rgb(0 0 0/.12); max-width: 300px; margin: 0 auto; color: #fff; }
+.ccard .rings { position: absolute; inset: 0; opacity: .1; }
+.ccard .rings i { position: absolute; border-radius: 50%; border: 2px solid #fff; }
+.ccard .chip2 { position: absolute; top: 24px; left: 20px; width: 40px; height: 28px; border-radius: 6px; background: linear-gradient(135deg, #fde047, #eab308); opacity: .8; }
+.ccard .wifi { position: absolute; top: 16px; right: 16px; opacity: .6; transform: rotate(90deg); }
+.ccard .wifi svg { width: 20px; height: 20px; }
+.ccard .dots { position: absolute; left: 20px; right: 20px; bottom: 50px; display: flex; gap: 12px; }
+.ccard .dots span { display: flex; gap: 4px; }
+.ccard .dots b { width: 6px; height: 6px; border-radius: 50%; background: rgb(255 255 255/.4); }
+.ccard .nm { position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px; background: linear-gradient(to top, rgb(0 0 0/.6), transparent); font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+.ccard .cico { position: absolute; bottom: 14px; right: 18px; opacity: .6; }
+.ccard .cico svg { width: 22px; height: 22px; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 6px 16px; }
+.metrics p { margin: 0; font-size: 11px; color: var(--muted-foreground); }
+.metrics strong { display: block; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 1px; }
+.metrics .ok { color: var(--success); }
+.metrics .wn { color: hsl(38 92% 36%); }
+
+
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+<style>
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+</head>
+<body>
+<div class="laptop">
+        <div class="chrome"><i></i><i></i><i></i><span>stabily.app/app</span></div>
+        <div class="fit-outer" data-w="1100" data-h="700" style="height: 487px;">
+          <div class="fit-inner" style="width: 1100px; transform: scale(0.696364);">
+            <div class="app">
+              <header class="hdr">
+                <span class="menu-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="menu" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>Presupuestos</span>
+                <span class="brand"><img src="data:image/png;base64,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" alt="">Stabily</span>
+                <span class="spacer"></span>
+                <span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sun" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg></span><span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg></span><span class="av">AR</span>
+              </header>
+              <div class="body">
+                <div class="toolbar">
+                  <h2>Presupuesto quincenal</h2>
+                  <div class="period">
+                    <span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-left" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"></path></svg></span>
+                    <span class="pill">Nov 2026</span>
+                    <span class="seg"><span class="on">Q1</span><span>Q2</span></span>
+                    <span class="ib"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-right" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"></path></svg></span>
+                  </div>
+                </div>
+                <div class="cards5">
+                  <div class="gc sc"><div class="top"><span class="k">Fondeo de periodo</span><span class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="trending-up" class="lucide lucide-trending-up"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></span></div><div class="v">$32,400.00</div><div class="d">Ingresos de la quincena</div></div>
+                  <div class="gc sc"><div class="top"><span class="k">Presupuestado</span><span class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="clipboard-list" class="lucide lucide-clipboard-list"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg></span></div><div class="v">$27,850.00</div><div class="d">Total de gastos planeados</div></div>
+                  <div class="gc sc pos"><div class="top"><span class="k">Disponible</span><span class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wallet" class="lucide lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg></span></div><div class="v">$9,120.00</div><div class="d">Fondeo menos lo pagado</div></div>
+                  <div class="gc sc"><div class="top"><span class="k">Pagado</span><span class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check-circle-2" class="lucide lucide-check-circle-2"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></span></div><div class="v">$23,280.00</div><div class="d">84 % de lo presupuestado</div></div>
+                  <div class="gc sc warn"><div class="top"><span class="k">Por Pagar</span><span class="ic"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="clock" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span></div><div class="v">$4,570.00</div><div class="d">Presupuestado menos pagado</div></div>
+                </div>
+                <section class="gc sec">
+                  <div class="hd">Fondeo de periodo</div>
+                  <div class="tbl">
+                    <div class="tr h g-inc"><span>Concepto</span><span>Tipo</span><span>Fecha</span><span class="r">Monto</span><span>Origen</span></div>
+                    <div class="tr g-inc"><span>Nómina quincenal</span><span><span class="chip fx">Fijo</span></span><span>1 nov</span><span class="r">$28,000.00</span><span>Empresa</span></div>
+                    <div class="tr g-inc"><span>Venta de garage</span><span><span class="chip">Variable</span></span><span>3 nov</span><span class="r">$4,400.00</span><span>Efectivo</span></div>
+                  </div>
+                </section>
+                <section class="gc sec">
+                  <div class="hd">Gastos <small>8 conceptos</small></div>
+                  <div class="tbl">
+                    <div class="tr h g-exp"><span>Gasto</span><span>Tipo</span><span class="r">Presup.</span><span class="r">Pagado</span><span>%</span><span>Destino</span></div>
+                    <div class="tr g-exp"><span>Renta</span><span><span class="chip fx">Fijo</span></span><span class="r">$9,500.00</span><span class="r">$9,500.00</span><span><span class="bar"><i class="full" style="width:100%"></i></span>100</span><span>BBVA Nómina</span></div>
+                    <div class="tr g-exp"><span>Despensa</span><span><span class="chip">Variable</span></span><span class="r">$4,200.00</span><span class="r">$3,650.00</span><span><span class="bar"><i style="width:87%"></i></span>87</span><span>TC Platino</span></div>
+                    <div class="tr g-exp"><span>Colegiatura</span><span><span class="chip fx">Fijo</span></span><span class="r">$5,600.00</span><span class="r">$5,600.00</span><span><span class="bar"><i class="full" style="width:100%"></i></span>100</span><span>Transferencia</span></div>
+                    <div class="tr g-exp"><span>Gasolina</span><span><span class="chip">Variable</span></span><span class="r">$2,400.00</span><span class="r">$1,950.00</span><span><span class="bar"><i style="width:81%"></i></span>81</span><span>TC Platino</span></div>
+                    <div class="tr g-exp"><span>Luz CFE</span><span><span class="chip fx">Fijo</span></span><span class="r">$1,180.00</span><span class="r">$1,180.00</span><span><span class="bar"><i class="full" style="width:100%"></i></span>100</span><span>BBVA Nómina</span></div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</body>
+</html>
