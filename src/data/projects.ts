@@ -12,13 +12,15 @@ export interface Screen {
 }
 
 export interface Project {
-  id: ProjectId;
+  id: string;
   name: string;
   url: string;
   status: "prod";
   category: Category;
   tags: string[];
   screens: Screen[];
+  /** Imagen propia (subida desde el panel); si existe, reemplaza las pantallas simuladas. */
+  image: string | null;
   copy: Record<Lang, { desc: string; role: string }>;
 }
 
@@ -34,6 +36,7 @@ export const PROJECTS: Project[] = [
     category: "finance",
     tags: ["React", "TypeScript", "Supabase", "Tailwind"],
     screens: SCREENS.stabily,
+    image: null,
     copy: {
       es: {
         desc: "Finanzas personales hechas en México: presupuesto quincenal, tarjetas, cuentas, créditos y gastos compartidos.",
@@ -53,6 +56,7 @@ export const PROJECTS: Project[] = [
     category: "realestate",
     tags: ["React", "Supabase", "WhatsApp API", "EasyBroker"],
     screens: SCREENS.kasanode,
+    image: null,
     copy: {
       es: {
         desc: "Administración inmobiliaria para agencias: propiedades, contratos, comisiones y portal público con dominio propio.",
@@ -72,6 +76,7 @@ export const PROJECTS: Project[] = [
     category: "realestate",
     tags: ["TanStack Start", "Supabase", "Tailwind"],
     screens: SCREENS.kondonode,
+    image: null,
     copy: {
       es: {
         desc: "Cotos y condominios con transparencia total: cuotas, gastos con comprobante, caseta de vigilancia y paquetería.",
@@ -91,6 +96,7 @@ export const PROJECTS: Project[] = [
     category: "events",
     tags: ["TanStack Start", "Stripe", "Supabase", "Cloudflare"],
     screens: SCREENS.parilink,
+    image: null,
     copy: {
       es: {
         desc: "Invitaciones digitales para bodas, XV años, bautizos y más, con pago en línea.",
@@ -110,6 +116,7 @@ export const PROJECTS: Project[] = [
     category: "health",
     tags: ["React", "Supabase", "Tailwind", "shadcn/ui"],
     screens: SCREENS.medicatio,
+    image: null,
     copy: {
       es: {
         desc: "Gestión de clínicas médicas: agenda, expedientes, cobros, facturación y WhatsApp en una sola plataforma.",
@@ -129,6 +136,7 @@ export const PROJECTS: Project[] = [
     category: "events",
     tags: ["React", "Supabase", "Leaflet", "Cloudflare"],
     screens: SCREENS.ahinosvemos,
+    image: null,
     copy: {
       es: {
         desc: "PWA que calcula el punto de reunión más justo entre 2 y 10 personas y sugiere lugares cercanos.",

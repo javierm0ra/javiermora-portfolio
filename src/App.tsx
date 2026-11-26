@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ScreenFrame } from "./components/ScreenFrame";
 import { desktopScreen } from "./data/projects";
+import { useSite } from "./data/SiteContext";
 import { Method } from "./components/Method";
 import { Nav, SECTION_IDS } from "./components/Nav";
 import { ProjectsSection } from "./components/ProjectsSection";
@@ -12,11 +13,11 @@ import { useLang } from "./hooks/useLang";
 import { useScrollChrome } from "./hooks/useScrollChrome";
 import { track, trackView } from "./lib/track";
 
-const EMAIL = "javiermoramx@gmail.com";
-const GITHUB = "https://github.com/javierm0ra";
-
 export default function App() {
   const { lang, t, setLang } = useLang();
+  const { content } = useSite();
+  const EMAIL = content.contact.email;
+  const GITHUB = content.contact.github;
   const [copied, setCopied] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
@@ -52,7 +53,12 @@ export default function App() {
               </p>
               <h1 className="rise" style={{ "--d": "90ms" } as React.CSSProperties}>
                 {t.h1.before}
-                <em>{t.h1.em}</em>
+                {t.h1.em && (
+                  <>
+                    {" "}
+                    <em>{t.h1.em}</em>
+                  </>
+                )}
                 {t.h1.after}
               </h1>
               <p className="lede rise" style={{ "--d": "180ms" } as React.CSSProperties}>
@@ -66,6 +72,12 @@ export default function App() {
                   {t.cta2}
                 </a>
               </div>
+              {content.availability.enabled && (
+                <p className="avail rise" style={{ "--d": "340ms" } as React.CSSProperties}>
+                  <i aria-hidden="true" />
+                  {content.availability.text[lang]}
+                </p>
+              )}
             </div>
             <div className="stack" aria-hidden="true">
               <div className="win w1" style={{ "--d": "250ms" } as React.CSSProperties}>
@@ -109,7 +121,7 @@ export default function App() {
                       {copied ? t.copied : t.copy}
                     </button>
                     <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")}>
-                      github.com/javierm0ra ↗
+                      {GITHUB.replace(/^https:\/\//, "")} ↗
                     </a>
                   </div>
                 </div>

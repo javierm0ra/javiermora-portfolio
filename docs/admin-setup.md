@@ -9,6 +9,8 @@ tres cosas en Cloudflare. Hasta que esten hechas, el sitio se ve igual y el pane
 2. Nombre: `javiermora`. Ubicacion: la que sugiera (automatica).
 3. Entra a la base -> pestana **Console** -> pega **todo** el contenido de `migrations/0001_events.sql` -> **Execute**.
    Debe responder que se crearon la tabla `events` y dos indices.
+4. Repite con `migrations/0002_content.sql` (tablas `site_content` e `images`, para el editor de contenido).
+   Se pegan y ejecutan **una a la vez**, en orden.
 
 ## 2. Conectar la base al proyecto de Pages
 
@@ -23,7 +25,9 @@ tres cosas en Cloudflare. Hasta que esten hechas, el sitio se ve igual y el pane
 2. **Access** -> **Applications** -> **Add an application** -> **Self-hosted**.
    - Application name: `Panel javiermora`.
    - Session duration: 24 horas (o la que prefieras).
-   - Destinos (dominio `javiermora.pages.dev`): agrega **dos**: ruta `admin` y ruta `api/admin`.
+   - Destinos publicos (dominio `javiermora.pages.dev`): usa **"Switch to custom input"** y escribe, cada uno en su
+     propio renglon y sin punto ni espacio al final: `javiermora.pages.dev/admin*` y `javiermora.pages.dev/api/admin*`.
+     El asterisco al final protege tambien todo lo que cuelga de esa ruta.
 3. Politica: **Allow**, regla **Include -> Emails** -> tu correo.
    Metodo de acceso: **One-time PIN** (te manda un codigo por correo; no hay contrasenas).
 4. Guarda y copia el **Application Audience (AUD) Tag** (en la pagina de la aplicacion).
@@ -48,6 +52,18 @@ Las variables nuevas aplican al **siguiente deploy**: en **Deployments**, en el 
 2. Entras al panel. Si dice "acceso no configurado" o "falta la base", revisa los pasos 4 y 2.
 3. Abre el sitio normal, navega, y en el panel recarga: aparece tu visita (activa en el panel la casilla
    "No contar mis visitas" cuando termines de probar).
+
+## Usar el editor de contenido
+
+`https://javiermora.pages.dev/admin/contenido`. Se edita un **borrador**; el sitio publico no cambia hasta que pulsas **Publicar**.
+
+- **Guardar borrador**: guarda sin publicar. **Vista previa**: abre el sitio real con tu borrador (las visitas ahi no se cuentan).
+- **Publicar**: lo que hay en el borrador pasa a verse en el sitio (tarda uno o dos minutos por la cache).
+- **Descartar cambios**: el borrador vuelve a ser igual a lo publicado.
+- Cada texto tiene su version en espanol y en ingles. Los proyectos se pueden ordenar, ocultar, agregar y eliminar.
+- Las imagenes se reducen y comprimen solas antes de subirse (maximo ~420 KB). Usa capturas sin datos reales de clientes ni de pacientes.
+- Si nunca publicas nada, el sitio usa los textos originales del codigo (`src/data`).
+- Los enlaces solo aceptan `https://`.
 
 ## Privacidad de las visitas
 

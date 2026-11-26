@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && tsc -p functions --noEmit && vite build",
-    "test": "node --test \"functions/**/*.test.ts\"",
+    "test": "node --test \"functions/**/*.test.ts\" \"shared/**/*.test.ts\"",
     "preview": "vite preview"
   },
   "dependencies": {
