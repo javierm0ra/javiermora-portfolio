@@ -164,8 +164,8 @@ function ProjectEditor({ project: p, index, total, busy, onChange, onMove, onDel
           onChange={(v) => onChange({ ...p, tags: v.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 8) })}
         />
       </div>
-      <L2Field label="Descripción" value={p.desc} max={400} multiline rows={3} onChange={(desc) => onChange({ ...p, desc })} />
-      <L2Field label="Lo que definí" value={p.role} max={400} multiline rows={3} onChange={(role) => onChange({ ...p, role })} />
+      <L2Field label="Descripción" value={p.desc} max={700} multiline rows={6} onChange={(desc) => onChange({ ...p, desc })} />
+      <L2Field label="Lo que definí" value={p.role} max={700} multiline rows={5} onChange={(role) => onChange({ ...p, role })} />
 
       <div className="img-ed">
         <strong>Ícono de la app</strong>

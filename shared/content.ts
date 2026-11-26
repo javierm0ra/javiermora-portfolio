@@ -162,8 +162,8 @@ export function validateContent(input: unknown): Validation {
         category: category as CategoryId,
         hidden: bool(p.hidden, `projects[${i}].hidden`),
         tags: (p.tags as unknown[]).map((t, k) => str(t, `projects[${i}].tags[${k}]`, 30, 1)),
-        desc: l2(p.desc, `projects[${i}].desc`, 400, 1),
-        role: l2(p.role, `projects[${i}].role`, 400, 1),
+        desc: l2(p.desc, `projects[${i}].desc`, 700, 1),
+        role: l2(p.role, `projects[${i}].role`, 700, 1),
         image,
         icon,
       };

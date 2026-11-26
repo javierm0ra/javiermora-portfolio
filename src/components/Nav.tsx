@@ -1,6 +1,6 @@
 import type { Lang, Strings } from "../data/i18n";
 
-export const SECTION_IDS = ["proyectos", "metodo", "contacto"] as const;
+export const SECTION_IDS = ["proyectos", "metodo", "sobre-mi", "contacto"] as const;
 
 interface Props {
   lang: Lang;
@@ -8,12 +8,15 @@ interface Props {
   setLang: (l: Lang) => void;
   active: string | null;
   scrolled: boolean;
+  /** Texto del enlace «Sobre mí»; si no viene, la seccion esta apagada y no hay enlace. */
+  aboutLabel?: string;
 }
 
-export function Nav({ lang, t, setLang, active, scrolled }: Props) {
+export function Nav({ lang, t, setLang, active, scrolled, aboutLabel }: Props) {
   const links: [string, string][] = [
     ["proyectos", t.projTitle],
     ["metodo", t.howTitle],
+    ...(aboutLabel ? ([["sobre-mi", aboutLabel]] as [string, string][]) : []),
     ["contacto", t.ctTitle],
   ];
   return (

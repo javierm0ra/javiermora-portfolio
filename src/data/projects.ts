@@ -41,12 +41,12 @@ export const PROJECTS: Project[] = [
     image: null,
     copy: {
       es: {
-        desc: "Finanzas personales hechas en México: presupuesto quincenal, tarjetas, cuentas, créditos y gastos compartidos.",
-        role: "Reglas de presupuesto por quincena, conciliación bancaria y los planes de precio.",
+        desc: "Finanzas personales hechas para México. Planeas tu presupuesto por quincena y llevas en un solo lugar tus cuentas bancarias, tarjetas de crédito y créditos personales. Divides gastos compartidos con otras personas y revisas tus estados financieros y tu balance. Incluye un modo para micronegocios con punto de venta, retos y logros que ayudan a crear el hábito, e importación y exportación de tus datos.",
+        role: "Las reglas del presupuesto por quincena, cómo se concilian los movimientos bancarios y las transferencias entre cuentas, las categorías compartidas entre banco y tarjeta, qué módulos incluye cada plan y su precio, y qué cuenta como gasto, ingreso o transferencia para que los reportes siempre cuadren.",
       },
       en: {
-        desc: "Personal finance built for Mexico: biweekly budget, cards, accounts, loans and shared expenses.",
-        role: "Biweekly budget rules, bank reconciliation and the pricing plans.",
+        desc: "Personal finance built for Mexico. Plan your budget by pay period and keep bank accounts, credit cards and personal loans in one place. Split shared expenses with other people and review your financial statements and balance sheet. Includes a micro-business mode with point of sale, challenges and achievements that build the habit, and data import and export.",
+        role: "The biweekly budget rules, how bank movements and transfers between accounts are reconciled, shared categories across bank and card, which modules each plan includes and its price, and what counts as an expense, income or transfer so reports always add up.",
       },
     },
   },
@@ -61,12 +61,12 @@ export const PROJECTS: Project[] = [
     image: null,
     copy: {
       es: {
-        desc: "Administración inmobiliaria para agencias: propiedades, contratos, comisiones y portal público con dominio propio.",
-        role: "Ciclo de contratos de renta y venta, reglas de comisiones y el modelo multi-agencia.",
+        desc: "Plataforma para agencias inmobiliarias mexicanas en la que cada agencia trabaja con sus datos aislados. Administra propiedades, personas y prospectos, contratos de renta y venta con folio, renovaciones, rentas devengadas, apartados y comisiones, y genera documentos desde plantillas. Incluye portal público con el dominio de la agencia, pantalla de recepción, WhatsApp Business, notificaciones push e integración con EasyBroker.",
+        role: "El ciclo de vida de los contratos (vigente, por vencer, vencido; una renovación es un contrato nuevo), el devengo de la renta, la custodia del depósito en garantía por el propietario, las comisiones de hasta dos agentes, que las paga el propietario, y el modelo multi-agencia con datos aislados por cliente.",
       },
       en: {
-        desc: "Real estate management for agencies: properties, contracts, commissions and a public portal on the agency's own domain.",
-        role: "Rent and sale contract lifecycle, commission rules and the multi-agency model.",
+        desc: "Platform for Mexican real estate agencies where each agency works with its own isolated data. It manages properties, people and leads, rent and sale contracts with folio numbers, renewals, accrued rent, deposits and commissions, and generates documents from templates. It includes a public portal on the agency's own domain, a reception screen, WhatsApp Business, push notifications and EasyBroker integration.",
+        role: "The contract lifecycle (active, expiring, expired; a renewal is a new contract), rent accrual, owner custody of the security deposit, commissions for up to two agents paid by the owner, and the multi-agency model with data isolated per client.",
       },
     },
   },
@@ -81,12 +81,12 @@ export const PROJECTS: Project[] = [
     image: null,
     copy: {
       es: {
-        desc: "Cotos y condominios con transparencia total: cuotas, gastos con comprobante, caseta de vigilancia y paquetería.",
-        role: "Principios de transparencia, bitácora inmutable y privacidad entre vecinos.",
+        desc: "Plataforma para cotos y condominios en México basada en la transparencia: cada peso que entra o sale se ve con su comprobante. Cuotas con generación automática y recargos, gastos con aprobación del consejo, fondos y cuentas que deben cuadrar, cierre de mes con reporte, proyectos con cotizaciones y votación, comunicados con acuse, agenda de reservas y reuniones. La caseta tiene pases con QR, visitas avisadas al residente, paquetería con firma y turnos de guardias.",
+        role: "Los principios del producto: nada se borra, se cancela con motivo; bitácora de solo inserción; privacidad entre vecinos, porque nadie ve adeudos ajenos. También quién aprueba qué (presidente, secretario, tesorero), cómo se votan los proyectos y cómo se cierra el mes, y que la vigilancia nunca vea datos personales de los residentes.",
       },
       en: {
-        desc: "Gated communities and condos with full transparency: fees, receipted expenses, gatehouse and package handling.",
-        role: "Transparency principles, an immutable log and privacy between neighbors.",
+        desc: "Platform for gated communities and condominiums in Mexico built on transparency: every peso in or out is visible with its receipt. Fees with automatic generation and late charges, expenses approved by the board, funds and accounts that must reconcile, month-end close with a report, projects with quotes and voting, announcements with read receipts, reservations and meetings. The gatehouse has QR passes, visitors announced to residents, package handling with signature and guard shifts.",
+        role: "The product principles: nothing is deleted, it is cancelled with a reason; an insert-only audit log; privacy between neighbors, since nobody sees another home's debts. Also who approves what (president, secretary, treasurer), how projects are voted and how the month is closed, and that guards never see residents' personal data.",
       },
     },
   },
@@ -101,12 +101,12 @@ export const PROJECTS: Project[] = [
     image: null,
     copy: {
       es: {
-        desc: "Invitaciones digitales para bodas, XV años, bautizos y más, con pago en línea.",
-        role: "Catálogo de diseños, asistente de creación de 7 pasos y planes desde $149 MXN.",
+        desc: "Plataforma para crear invitaciones digitales de eventos en México: boda, XV años, cumpleaños infantil y de adulto, comunión, bautizo y baby shower. Eliges un diseño del catálogo, personalizas textos y fechas en un asistente de 7 pasos y compartes tu invitación con un enlace propio. Pagas en línea con Stripe, con soporte para códigos promocionales, y un panel de administración gestiona clientes, pagos y diseños.",
+        role: "El catálogo de diseños y cómo se arman sus imágenes, el asistente de creación de 7 pasos, los dos planes (Básico $149 y Plus $249 MXN), el acceso solo por invitación y la activación sin pago cuando un código promocional cubre el 100 %.",
       },
       en: {
-        desc: "Digital invitations for weddings, quinceañeras, baptisms and more, with online payment.",
-        role: "Design catalog, a 7-step creation wizard and plans from $149 MXN.",
+        desc: "Platform for creating digital invitations for events in Mexico: weddings, quinceañeras, kids' and adult birthdays, communions, baptisms and baby showers. Pick a design from the catalog, customize text and dates in a 7-step wizard and share your invitation with its own link. Pay online with Stripe, with promo code support, and an admin panel manages customers, payments and designs.",
+        role: "The design catalog and how its images are built, the 7-step creation wizard, the two plans (Basic $149 and Plus $249 MXN), invitation-only access, and free activation when a promo code covers 100%.",
       },
     },
   },
@@ -121,12 +121,12 @@ export const PROJECTS: Project[] = [
     image: null,
     copy: {
       es: {
-        desc: "Gestión de clínicas médicas: agenda, expedientes, cobros, facturación y WhatsApp en una sola plataforma.",
-        role: "Flujo de alta de clínica, roles por organización y sistema de soporte con tickets.",
+        desc: "Plataforma para clínicas médicas con varias marcas y sucursales. Reúne agenda, expedientes y consultas, recetas, consentimientos con firma, preconsulta y encuestas, seguimientos de pacientes, cobros y corte de caja, finanzas, inventario, productos y promociones, facturación y WhatsApp. Permite importar pacientes, da un portal al paciente, organiza al equipo por roles y ofrece soporte con tickets.",
+        role: "El flujo de alta de una clínica (marca, sucursal y primer médico), los roles por organización, las reglas para asignar médicos a sucursales, cómo se capturan consentimientos y recetas, y el sistema de soporte con tickets y adjuntos privados.",
       },
       en: {
-        desc: "Medical clinic management: scheduling, records, payments, invoicing and WhatsApp in one platform.",
-        role: "Clinic onboarding flow, organization roles and a ticket-based support system.",
+        desc: "Platform for medical clinics with multiple brands and branches. It brings together scheduling, records and consultations, prescriptions, signed consents, pre-consultation and surveys, patient follow-ups, payments and cash close, finances, inventory, products and promotions, invoicing and WhatsApp. It supports patient import, offers a patient portal, organizes the team by roles and provides ticket-based support.",
+        role: "The clinic onboarding flow (brand, branch and first doctor), organization roles, the rules for assigning doctors to branches, how consents and prescriptions are captured, and the ticket-based support system with private attachments.",
       },
     },
   },
@@ -141,12 +141,12 @@ export const PROJECTS: Project[] = [
     image: null,
     copy: {
       es: {
-        desc: "PWA que calcula el punto de reunión más justo entre 2 y 10 personas y sugiere lugares cercanos.",
-        role: "Flujo sin instalar nada: crear, compartir por WhatsApp, cada quien comparte su ubicación.",
+        desc: "PWA para encontrar el punto de reunión más justo entre 2 y 10 personas, sin instalar nada. Alguien crea la reunión y comparte un enlace por WhatsApp; cada quien comparte su ubicación y la app sugiere lugares cercanos (bares, restaurantes, cafés, plazas, parques, cines) ordenados por qué tan parejo le queda el traslado a todos, con el tiempo de cada persona. Un modo compraventa propone puntos seguros: tiendas 24 h, gasolineras, bancos y supermercados.",
+        role: "El flujo completo sin registro ni instalación y las reglas de privacidad: la ubicación se borra al vencer la reunión, en modo compraventa no se muestran las ubicaciones de los demás y el punto de encuentro se difumina unos 500 m para que no se deduzca dónde está la otra persona.",
       },
       en: {
-        desc: "PWA that finds the fairest meeting point for 2 to 10 people and suggests nearby places.",
-        role: "A no-install flow: create, share on WhatsApp, everyone shares their location.",
+        desc: "PWA that finds the fairest meeting point for 2 to 10 people, with nothing to install. Someone creates the meeting and shares a link on WhatsApp; everyone shares their location and the app suggests nearby places (bars, restaurants, cafés, malls, parks, cinemas) ranked by how evenly the trip works for everyone, with each person's travel time. A buy-and-sell mode suggests safe spots: 24-hour stores, gas stations, banks and supermarkets.",
+        role: "The full flow with no sign-up or install, and the privacy rules: location is deleted when the meeting expires, in buy-and-sell mode others' locations are never shown, and the meeting point is blurred by about 500 m so nobody can work out where the other person is.",
       },
     },
   },
