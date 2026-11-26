@@ -1,0 +1,86 @@
+{
+  "ahinosvemos": [
+    {
+      "file": "ahinosvemos-phone-1.html",
+      "kind": "phone",
+      "w": 372,
+      "h": 798
+    },
+    {
+      "file": "ahinosvemos-phone-2.html",
+      "kind": "phone",
+      "w": 372,
+      "h": 798
+    }
+  ],
+  "kasanode": [
+    {
+      "file": "kasanode-desktop.html",
+      "kind": "desktop",
+      "w": 1102,
+      "h": 740
+    },
+    {
+      "file": "kasanode-phone.html",
+      "kind": "phone",
+      "w": 372,
+      "h": 758
+    }
+  ],
+  "kondonode": [
+    {
+      "file": "kondonode-phone.html",
+      "kind": "phone",
+      "w": 372,
+      "h": 818
+    },
+    {
+      "file": "kondonode-desktop.html",
+      "kind": "desktop",
+      "w": 1102,
+      "h": 740
+    }
+  ],
+  "medicatio": [
+    {
+      "file": "medicatio-desktop.html",
+      "kind": "desktop",
+      "w": 1102,
+      "h": 740
+    },
+    {
+      "file": "medicatio-phone.html",
+      "kind": "phone",
+      "w": 372,
+      "h": 818
+    }
+  ],
+  "parilink": [
+    {
+      "file": "parilink-desktop.html",
+      "kind": "desktop",
+      "w": 1102,
+      "h": 740
+    },
+    {
+      "file": "parilink-phone.html",
+      "kind": "phone",
+      "w": 372,
+      "h": 798
+    }
+  ],
+  "stabily": [
+    {
+      "file": "stabily-desktop.html",
+      "kind": "desktop",
+      "w": 1102,
+      "h": 740
+    },
+    {
+      "file": "stabily-phone.html",
+      "kind": "phone",
+      "w": 372,
+      "h": 798
+    }
+  ]
+}

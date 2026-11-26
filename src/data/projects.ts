@@ -1,6 +1,15 @@
 import type { Category, Lang } from "./i18n";
+import screensManifest from "./screens.json";
 
 export type ProjectId = "stabily" | "kasanode" | "kondonode" | "parilink" | "medicatio" | "ahinosvemos";
+
+/** Pantalla simulada (documento estatico en public/screens, generado por scripts/render-screens.mjs). */
+export interface Screen {
+  file: string;
+  kind: "desktop" | "phone";
+  w: number;
+  h: number;
+}
 
 export interface Project {
   id: ProjectId;
@@ -9,8 +18,11 @@ export interface Project {
   status: "prod";
   category: Category;
   tags: string[];
+  screens: Screen[];
   copy: Record<Lang, { desc: string; role: string }>;
 }
+
+const SCREENS = screensManifest as Record<ProjectId, Screen[]>;
 
 // Para agregar un proyecto: suma un objeto aqui y su ilustracion en components/Illustration.tsx.
 export const PROJECTS: Project[] = [
@@ -21,6 +33,7 @@ export const PROJECTS: Project[] = [
     status: "prod",
     category: "finance",
     tags: ["React", "TypeScript", "Supabase", "Tailwind"],
+    screens: SCREENS.stabily,
     copy: {
       es: {
         desc: "Finanzas personales hechas en México: presupuesto quincenal, tarjetas, cuentas, créditos y gastos compartidos.",
@@ -39,6 +52,7 @@ export const PROJECTS: Project[] = [
     status: "prod",
     category: "realestate",
     tags: ["React", "Supabase", "WhatsApp API", "EasyBroker"],
+    screens: SCREENS.kasanode,
     copy: {
       es: {
         desc: "Administración inmobiliaria para agencias: propiedades, contratos, comisiones y portal público con dominio propio.",
@@ -57,6 +71,7 @@ export const PROJECTS: Project[] = [
     status: "prod",
     category: "realestate",
     tags: ["TanStack Start", "Supabase", "Tailwind"],
+    screens: SCREENS.kondonode,
     copy: {
       es: {
         desc: "Cotos y condominios con transparencia total: cuotas, gastos con comprobante, caseta de vigilancia y paquetería.",
@@ -75,6 +90,7 @@ export const PROJECTS: Project[] = [
     status: "prod",
     category: "events",
     tags: ["TanStack Start", "Stripe", "Supabase", "Cloudflare"],
+    screens: SCREENS.parilink,
     copy: {
       es: {
         desc: "Invitaciones digitales para bodas, XV años, bautizos y más, con pago en línea.",
@@ -93,6 +109,7 @@ export const PROJECTS: Project[] = [
     status: "prod",
     category: "health",
     tags: ["React", "Supabase", "Tailwind", "shadcn/ui"],
+    screens: SCREENS.medicatio,
     copy: {
       es: {
         desc: "Gestión de clínicas médicas: agenda, expedientes, cobros, facturación y WhatsApp en una sola plataforma.",
@@ -111,6 +128,7 @@ export const PROJECTS: Project[] = [
     status: "prod",
     category: "events",
     tags: ["React", "Supabase", "Leaflet", "Cloudflare"],
+    screens: SCREENS.ahinosvemos,
     copy: {
       es: {
         desc: "PWA que calcula el punto de reunión más justo entre 2 y 10 personas y sugiere lugares cercanos.",
@@ -123,3 +141,10 @@ export const PROJECTS: Project[] = [
     },
   },
 ];
+
+/** Primera pantalla de escritorio de un proyecto (la usa el hero). */
+export function desktopScreen(id: ProjectId): Screen {
+  const found = PROJECTS.find((p) => p.id === id)?.screens.find((x) => x.kind === "desktop");
+  if (!found) throw new Error(`El proyecto ${id} no tiene pantalla de escritorio`);
+  return found;
+}

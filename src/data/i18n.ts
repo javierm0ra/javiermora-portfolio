@@ -23,6 +23,7 @@ export interface Strings {
   copied: string;
   foot: string;
   langLabel: string;
+  fictional: string;
   navLabel: string;
   filterLabel: string;
   filters: Record<Filter, string>;
@@ -56,6 +57,7 @@ export const STRINGS: Record<Lang, Strings> = {
     copied: "Copiado",
     foot: "Javier Mora. Todos los derechos reservados.",
     langLabel: "Idioma",
+    fictional: "Datos ficticios",
     navLabel: "Secciones",
     filterLabel: "Filtrar proyectos por sector",
     filters: { all: "Todos", finance: "Finanzas", realestate: "Inmuebles", health: "Salud", events: "Eventos" },
@@ -87,6 +89,7 @@ export const STRINGS: Record<Lang, Strings> = {
     copied: "Copied",
     foot: "Javier Mora. All rights reserved.",
     langLabel: "Language",
+    fictional: "Sample data",
     navLabel: "Sections",
     filterLabel: "Filter projects by sector",
     filters: { all: "All", finance: "Finance", realestate: "Real estate", health: "Health", events: "Events" },

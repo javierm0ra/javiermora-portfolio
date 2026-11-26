@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=372">
+<title>kasanode (phone)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap">
+<style>
+/* Pantallas simuladas de KasaNode. Tokens de src/index.css de la app; datos ficticios. */
+:root {
+  --background: hsl(210 20% 98%); --foreground: hsl(222 47% 11%); --card: #fff; --primary: hsl(221 83% 53%);
+  --muted: hsl(214 20% 96%); --muted-foreground: hsl(215 16% 47%); --border: hsl(214 20% 91%);
+  --gold-bg: hsl(214 100% 97%); --green: hsl(160 84% 39%); --green-bg: hsl(152 76% 96%); --terra: hsl(0 84% 60%); --terra-bg: hsl(0 86% 97%);
+  --kblue: hsl(221 83% 53%);
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; --display: "Plus Jakarta Sans", var(--font); --mono: "JetBrains Mono", ui-monospace, monospace;
+  --stage: #eef3f8; --ink: #1a335d; --soft: #5b6b82;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--stage); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 56px; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1.t { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 8px; text-wrap: balance; font-family: var(--display); }
+.lede { color: var(--soft); max-width: 62ch; margin: 0 0 32px; }
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 372px; gap: 40px; align-items: start; }
+.cap { margin: 14px 0 0; font-size: 13px; color: var(--soft); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.cap b { color: var(--ink); font-weight: 700; }
+.tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: #fff; border: 1px solid #d5e0ea; color: var(--soft); white-space: nowrap; }
+.fit-outer { width: 100%; } .fit-inner { transform-origin: 0 0; }
+@media (max-width: 960px) { .stage { grid-template-columns: minmax(0, 1fr); } .phone-col { max-width: 372px; margin: 0 auto; width: 100%; } }
+svg { flex: none; }
+.laptop { border-radius: 14px; background: #fff; border: 1px solid #d5e0ea; box-shadow: 0 30px 60px -28px rgba(16,36,72,.45); overflow: hidden; }
+.chrome { height: 38px; background: #e8eef4; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid #d5e0ea; }
+.chrome i { width: 11px; height: 11px; border-radius: 50%; background: #c9d4df; }
+.chrome span { margin-left: 10px; flex: 1; max-width: 380px; height: 24px; border-radius: 12px; background: #fff; color: var(--soft); font-size: 12px; display: flex; align-items: center; padding: 0 12px; }
+.phone { width: 372px; padding: 9px; border-radius: 46px; background: #0f1b33; box-shadow: 0 30px 60px -24px rgba(16,36,72,.55); }
+.screen { position: relative; width: 354px; height: 740px; border-radius: 38px; overflow: hidden; background: var(--background); color: var(--foreground); font-size: 13px; line-height: 1.4; }
+.statusbar { height: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 12px; font-weight: 700; background: var(--card); }
+.statusbar svg { width: 15px; height: 15px; }
+
+/* escritorio */
+.app { position: relative; width: 1100px; height: 700px; overflow: hidden; background: var(--background); color: var(--foreground); font-size: 13px; line-height: 1.4; }
+.side { position: absolute; top: 0; bottom: 0; left: 0; width: 220px; background: #fff; border-right: 1px solid var(--border); padding: 18px 12px; }
+.brand { display: flex; align-items: center; gap: 9px; padding: 0 6px 14px; font-family: var(--display); font-weight: 800; font-size: 17px; }
+.brand img { width: 30px; height: 30px; border-radius: 8px; }
+.grp { font-size: 10.5px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .06em; padding: 12px 8px 4px; }
+.it { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 8px; border-radius: 8px; font-size: 13px; color: var(--muted-foreground); font-weight: 500; }
+.it svg { width: 16px; height: 16px; }
+.it.on { background: var(--gold-bg); color: var(--primary); font-weight: 600; }
+.mainp { position: absolute; left: 220px; right: 0; top: 0; bottom: 0; }
+.top { height: 58px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 26px; gap: 12px; }
+.top h1 { margin: 0; font-family: var(--display); font-size: 19px; font-weight: 800; }
+.top .sp { flex: 1; }
+.btn { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 13px; border-radius: 8px; font-size: 12.5px; font-weight: 600; background: var(--primary); color: #fff; }
+.btn svg { width: 15px; height: 15px; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; }
+.cont { padding: 18px 26px; }
+.bar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
+.search { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: 36px; border: 1px solid var(--border); border-radius: 8px; background: #fff; padding: 0 12px; display: flex; align-items: center; color: var(--muted-foreground); font-size: 12.5px; min-width: 0; }
+.sel { height: 34px; border: 1px solid var(--border); border-radius: 8px; background: #fff; padding: 0 10px; display: flex; align-items: center; font-size: 12px; white-space: nowrap; }
+.pillf, .sel, .vt { flex: none; }
+.pillf { height: 30px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; background: #fff; color: var(--muted-foreground); font-size: 12px; display: flex; align-items: center; white-space: nowrap; }
+.pillf.on { background: var(--gold-bg); color: var(--primary); border-color: var(--primary); }
+.vt { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.vt span { padding: 6px 8px; background: #fff; color: var(--muted-foreground); display: grid; place-items: center; }
+.vt span.on { background: var(--primary); color: #fff; }
+.vt svg { width: 16px; height: 16px; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.pc { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform .15s, border-color .15s; }
+.pc:hover { border-color: var(--primary); transform: translateY(-2px); }
+.ph { height: 140px; position: relative; display: grid; place-items: center; font-size: 40px; }
+.ph::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, transparent, rgb(15 23 42/.35)); }
+.ph .ty { position: absolute; top: 10px; left: 10px; z-index: 1; background: rgb(15 23 42/.55); color: #fff; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
+.ph .st { position: absolute; top: 10px; right: 10px; z-index: 1; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; }
+.st.dis { background: var(--green-bg); color: var(--green); } .st.apa { background: var(--gold-bg); color: var(--primary); }
+.st.con { background: var(--gold-bg); color: var(--kblue); } .st.ocu { background: #f3e8ff; color: #7e22ce; }
+.pb { padding: 13px 14px; }
+.pn { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
+.eid { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--muted-foreground); background: var(--muted); border-radius: 4px; padding: 1px 5px; }
+.eb { font-size: 9px; font-weight: 700; background: hsl(221 83% 53%/.1); color: var(--primary); padding: 1px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; }
+.eb i { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+.own { font-size: 11px; color: var(--muted-foreground); margin-top: 3px; }
+.loc { font-size: 12px; color: var(--muted-foreground); display: flex; align-items: center; gap: 4px; margin: 3px 0 9px; }
+.loc svg { width: 12px; height: 12px; }
+.price { font-family: var(--display); font-size: 20px; font-weight: 600; color: var(--primary); line-height: 1.2; }
+.price.dual { font-size: 16px; }
+.price small { font-family: var(--font); font-size: 11px; font-weight: 400; color: var(--muted-foreground); }
+.spec { display: flex; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted-foreground); align-items: center; }
+.spec span { display: flex; align-items: center; gap: 4px; } .spec svg { width: 14px; height: 14px; }
+.spec .wa { margin-left: auto; color: var(--green); }
+
+/* celular: detalle de contrato */
+.sh { display: flex; align-items: center; gap: 8px; padding: 14px 16px; background: #fff; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 15px; font-family: var(--display); }
+.sh svg { width: 19px; height: 19px; color: var(--primary); }
+.sh .x { margin-left: auto; color: var(--muted-foreground); }
+.sb { padding: 12px 14px; display: grid; gap: 11px; }
+.fol { display: flex; align-items: center; justify-content: space-between; }
+.fol .f { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 15px; font-weight: 600; }
+.badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 999px; background: var(--green-bg); color: var(--green); }
+.sec { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px 13px; }
+.sec h3 { margin: 0 0 9px; display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; }
+.sec h3 svg { width: 15px; height: 15px; color: var(--primary); }
+.fg { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 12px; }
+.fg label { display: block; font-size: 10.5px; color: var(--muted-foreground); font-weight: 500; }
+.fg b { display: block; font-size: 12.5px; font-weight: 600; margin-top: 1px; font-variant-numeric: tabular-nums; }
+.fg .calc b { color: var(--primary); }
+.sec.com { border-color: hsl(221 83% 53%/.25); background: linear-gradient(180deg, var(--gold-bg), #fff 70%); }
+@media (prefers-reduced-motion: reduce) { .pc { transition: none; } .pc:hover { transform: none; } }
+
+
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+<style>
+html, body { margin: 0 !important; padding: 0 !important; background: transparent !important; overflow: hidden; }
+.laptop { width: 1102px !important; box-shadow: none !important; }
+.phone { box-shadow: none !important; }
+.fit-outer { height: auto !important; }
+.fit-inner { transform: none !important; }
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen">
+          <div class="statusbar"><span>9:41</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path></svg></div>
+          <div class="sh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="file-text" class="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>Detalle del Contrato<span class="x"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></span></div>
+          <div class="sb">
+            <div class="fol"><span class="f"><span class="eid">CTR</span>CTR-0041</span><span class="badge">vigente</span></div>
+            <div class="sec">
+              <h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="calendar" class="lucide lucide-calendar"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>Datos del Contrato</h3>
+              <div class="fg">
+                <div><label>Tipo</label><b>Arrendamiento</b></div><div><label>Renta mensual</label><b>$24,500.00</b></div>
+                <div><label>Firma</label><b>18 dic 2025</b></div><div><label>Vigencia</label><b>1 ene 2026 → 31 dic 2026</b></div>
+                <div><label>Depósito</label><b>1 mes(es) — $24,500.00</b></div><div><label>Día de pago</label><b>5</b></div>
+                <div><label>Días de gracia</label><b>3</b></div><div><label>Incremento</label><b>inpc</b></div>
+              </div>
+            </div>
+            <div class="sec com">
+              <h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="coins" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path><path d="M7 6h1v4"></path><path d="m16.71 13.88.7.71-2.82 2.82"></path></svg>Comisiones</h3>
+              <div class="fg">
+                <div><label>% Comisión mensual</label><b>10%</b></div><div class="calc"><label>$ Comisión mensual</label><b>$2,450.00</b></div>
+                <div><label>Comisión apertura</label><b>1 mes(es)</b></div><div class="calc"><label>$ Comisión apertura</label><b>$24,500.00</b></div>
+              </div>
+            </div>
+            <div class="sec">
+              <h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="user" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Inquilino</h3>
+              <div class="fg"><div><label>Nombre</label><b>Daniela Fuentes</b></div><div><label>Propiedad</label><b>Casa Los Arrayanes</b></div></div>
+            </div>
+            <div class="sec">
+              <h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="briefcase" class="lucide lucide-briefcase"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg>Propietario</h3>
+              <div class="fg"><div><label>Nombre</label><b>Laura Mendoza</b></div><div><label>Agente asignado</label><b>Carolina Vega</b></div></div>
+            </div>
+          </div>
+        </div></div>
+</body>
+</html>

@@ -1,9 +1,8 @@
-import { useEffect, useState, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import type { Lang, Strings } from "../data/i18n";
 import type { Project } from "../data/projects";
-import { prefersReducedMotion } from "../hooks/motion";
 import { useReveal } from "../hooks/useReveal";
-import { Illustration } from "./Illustration";
+import { Mock } from "./Mock";
 
 interface Props {
   project: Project;
@@ -17,17 +16,7 @@ interface Props {
 export function ProjectCard({ project, lang, t, index, leaving, hidden }: Props) {
   const copy = project.copy[lang];
   const { ref, shown } = useReveal<HTMLAnchorElement>();
-  const [intro, setIntro] = useState(false);
-
-  // Al aparecer en pantalla la ilustracion se anima una vez (en celular no hay hover).
-  useEffect(() => {
-    if (!shown || prefersReducedMotion()) return;
-    setIntro(true);
-    const id = window.setTimeout(() => setIntro(false), 1800);
-    return () => window.clearTimeout(id);
-  }, [shown]);
-
-  const cls = ["card", "reveal", shown ? "is-in" : "", intro ? "intro" : "", leaving ? "leaving" : ""]
+  const cls = ["card", "reveal", shown ? "is-in" : "", leaving ? "leaving" : ""]
     .filter(Boolean)
     .join(" ");
 
@@ -42,9 +31,8 @@ export function ProjectCard({ project, lang, t, index, leaving, hidden }: Props)
       hidden={hidden}
     >
       <div className="shot">
-        <div className="win">
-          <Illustration id={project.id} />
-        </div>
+        <Mock project={project} />
+        <span className="fict">{t.fictional}</span>
       </div>
       <div className="body">
         <div className="row">

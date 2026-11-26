@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { Illustration } from "./components/Illustration";
+import { ScreenFrame } from "./components/ScreenFrame";
+import { desktopScreen } from "./data/projects";
 import { Method } from "./components/Method";
 import { Nav, SECTION_IDS } from "./components/Nav";
 import { ProjectsSection } from "./components/ProjectsSection";
@@ -65,13 +66,13 @@ export default function App() {
             </div>
             <div className="stack" aria-hidden="true">
               <div className="win w1" style={{ "--d": "250ms" } as React.CSSProperties}>
-                <Illustration id="kasanode" />
+                <ScreenFrame screen={desktopScreen("kasanode")} label="KasaNode" eager />
               </div>
               <div className="win w2" style={{ "--d": "380ms" } as React.CSSProperties}>
-                <Illustration id="stabily" />
+                <ScreenFrame screen={desktopScreen("stabily")} label="Stabily" eager />
               </div>
               <div className="win w3" style={{ "--d": "510ms" } as React.CSSProperties}>
-                <Illustration id="ahinosvemos" />
+                <ScreenFrame screen={desktopScreen("kondonode")} label="KondoNode" eager />
               </div>
             </div>
           </div>

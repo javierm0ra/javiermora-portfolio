@@ -21,6 +21,15 @@ npm run build   # tsc + vite build, salida en dist/
 
 Los textos generales (titular, pasos de "Como trabajo", contacto) viven en `src/data/i18n.ts`.
 
+## Pantallas simuladas de las apps
+
+Las tarjetas y el encabezado muestran pantallas de las apps reconstruidas con sus colores, tipografia y textos reales, pero con **datos ficticios** (nunca capturas de produccion).
+
+- Fuentes: `screens-src/<app>.html` (una pagina por app con sus dispositivos).
+- Resultado: `public/screens/*.html` (documentos estaticos, sin scripts) y `src/data/screens.json` (medidas).
+- Se regeneran con `node scripts/render-screens.mjs` (instrucciones al inicio del script; no agrega dependencias al proyecto).
+- El sitio las muestra con `src/components/ScreenFrame.tsx` y `Mock.tsx`.
+
 ## Despliegue en Cloudflare Pages
 
 | Campo | Valor |
