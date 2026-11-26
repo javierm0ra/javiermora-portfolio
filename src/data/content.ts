@@ -9,8 +9,8 @@ export const DEFAULT_EMAIL = "javiermoramx@gmail.com";
 export const DEFAULT_GITHUB = "https://github.com/javierm0ra";
 
 const DESCRIPTION: Record<Lang, string> = {
-  es: "Javier Mora, product owner que construye productos de software con IA. Stabily, KasaNode, KondoNode, Parilink, Medicatio y Ahí Nos Vemos.",
-  en: "Javier Mora, product owner who ships software products with AI. Stabily, KasaNode, KondoNode, Parilink, Medicatio and Ahí Nos Vemos.",
+  es: "Product owner fintech con más de 13 años en plataformas de crédito. Seis productos construidos con IA para México.",
+  en: "Fintech product owner with 13+ years in lending platforms. Six products built with AI for Mexico.",
 };
 
 /** Iconos que ya vienen con el sitio (public/icons). */

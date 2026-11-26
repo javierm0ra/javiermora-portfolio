@@ -508,14 +508,15 @@ export default function Editor() {
                 c.sections.ctText = base.sections.ctText;
                 c.experience = base.experience;
                 c.years = base.years;
+                c.seo.description = base.seo.description;
               });
               setLoadedNote(`Listo: se cargaron en el borrador los textos de ${base.projects.length} proyectos, Sobre mí, portada, Trayectoria y Contacto (aún sin guardar). Ahora toca «Guardar borrador» y luego «Publicar».`);
-              setMsg({ kind: "ok", text: `Se cargaron los textos y etiquetas de ${n} proyectos, Sobre mí, la portada, Trayectoria y el texto de Contacto. Tus imágenes e íconos no cambian. Guarda el borrador y publica para verlo en el sitio.` });
+              setMsg({ kind: "ok", text: `Se cargaron los textos y etiquetas de ${n} proyectos, Sobre mí, la portada, Trayectoria, el texto de Contacto y la descripción para buscadores. Tus imágenes e íconos no cambian. Guarda el borrador y publica para verlo en el sitio.` });
             }}
           />
         </div>
         {loadedNote && <p className="msg ok">{loadedNote}</p>}
-        <p className="ed-note">Reemplaza por los que vienen con el sitio: descripción, «lo que definí» y etiquetas de los proyectos originales; título, rol y texto de Sobre mí; etiqueta y subtítulo de la portada; Trayectoria y años de experiencia; y la frase de Contacto. No toca imágenes, fotos, íconos, enlaces, orden ni lo que tengas oculto o apagado.</p>
+        <p className="ed-note">Reemplaza por los que vienen con el sitio: descripción, «lo que definí» y etiquetas de los proyectos originales; título, rol y texto de Sobre mí; etiqueta y subtítulo de la portada; Trayectoria y años de experiencia; la frase de Contacto; y la descripción para buscadores. No toca imágenes, fotos, íconos, enlaces, orden ni lo que tengas oculto o apagado.</p>
         <button
           type="button"
           className="btn-s add"
