@@ -99,3 +99,33 @@ test("Sobre mi: solo LinkedIn con https y fotos propias del sitio", () => {
   d.projects[0]!.icon = "/api/img/0123456789abcdef01234567";
   assert.equal(validateContent(d).ok, true);
 });
+
+test("un documento viejo sin Trayectoria ni anos se acepta con los de origen", () => {
+  const c = base() as unknown as Record<string, unknown>;
+  delete c.experience;
+  delete c.years;
+  const r = validateContent(c);
+  assert.equal(r.ok, true);
+  if (r.ok) {
+    assert.equal(r.value.years, 13);
+    assert.equal(r.value.experience.points.length, 5);
+  }
+});
+
+test("Trayectoria y anos: limites y formato", () => {
+  const a = base() as unknown as Record<string, unknown>;
+  a.years = 12.5;
+  assert.equal(validateContent(a).ok, false);
+  const b = base() as unknown as Record<string, unknown>;
+  b.years = 61;
+  assert.equal(validateContent(b).ok, false);
+  const c = base() as unknown as Record<string, unknown>;
+  c.experience = { title: l("T"), intro: l("I"), points: [] };
+  assert.equal(validateContent(c).ok, false);
+  const d = base() as unknown as Record<string, unknown>;
+  d.years = 15;
+  d.experience = { title: l("T"), intro: l("I"), points: [l("Uno"), l("Dos")] };
+  const r = validateContent(d);
+  assert.equal(r.ok, true);
+  if (r.ok) assert.equal(r.value.experience.points.length, 2);
+});

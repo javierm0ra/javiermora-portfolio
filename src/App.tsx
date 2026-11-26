@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ScreenFrame } from "./components/ScreenFrame";
 import { desktopScreen } from "./data/projects";
 import { useSite } from "./data/SiteContext";
+import { Experience } from "./components/Experience";
 import { Method } from "./components/Method";
 import { Nav, SECTION_IDS } from "./components/Nav";
 import { ProjectsSection } from "./components/ProjectsSection";
@@ -42,7 +43,7 @@ export default function App() {
       <div className="progress" aria-hidden="true">
         <span ref={barRef} />
       </div>
-      <Nav lang={lang} t={t} setLang={setLang} active={active} scrolled={scrolled} aboutLabel={content.about.enabled ? content.about.title[lang] : undefined} />
+      <Nav lang={lang} t={t} setLang={setLang} active={active} scrolled={scrolled} aboutLabel={content.about.enabled ? content.about.title[lang] : undefined} expLabel={content.experience.title[lang]} />
 
       <div className="heroBand gut" id="top" ref={heroRef}>
         <div className="wrap">
@@ -97,7 +98,14 @@ export default function App() {
       <main>
         <div className="gut">
           <div className="wrap">
-            <Stats t={t} />
+            <Stats t={t} lang={lang} />
+          </div>
+        </div>
+
+        <Experience lang={lang} />
+
+        <div className="gut">
+          <div className="wrap">
             <ProjectsSection lang={lang} t={t} />
           </div>
         </div>

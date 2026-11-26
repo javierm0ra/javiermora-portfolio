@@ -1,4 +1,4 @@
-import { DEFAULT_ABOUT, type Content, type ContentProject } from "../../shared/content";
+import { DEFAULT_ABOUT, DEFAULT_EXPERIENCE, DEFAULT_YEARS, type Content, type ContentProject } from "../../shared/content";
 import { STRINGS, type Lang, type Strings } from "./i18n";
 import { PROJECTS, type Project, type Screen } from "./projects";
 import screensManifest from "./screens.json";
@@ -58,6 +58,8 @@ export function defaultContent(): Content {
       }),
     ),
     about: structuredClone(DEFAULT_ABOUT),
+    experience: structuredClone(DEFAULT_EXPERIENCE),
+    years: DEFAULT_YEARS,
     contact: { email: DEFAULT_EMAIL, github: DEFAULT_GITHUB },
     seo: { title: both((s) => s.docTitle), description: DESCRIPTION },
   };

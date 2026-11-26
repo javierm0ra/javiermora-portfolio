@@ -28,15 +28,15 @@ export interface Strings {
   navLabel: string;
   filterLabel: string;
   filters: Record<Filter, string>;
-  stats: { products: string; sectors: string; tech: string };
+  stats: { years: string; products: string; sectors: string };
 }
 
 export const STRINGS: Record<Lang, Strings> = {
   es: {
     docTitle: "Javier Mora · Product owner",
-    eyebrow: "Product owner · Guadalajara, México",
+    eyebrow: "Product owner · Fintech · Guadalajara, México",
     h1: { before: "Product owner que construye productos de ", em: "software con IA", after: "." },
-    lede: "Defino el producto, las reglas de negocio y la arquitectura. Construyo y lanzo con herramientas de IA, y audito cada cambio.",
+    lede: "Más de 13 años en plataformas de crédito para SOFOMES y fintechs. Defino el producto y las reglas de negocio, construyo con herramientas de IA y audito cada cambio.",
     cta1: "Ver proyectos",
     cta2: "Contacto",
     projTitle: "Proyectos",
@@ -53,7 +53,7 @@ export const STRINGS: Record<Lang, Strings> = {
       { title: "Verificar", text: "Reviso el diff completo, corro build y pruebas, y limpio los datos afectados." },
     ],
     ctTitle: "Hablemos",
-    ctText: "Si tienes un producto por definir o quieres ver cómo trabajo, escríbeme.",
+    ctText: "¿Quieres platicar de producto, crédito o IA aplicada? Escríbeme.",
     copy: "Copiar correo",
     copied: "Copiado",
     foot: "Javier Mora. Todos los derechos reservados.",
@@ -63,13 +63,13 @@ export const STRINGS: Record<Lang, Strings> = {
     navLabel: "Secciones",
     filterLabel: "Filtrar proyectos por sector",
     filters: { all: "Todos", finance: "Finanzas", realestate: "Inmuebles", health: "Salud", events: "Eventos" },
-    stats: { products: "Productos", sectors: "Sectores", tech: "Tecnologías" },
+    stats: { years: "Años de experiencia", products: "Productos propios", sectors: "Sectores" },
   },
   en: {
     docTitle: "Javier Mora · Product owner",
-    eyebrow: "Product owner · Guadalajara, Mexico",
+    eyebrow: "Product owner · Fintech · Guadalajara, Mexico",
     h1: { before: "Product owner who ships ", em: "software with AI", after: "." },
-    lede: "I define the product, business rules and architecture. I build and ship with AI tools, and audit every change.",
+    lede: "13+ years in lending platforms for Mexican non-bank lenders (SOFOMES) and fintechs. I define the product and its business rules, build with AI tools and audit every change.",
     cta1: "See projects",
     cta2: "Contact",
     projTitle: "Projects",
@@ -86,7 +86,7 @@ export const STRINGS: Record<Lang, Strings> = {
       { title: "Verify", text: "I review the full diff, run build and tests, and clean up affected data." },
     ],
     ctTitle: "Let's talk",
-    ctText: "If you have a product to define or want to see how I work, write to me.",
+    ctText: "Want to talk product, lending or applied AI? Drop me a line.",
     copy: "Copy email",
     copied: "Copied",
     foot: "Javier Mora. All rights reserved.",
@@ -96,6 +96,6 @@ export const STRINGS: Record<Lang, Strings> = {
     navLabel: "Sections",
     filterLabel: "Filter projects by sector",
     filters: { all: "All", finance: "Finance", realestate: "Real estate", health: "Health", events: "Events" },
-    stats: { products: "Products", sectors: "Sectors", tech: "Technologies" },
+    stats: { years: "Years of experience", products: "Products built", sectors: "Industries" },
   },
 };

@@ -42,8 +42,8 @@ export const DEFAULT_ABOUT: ContentAbout = {
   title: { es: "Sobre mí", en: "About me" },
   role: { es: "Product Owner · Guadalajara, México", en: "Product Owner · Guadalajara, Mexico" },
   text: {
-    es: "Soy Product Owner en Guadalajara, México. Mi trabajo empieza con el problema, no con la solución: lo entiendo a fondo, lo convierto en reglas de negocio claras, planeo el alcance y lo apruebo. Después dirijo la construcción con herramientas de IA y verifico cada entrega: reviso los cambios, pido pruebas, confirmo que todo compile y que los datos queden bien antes de publicar.\n\nAsí he llevado a producción seis productos de software: Stabily (finanzas personales), KasaNode (administración inmobiliaria), KondoNode (condominios), Parilink (invitaciones digitales), Medicatio (clínicas médicas) y Ahí Nos Vemos (puntos de reunión). Cada uno tiene sus propias reglas, como contratos y comisiones, cuotas y fondos, presupuestos por quincena o consentimientos médicos, y mi tarea es dejarlas escritas, coherentes y comprobables.\n\nMe importa que cada producto sea claro para quien lo usa, que cuide la privacidad de sus datos y que cada decisión de negocio quede documentada. Trabajo en español de México y mis productos también hablan así.",
-    en: "I'm a Product Owner in Guadalajara, Mexico. My work starts with the problem, not the solution: I understand it in depth, turn it into clear business rules, plan the scope and approve it. Then I direct the build with AI tools and verify every delivery: I review the changes, require tests, confirm everything builds and that the data is right before shipping.\n\nThat is how I've taken six software products to production: Stabily (personal finance), KasaNode (real estate management), KondoNode (condominiums), Parilink (digital invitations), Medicatio (medical clinics) and Ahí Nos Vemos (meeting points). Each has its own rules, such as contracts and commissions, fees and funds, biweekly budgets or medical consents, and my job is to keep them written down, consistent and verifiable.\n\nI care that each product is clear to the people using it, respects their data privacy, and that every business decision is documented. I work in Mexican Spanish and my products speak it too.",
+    es: "Soy Product Owner en Guadalajara, México, con más de 13 años en plataformas de crédito para SOFOMES y fintechs. Mi trabajo empieza con el problema, no con la solución: lo entiendo a fondo, lo convierto en reglas de negocio claras, planeo el alcance y lo apruebo. Después dirijo la construcción con herramientas de IA y verifico cada entrega: reviso los cambios, pido pruebas, confirmo que todo compile y que los datos queden bien antes de publicar.\n\nAsí he llevado a producción seis productos de software: Stabily (finanzas personales), KasaNode (administración inmobiliaria), KondoNode (condominios), Parilink (invitaciones digitales), Medicatio (clínicas médicas) y Ahí Nos Vemos (puntos de reunión). Cada uno tiene sus propias reglas, como contratos y comisiones, cuotas y fondos, presupuestos por quincena o consentimientos médicos, y mi tarea es dejarlas escritas, coherentes y comprobables.\n\nMe importa que cada producto sea claro para quien lo usa, que cuide la privacidad de sus datos y que cada decisión de negocio quede documentada. Trabajo en español de México y mis productos también hablan así.",
+    en: "I'm a Product Owner based in Guadalajara, Mexico, with 13+ years in lending platforms for SOFOMES and fintechs. My work starts with the problem, not the solution: I understand it in depth, turn it into clear business rules, plan the scope and approve it. Then I direct the build with AI tools and verify every delivery: I review the changes, require tests, confirm everything builds and that the data is right before shipping.\n\nThat is how I've taken six software products to production: Stabily (personal finance), KasaNode (real estate management), KondoNode (condominiums), Parilink (digital invitations), Medicatio (medical clinics) and Ahí Nos Vemos (meeting points). Each has its own rules, such as contracts and commissions, fees and funds, biweekly budgets or medical consents, and my job is to keep them written down, consistent and verifiable.\n\nI care that each product is clear to the people using it, respects their data privacy, and that every business decision is documented. I work in Mexican Spanish and my products speak it too.",
   },
   photo: null,
   linkedin: "https://www.linkedin.com/in/javiermoramx/",
@@ -54,6 +54,29 @@ export interface ContentStep {
   text: L2;
 }
 
+export interface ContentExperience {
+  title: L2;
+  intro: L2;
+  points: L2[];
+}
+
+export const DEFAULT_EXPERIENCE: ContentExperience = {
+  title: { es: "Trayectoria", en: "Experience" },
+  intro: {
+    es: "En Zell llevo más de 13 años construyendo y llevando a producción plataformas de crédito para SOFOMES y fintechs en México. Mi trabajo une a desarrollo, operaciones, contabilidad y cumplimiento alrededor de un mismo producto, desde definir los requerimientos de cada cliente hasta verlo operando en producción.",
+    en: "At Zell, I've spent 13+ years building and shipping lending platforms for Mexican non-bank lenders (SOFOMES) and fintechs. My work brings development, operations, accounting and compliance together around a single product, from defining each client's requirements to seeing it run in production.",
+  },
+  points: [
+    { es: "Crédito simple, líneas estructuradas, arrendamiento, factoraje y créditos de segundo piso.", en: "Term loans, structured credit lines, leasing, factoring and second-tier lending." },
+    { es: "Implementación de la plataforma en cerca de 12 SOFOMES, desde el levantamiento de requerimientos hasta la salida a producción.", en: "Platform rollouts at about 12 SOFOMES, from requirements gathering to go-live." },
+    { es: "Acompañamiento en al menos 6 auditorías de PLD/FT.", en: "Supported at least 6 AML/CFT (PLD/FT) audits." },
+    { es: "Integraciones con SPEI/STP, servicios web SOAP y Buró de Crédito.", en: "SPEI/STP, SOAP web services and credit bureau (Buró de Crédito) integrations." },
+    { es: "Backlog, user stories y cotizaciones técnicas; coordinación entre desarrollo, operaciones, contabilidad y cumplimiento.", en: "Backlog, user stories and technical estimates; coordinating development, operations, accounting and compliance teams." },
+  ],
+};
+
+export const DEFAULT_YEARS = 13;
+
 export interface Content {
   v: 1;
   hero: { eyebrow: L2; h1Before: L2; h1Em: L2; h1After: L2; lede: L2 };
@@ -62,6 +85,9 @@ export interface Content {
   steps: ContentStep[];
   projects: ContentProject[];
   about: ContentAbout;
+  experience: ContentExperience;
+  /** Anos de experiencia que muestra la tira de cifras. */
+  years: number;
   contact: { email: string; github: string };
   seo: { title: L2; description: L2 };
 }
@@ -72,6 +98,7 @@ export const LIMITS = {
   maxImageBytes: 450_000,
   maxProjects: 24,
   maxSteps: 8,
+  maxPoints: 8,
   maxTags: 12,
 } as const;
 
@@ -186,6 +213,23 @@ export function validateContent(input: unknown): Validation {
         }
       : DEFAULT_ABOUT;
 
+    const ex = c.experience === undefined ? null : obj(c.experience, "experience");
+    let experience: ContentExperience = DEFAULT_EXPERIENCE;
+    if (ex) {
+      if (!Array.isArray(ex.points) || ex.points.length < 1 || ex.points.length > LIMITS.maxPoints)
+        fail("experience.points", `debe tener de 1 a ${LIMITS.maxPoints} puntos`);
+      experience = {
+        title: l2(ex.title, "experience.title", 80, 1),
+        intro: l2(ex.intro, "experience.intro", 600, 1),
+        points: ex.points.map((raw, i) => l2(raw, `experience.points[${i}]`, 300, 1)),
+      };
+    }
+    let years = DEFAULT_YEARS;
+    if (c.years !== undefined) {
+      if (typeof c.years !== "number" || !Number.isInteger(c.years) || c.years < 0 || c.years > 60) fail("years", "debe ser un numero entero de 0 a 60");
+      years = c.years;
+    }
+
     const email = str(contact.email, "contact.email", 120, 3);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fail("contact.email", "no es un correo valido");
 
@@ -213,6 +257,8 @@ export function validateContent(input: unknown): Validation {
       }),
       projects,
       about,
+      experience,
+      years,
       contact: { email, github: httpsUrl(contact.github, "contact.github") },
       seo: { title: l2(seo.title, "seo.title", 70, 1), description: l2(seo.description, "seo.description", 200, 1) },
     };
