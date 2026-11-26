@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Lang, Strings } from "../data/i18n";
 import type { Project } from "../data/projects";
 import { useReveal } from "../hooks/useReveal";
+import { track } from "../lib/track";
 import { Mock } from "./Mock";
 
 interface Props {
@@ -29,6 +30,7 @@ export function ProjectCard({ project, lang, t, index, leaving, hidden }: Props)
       target="_blank"
       rel="noopener noreferrer"
       hidden={hidden}
+      onClick={() => track("project_click", project.id)}
     >
       <div className="shot">
         <Mock project={project} />
