@@ -160,8 +160,8 @@ function ProjectEditor({ project: p, index, total, busy, onChange, onMove, onDel
         <Field
           label="Etiquetas"
           value={p.tags.join(", ")}
-          hint="Separadas por comas (máximo 8)"
-          onChange={(v) => onChange({ ...p, tags: v.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 8) })}
+          hint="Separadas por comas (máximo 12)"
+          onChange={(v) => onChange({ ...p, tags: v.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 12) })}
         />
       </div>
       <L2Field label="Descripción" value={p.desc} max={700} multiline rows={6} onChange={(desc) => onChange({ ...p, desc })} />
@@ -474,7 +474,7 @@ export default function Editor() {
         <L2Field label="Título" value={draft.about.title} max={80} onChange={(v) => edit((c) => void (c.about.title = v))} />
         <L2Field label="Rol y ciudad" value={draft.about.role} max={120} onChange={(v) => edit((c) => void (c.about.role = v))} />
         <L2Field label="Texto" value={draft.about.text} max={700} multiline rows={4} onChange={(v) => edit((c) => void (c.about.text = v))} />
-        <Field label="Enlace de LinkedIn" value={draft.about.linkedin} max={300} hint="Opcional. Debe empezar con https://www.linkedin.com/" onChange={(v) => edit((c) => void (c.about.linkedin = v))} />
+        <Field label="Enlace de LinkedIn" value={draft.about.linkedin} max={300} hint="Aparece aquí y también junto a tu correo en Contacto, aunque esta sección esté apagada. Debe empezar con https://www.linkedin.com/" onChange={(v) => edit((c) => void (c.about.linkedin = v))} />
         <div className="img-ed">
           <strong>Foto</strong>
           {draft.about.photo ? <img src={draft.about.photo} alt="Tu foto" /> : <p className="ed-note">Sin foto: se muestran tus iniciales (JM). Se recorta en cuadrado; usa una donde se vea bien tu cara.</p>}

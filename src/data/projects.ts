@@ -36,7 +36,7 @@ export const PROJECTS: Project[] = [
     url: "https://stabily.app",
     status: "prod",
     category: "finance",
-    tags: ["React", "TypeScript", "Supabase", "Tailwind"],
+    tags: ["React", "TypeScript", "Supabase", "Tailwind", "Stripe", "API de Banxico", "Web Push"],
     screens: SCREENS.stabily,
     image: null,
     copy: {
@@ -56,7 +56,7 @@ export const PROJECTS: Project[] = [
     url: "https://kasanode.app",
     status: "prod",
     category: "realestate",
-    tags: ["React", "Supabase", "WhatsApp API", "EasyBroker"],
+    tags: ["React", "Supabase", "WhatsApp Business API", "EasyBroker", "Google Maps", "Google Calendar y Drive", "API de Banxico (INPC)", "Stripe y Conekta", "Resend"],
     screens: SCREENS.kasanode,
     image: null,
     copy: {
@@ -76,7 +76,7 @@ export const PROJECTS: Project[] = [
     url: "https://kondonode.app",
     status: "prod",
     category: "realestate",
-    tags: ["TanStack Start", "Supabase", "Tailwind"],
+    tags: ["TanStack Start", "Supabase", "Tailwind", "Web Push", "Códigos QR", "Exportación a Excel"],
     screens: SCREENS.kondonode,
     image: null,
     copy: {
@@ -96,7 +96,7 @@ export const PROJECTS: Project[] = [
     url: "https://parilink.app",
     status: "prod",
     category: "events",
-    tags: ["TanStack Start", "Stripe", "Supabase", "Cloudflare"],
+    tags: ["TanStack Start", "Stripe", "Supabase", "Cloudflare", "Google Maps", "Códigos QR"],
     screens: SCREENS.parilink,
     image: null,
     copy: {
@@ -116,7 +116,7 @@ export const PROJECTS: Project[] = [
     url: "https://medicatio.app",
     status: "prod",
     category: "health",
-    tags: ["React", "Supabase", "Tailwind", "shadcn/ui"],
+    tags: ["React", "Supabase", "Tailwind", "shadcn/ui", "WhatsApp Business API", "Stripe", "Google Calendar y Outlook", "Mifiel y DocuSign", "Resend", "Web Push"],
     screens: SCREENS.medicatio,
     image: null,
     copy: {
@@ -136,7 +136,7 @@ export const PROJECTS: Project[] = [
     url: "https://ahinosvemos.pages.dev",
     status: "prod",
     category: "events",
-    tags: ["React", "Supabase", "Leaflet", "Cloudflare"],
+    tags: ["React", "Supabase", "Leaflet", "Cloudflare", "OpenRouteService", "OpenStreetMap (Overpass)", "Cloudflare Turnstile"],
     screens: SCREENS.ahinosvemos,
     image: null,
     copy: {
