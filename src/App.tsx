@@ -147,6 +147,11 @@ export default function App() {
                     <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")}>
                       {GITHUB.replace(/^https:\/\//, "")} ↗
                     </a>
+                    {content.about.linkedin && (
+                      <a className="link" href={content.about.linkedin} target="_blank" rel="noopener noreferrer" onClick={() => track("linkedin_click")}>
+                        LinkedIn ↗
+                      </a>
+                    )}
                   </div>
                 </div>
               </section>

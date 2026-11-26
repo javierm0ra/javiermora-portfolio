@@ -46,7 +46,7 @@ export const DEFAULT_ABOUT: ContentAbout = {
     en: "I define the product, plan and approve; I build with AI and verify every delivery.",
   },
   photo: null,
-  linkedin: "",
+  linkedin: "https://www.linkedin.com/in/javiermoramx/",
 };
 
 export interface ContentStep {
@@ -72,7 +72,7 @@ export const LIMITS = {
   maxImageBytes: 450_000,
   maxProjects: 24,
   maxSteps: 8,
-  maxTags: 8,
+  maxTags: 12,
 } as const;
 
 export const IMAGE_URL = /^\/api\/img\/[a-f0-9]{24}$/;
