@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScreenFrame } from "./components/ScreenFrame";
 import { desktopScreen } from "./data/projects";
 import { Method } from "./components/Method";
@@ -10,6 +10,7 @@ import { useActiveSection } from "./hooks/useActiveSection";
 import { useHeroParallax } from "./hooks/useHeroParallax";
 import { useLang } from "./hooks/useLang";
 import { useScrollChrome } from "./hooks/useScrollChrome";
+import { track, trackView } from "./lib/track";
 
 const EMAIL = "javiermoramx@gmail.com";
 const GITHUB = "https://github.com/javierm0ra";
@@ -22,10 +23,12 @@ export default function App() {
   const scrolled = useScrollChrome(barRef);
   const active = useActiveSection(SECTION_IDS);
   useHeroParallax(heroRef);
+  useEffect(() => trackView(), []);
 
   async function copyEmail() {
     try {
       await navigator.clipboard.writeText(EMAIL);
+      track("contact_copy");
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -98,14 +101,14 @@ export default function App() {
                   <p>{t.ctText}</p>
                 </div>
                 <div className="contact-links">
-                  <a className="mail" href={`mailto:${EMAIL}`}>
+                  <a className="mail" href={`mailto:${EMAIL}`} onClick={() => track("contact_mail")}>
                     {EMAIL}
                   </a>
                   <div className="contact-actions">
                     <button type="button" className="copy" onClick={copyEmail}>
                       {copied ? t.copied : t.copy}
                     </button>
-                    <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer">
+                    <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")}>
                       github.com/javierm0ra ↗
                     </a>
                   </div>
@@ -114,6 +117,7 @@ export default function App() {
             </Reveal>
             <footer>
               © {new Date().getFullYear()} {t.foot}
+              <span className="privacy">{t.privacy}</span>
             </footer>
           </div>
         </div>

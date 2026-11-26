@@ -24,6 +24,7 @@ export interface Strings {
   foot: string;
   langLabel: string;
   fictional: string;
+  privacy: string;
   navLabel: string;
   filterLabel: string;
   filters: Record<Filter, string>;
@@ -58,6 +59,7 @@ export const STRINGS: Record<Lang, Strings> = {
     foot: "Javier Mora. Todos los derechos reservados.",
     langLabel: "Idioma",
     fictional: "Datos ficticios",
+    privacy: "Este sitio cuenta visitas sin cookies ni datos personales.",
     navLabel: "Secciones",
     filterLabel: "Filtrar proyectos por sector",
     filters: { all: "Todos", finance: "Finanzas", realestate: "Inmuebles", health: "Salud", events: "Eventos" },
@@ -90,6 +92,7 @@ export const STRINGS: Record<Lang, Strings> = {
     foot: "Javier Mora. All rights reserved.",
     langLabel: "Language",
     fictional: "Sample data",
+    privacy: "This site counts visits without cookies or personal data.",
     navLabel: "Sections",
     filterLabel: "Filter projects by sector",
     filters: { all: "All", finance: "Finance", realestate: "Real estate", health: "Health", events: "Events" },

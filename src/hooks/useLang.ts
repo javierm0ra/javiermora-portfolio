@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { STRINGS, type Lang, type Strings } from "../data/i18n";
+import { track } from "../lib/track";
 
 const KEY = "lang";
 
@@ -23,6 +24,7 @@ export function useLang(): { lang: Lang; t: Strings; setLang: (l: Lang) => void 
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
+    track("lang", l);
     try {
       localStorage.setItem(KEY, l);
     } catch {
