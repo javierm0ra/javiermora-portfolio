@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { CATEGORY_IDS, EDU_KINDS, EDU_WEIGHTS, validateContent, type CategoryId, type Content, type ContentProject, type EducationItem, type EduKind, type EduWeight, type L2, type LayoutId } from "../../shared/content";
+import { CATEGORY_IDS, EDU_KINDS, EDU_WEIGHTS, EXPERTISE_LEVELS, validateContent, type CategoryId, type Content, type ContentProject, type EducationItem, type EduKind, type EduWeight, type ExpertiseArea, type ExpertiseLevel, type ExpertiseSub, type L2, type LayoutId } from "../../shared/content";
 import { defaultContent } from "../data/content";
 import { STRINGS } from "../data/i18n";
 import { explain, getJson, sendJson, uploadImage } from "./api";
@@ -25,6 +25,7 @@ const TAB_NAME: Record<TabId, string> = {
   portada: "Portada",
   trayectoria: "Trayectoria",
   proyectos: "Proyectos",
+  expertise: "Expertise",
   formacion: "Formación",
   como: "Cómo trabajo",
   sobre: "Sobre mí",
@@ -32,7 +33,7 @@ const TAB_NAME: Record<TabId, string> = {
   buscadores: "Buscadores",
 };
 // Altura aproximada de cada seccion en la vista previa del orden (solo es un dibujo).
-const MINI_H: Record<LayoutId, number> = { trayectoria: 24, proyectos: 34, formacion: 26, como: 22, sobre: 24, contacto: 22 };
+const MINI_H: Record<LayoutId, number> = { trayectoria: 24, proyectos: 34, expertise: 30, formacion: 26, como: 22, sobre: 24, contacto: 22 };
 const KIND_LABEL: Record<EduKind, string> = { lic: "Licenciatura", mae: "Maestría", pos: "Posgrado o especialidad", dip: "Diplomado", cur: "Curso" };
 const WEIGHT_LABEL: Record<EduWeight, string> = { alto: "Alto", normal: "Normal", bajo: "Discreto" };
 const TAB_KEY = "ed-tab";
@@ -110,6 +111,124 @@ function Panel({ title, note, children }: { title: string; note?: string; childr
       {note && <p className="ed-note">{note}</p>}
       <div className="ed-body">{children}</div>
     </section>
+  );
+}
+
+const LEVEL_LABEL: Record<ExpertiseLevel, string> = { d: "Uso diario", e: "Con experiencia", s: "Estudiado" };
+/** Colores sugeridos para los nodos (se ven bien sobre el fondo azul oscuro de la red). */
+const NODE_COLORS = ["#568cff", "#3abeeb", "#46c8a0", "#7ad36b", "#e8c547", "#f7a046", "#f0627a", "#9678f0", "#d58bf0", "#ffffff"];
+
+function ColorPick({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
+  const id = useId();
+  return (
+    <div className="field">
+      <label htmlFor={id}>Color del nodo</label>
+      <div className="swatches" role="group" aria-label="Colores sugeridos">
+        {NODE_COLORS.map((c) => (
+          <button key={c} type="button" className={`sw${c === value ? " on" : ""}`} style={{ background: c }} aria-label={`Usar ${c}`} aria-pressed={c === value} onClick={() => onChange(c)} />
+        ))}
+        <input id={id} type="color" value={value} aria-label="Elegir otro color" onChange={(e) => onChange(e.target.value.toLowerCase())} />
+      </div>
+      <small>Elige uno sugerido o cualquier otro con el selector. Se muestra como {value}.</small>
+    </div>
+  );
+}
+
+const SUB_TYPES: { value: ExpertiseLevel | "g"; label: string }[] = [
+  ...EXPERTISE_LEVELS.map((l) => ({ value: l, label: LEVEL_LABEL[l] })),
+  { value: "g", label: "Grupo (agrupa varias subáreas)" },
+];
+
+function SubBody({ sub, onChange }: { sub: ExpertiseSub; onChange: (s: ExpertiseSub) => void }) {
+  const type = useId();
+  const kids = sub.children;
+  return (
+    <div className="proj-body">
+      <L2Field label="Nombre" value={sub.name} max={60} onChange={(name) => onChange({ ...sub, name })} />
+      <div className="field">
+        <label htmlFor={type}>Nivel</label>
+        <select
+          id={type}
+          value={kids ? "g" : sub.level}
+          onChange={(e) => {
+            const v = e.target.value;
+            if (v === "g") onChange({ ...sub, children: kids ?? [{ name: { es: "Nuevo elemento", en: "New item" }, level: "s" }] });
+            else onChange({ name: sub.name, level: v as ExpertiseLevel });
+          }}
+        >
+          {SUB_TYPES.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+        <small>Un grupo se abre al tocarlo y muestra sus elementos (por ejemplo, «Lenguajes estudiados»).</small>
+      </div>
+      {kids && (
+        <>
+          <h4 className="sub-h">Elementos del grupo</h4>
+          <SortableList
+            label={`Elementos de ${sub.name.es}`}
+            rows={kids.map((k, i) => ({
+              title: k.name.es.trim() || "Sin nombre",
+              meta: LEVEL_LABEL[k.level],
+              body: (
+                <div className="proj-body">
+                  <L2Field label="Nombre" value={k.name} max={60} onChange={(name) => onChange({ ...sub, children: kids.map((x, j) => (j === i ? { ...x, name } : x)) })} />
+                  <div className="field">
+                    <span className="lab">Nivel</span>
+                    <select aria-label="Nivel" value={k.level} onChange={(e) => onChange({ ...sub, children: kids.map((x, j) => (j === i ? { ...x, level: e.target.value as ExpertiseLevel } : x)) })}>
+                      {EXPERTISE_LEVELS.map((l) => (
+                        <option key={l} value={l}>
+                          {LEVEL_LABEL[l]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              ),
+              onRemove: kids.length > 1 ? () => onChange({ ...sub, children: kids.filter((_, j) => j !== i) }) : undefined,
+            }))}
+            onMove={(from, to) => {
+              const next = [...kids];
+              arrMove(next, from, to);
+              onChange({ ...sub, children: next });
+            }}
+            addLabel="Agregar elemento"
+            addDisabled={kids.length >= 24}
+            onAdd={() => onChange({ ...sub, children: [...kids, { name: { es: "Nuevo elemento", en: "New item" }, level: "s" }] })}
+          />
+        </>
+      )}
+    </div>
+  );
+}
+
+function AreaBody({ area, onChange }: { area: ExpertiseArea; onChange: (a: ExpertiseArea) => void }) {
+  const setSub = (j: number, s: ExpertiseSub) => onChange({ ...area, subs: area.subs.map((x, k) => (k === j ? s : x)) });
+  return (
+    <div className="proj-body">
+      <L2Field label="Nombre del área" value={area.name} max={60} onChange={(name) => onChange({ ...area, name })} />
+      <ColorPick value={area.color} onChange={(color) => onChange({ ...area, color })} />
+      <h4 className="sub-h">Subáreas</h4>
+      <SortableList
+        label={`Subáreas de ${area.name.es}`}
+        rows={area.subs.map((s, j) => ({
+          title: s.name.es.trim() || "Sin nombre",
+          meta: s.children ? `Grupo · ${s.children.length}` : LEVEL_LABEL[s.level],
+          body: <SubBody sub={s} onChange={(ns) => setSub(j, ns)} />,
+          onRemove: () => onChange({ ...area, subs: area.subs.filter((_, k) => k !== j) }),
+        }))}
+        onMove={(from, to) => {
+          const next = [...area.subs];
+          arrMove(next, from, to);
+          onChange({ ...area, subs: next });
+        }}
+        addLabel="Agregar subárea"
+        addDisabled={area.subs.length >= 24}
+        onAdd={() => onChange({ ...area, subs: [...area.subs, { name: { es: "Nueva subárea", en: "New sub-area" }, level: "d" }] })}
+      />
+    </div>
   );
 }
 
@@ -716,6 +835,51 @@ export default function Editor() {
       </Panel>
     ),
 
+    expertise: (
+      <Panel title="Expertise" note="La red 3D del sitio. Cada área es un nodo con su color; al tocarlo se abren sus subáreas. Arrastra el asa ⋮⋮ (o usa las flechas) para ordenar. Con «movimiento reducido» activado en el dispositivo, la red se queda quieta.">
+        <L2Field label="Título de la sección" value={draft.expertise.title} max={80} onChange={(v) => edit((c) => void (c.expertise.title = v))} />
+        <L2Field label="Frase de apoyo" value={draft.expertise.intro} max={400} multiline rows={2} onChange={(v) => edit((c) => void (c.expertise.intro = v))} />
+        <fieldset className="l2">
+          <legend>Forma de los nodos</legend>
+          {(
+            [
+              ["neuron", "Neurona", "Cuerpo orgánico con dendritas que se ramifican."],
+              ["chip", "Chip", "Hexágono con pines y trazas de circuito."],
+            ] as const
+          ).map(([v, name, desc]) => (
+            <label key={v} className="check">
+              <input type="radio" name="xp-shape" checked={draft.expertise.shape === v} onChange={() => edit((c) => void (c.expertise.shape = v))} />
+              <span>
+                <b>{name}</b> — {desc}
+              </span>
+            </label>
+          ))}
+        </fieldset>
+        <h3 className="sub-h">Áreas</h3>
+        <SortableList
+          label="Áreas de expertise"
+          rowKeys={draft.expertise.areas.map((a) => a.id)}
+          rows={draft.expertise.areas.map((a, i) => ({
+            title: a.name.es.trim() || "Sin nombre",
+            meta: `${a.subs.length} subáreas`,
+            body: <AreaBody area={a} onChange={(na) => edit((c) => void (c.expertise.areas[i] = na))} />,
+            onRemove: () => edit((c) => void c.expertise.areas.splice(i, 1)),
+          }))}
+          onMove={(from, to) => edit((c) => arrMove(c.expertise.areas, from, to))}
+          addLabel="Agregar área"
+          addDisabled={draft.expertise.areas.length >= 12}
+          onAdd={() => {
+            const id = `area-${Date.now().toString(36)}`;
+            edit((c) => {
+              const used = new Set(c.expertise.areas.map((x) => x.color));
+              const color = NODE_COLORS.find((x) => !used.has(x)) ?? NODE_COLORS[0]!;
+              c.expertise.areas.push({ id, name: { es: "Nueva área", en: "New area" }, color, subs: [] });
+            });
+            return id;
+          }}
+        />
+      </Panel>
+    ),
     formacion: (
       <Panel title="Formación" note="Se ordena sola por año en la línea de tiempo. Toca la flecha de un registro para editarlo. El tipo decide si cuenta como «grados y posgrados» o como «cursos y diplomados» en las tarjetas de arriba; el peso decide cuánto resalta.">
         <L2Field label="Título de la sección" value={draft.education.title} max={80} onChange={(v) => edit((c) => void (c.education.title = v))} />

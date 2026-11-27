@@ -1,4 +1,4 @@
-import { DEFAULT_ABOUT, DEFAULT_EDUCATION, DEFAULT_EXPERIENCE, DEFAULT_LAYOUT, DEFAULT_YEARS, type Content, type ContentProject } from "../../shared/content";
+import { DEFAULT_ABOUT, DEFAULT_EDUCATION, DEFAULT_EXPERIENCE, DEFAULT_EXPERTISE, DEFAULT_LAYOUT, DEFAULT_YEARS, type Content, type ContentProject } from "../../shared/content";
 import { STRINGS, type Lang, type Strings } from "./i18n";
 import { PROJECTS, type Project, type Screen } from "./projects";
 import screensManifest from "./screens.json";
@@ -61,6 +61,7 @@ export function defaultContent(): Content {
     about: structuredClone(DEFAULT_ABOUT),
     layout: DEFAULT_LAYOUT.map((e) => ({ ...e })),
     education: structuredClone(DEFAULT_EDUCATION),
+    expertise: structuredClone(DEFAULT_EXPERTISE),
     experience: structuredClone(DEFAULT_EXPERIENCE),
     years: DEFAULT_YEARS,
     contact: { email: DEFAULT_EMAIL, github: DEFAULT_GITHUB },

@@ -165,3 +165,8 @@ fieldset.l2 legend { grid-column: 1 / -1; padding: 0; font-size: 13.5px; font-we
 .menuprev { display: flex; flex-wrap: wrap; gap: 6px; }
 .menuprev span { font-size: 12px; font-weight: 600; color: var(--blue-d); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
 @media (max-width: 820px) { .ordgrid { grid-template-columns: minmax(0, 1fr); } }
+
+.swatches { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 4px; }
+.swatches .sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(26,51,93,.35); cursor: pointer; padding: 0; }
+.swatches .sw.on { box-shadow: 0 0 0 3px var(--ed-focus, #177eb9); }
+.swatches input[type="color"] { width: 44px; height: 34px; padding: 0; border: 1px solid rgba(26,51,93,.3); border-radius: 8px; background: none; cursor: pointer; }

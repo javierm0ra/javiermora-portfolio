@@ -29,6 +29,17 @@ export interface Strings {
   filterLabel: string;
   filters: Record<Filter, string>;
   stats: { years: string; products: string; sectors: string; degrees: string; courses: string };
+  xp: {
+    idle: string;
+    subareas: (n: number) => string;
+    legendD: string;
+    legendE: string;
+    legendS: string;
+    areasLabel: string;
+    canvasLabel: (names: string) => string;
+    close: string;
+    backTo: (name: string) => string;
+  };
   edu: {
     toList: string;
     toTimeline: string;
@@ -75,6 +86,17 @@ export const STRINGS: Record<Lang, Strings> = {
     filterLabel: "Filtrar proyectos por sector",
     filters: { all: "Todos", finance: "Finanzas", realestate: "Inmuebles", health: "Salud", events: "Eventos", marketing: "Marketing digital" },
     stats: { years: "Años de experiencia", products: "Productos propios", sectors: "Sectores", degrees: "Grados y posgrados", courses: "Cursos y diplomados" },
+    xp: {
+      idle: "Toca un nodo o un botón para ver sus subáreas.",
+      subareas: (n) => `${n} ${n === 1 ? "subárea" : "subáreas"}`,
+      legendD: "Uso diario",
+      legendE: "Con experiencia",
+      legendS: "Estudiado",
+      areasLabel: "Áreas de expertise",
+      canvasLabel: (names) => `Red tridimensional de áreas de expertise: ${names}. Usa los botones de abajo para explorarlas con teclado.`,
+      close: "Cerrar",
+      backTo: (name) => `Volver a ${name}`,
+    },
     edu: {
       toList: "Ver como lista",
       toTimeline: "Ver como línea de tiempo",
@@ -119,6 +141,17 @@ export const STRINGS: Record<Lang, Strings> = {
     filterLabel: "Filter projects by sector",
     filters: { all: "All", finance: "Finance", realestate: "Real estate", health: "Health", events: "Events", marketing: "Digital marketing" },
     stats: { years: "Years of experience", products: "Products built", sectors: "Industries", degrees: "Degrees & postgrad", courses: "Courses & diplomas" },
+    xp: {
+      idle: "Tap a node or a button to see its sub-areas.",
+      subareas: (n) => `${n} ${n === 1 ? "sub-area" : "sub-areas"}`,
+      legendD: "Daily use",
+      legendE: "Experienced",
+      legendS: "Studied",
+      areasLabel: "Areas of expertise",
+      canvasLabel: (names) => `Three-dimensional network of areas of expertise: ${names}. Use the buttons below to explore them with the keyboard.`,
+      close: "Close",
+      backTo: (name) => `Back to ${name}`,
+    },
     edu: {
       toList: "View as list",
       toTimeline: "View as timeline",

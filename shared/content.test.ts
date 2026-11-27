@@ -155,7 +155,7 @@ test("orden de secciones: un documento viejo usa el de origen y Sobre mi sigue a
   const r = validateContent(c);
   assert.equal(r.ok, true);
   if (r.ok) {
-    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "proyectos", "formacion", "como", "sobre", "contacto"]);
+    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "proyectos", "expertise", "formacion", "como", "sobre", "contacto"]);
     assert.equal(r.value.layout.find((e) => e.id === "sobre")!.show, true); // base() tiene about.enabled = true
     assert.equal(r.value.layout.find((e) => e.id === "como")!.menu, false);
   }
@@ -172,7 +172,7 @@ test("orden de secciones: se respeta el orden guardado, se completa lo que falte
   assert.equal(r.ok, true);
   if (r.ok) {
     // Lo que falta se inserta despues de su vecina en el orden de origen (Trayectoria, al principio).
-    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "contacto", "proyectos", "formacion", "como", "sobre"]);
+    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "contacto", "proyectos", "expertise", "formacion", "como", "sobre"]);
     assert.equal(r.value.layout.find((e) => e.id === "proyectos")!.show, false);
   }
 });
@@ -203,7 +203,7 @@ test("orden de secciones: about.enabled queda igual al interruptor de Sobre mi e
   if (rd.ok) assert.equal(rd.value.about.enabled, true);
 });
 
-test("un orden guardado antes de Formacion la recibe despues de Proyectos", () => {
+test("un orden guardado antes de Expertise y Formacion las recibe despues de Proyectos", () => {
   const c = base() as unknown as Record<string, unknown>;
   c.layout = [
     { id: "trayectoria", show: true, menu: true },
@@ -215,7 +215,7 @@ test("un orden guardado antes de Formacion la recibe despues de Proyectos", () =
   const r = validateContent(c);
   assert.equal(r.ok, true);
   if (r.ok) {
-    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "proyectos", "formacion", "como", "sobre", "contacto"]);
+    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "proyectos", "expertise", "formacion", "como", "sobre", "contacto"]);
     assert.equal(r.value.layout.find((e) => e.id === "formacion")!.show, true);
   }
 });
@@ -274,4 +274,47 @@ test("negocio propio: los documentos viejos son productos y la categoria de mark
   const c = base();
   (c.projects[0] as { business?: unknown }).business = "si";
   assert.equal(validateContent(c).ok, false);
+});
+
+test("expertise: un documento viejo usa el de origen y uno nuevo se valida y se limpia", () => {
+  const a = validateContent(base());
+  assert.equal(a.ok, true);
+  if (a.ok) {
+    assert.equal(a.value.expertise.areas.length, 5);
+    assert.equal(a.value.expertise.shape, "neuron");
+    assert.equal(a.value.layout.find((e) => e.id === "expertise")!.show, true);
+  }
+  const c = base() as unknown as Record<string, unknown>;
+  c.expertise = {
+    title: l("Expertise"), intro: l(""), shape: "chip",
+    areas: [{ id: "a-1", name: l("Credito"), color: "#ABCDEF", extra: 1, subs: [
+      { name: l("Simple"), level: "d" },
+      { name: l("Grupo"), level: "s", children: [{ name: l("HTML"), level: "s" }] },
+    ] }],
+  };
+  const r = validateContent(c);
+  assert.equal(r.ok, true);
+  if (r.ok) {
+    assert.equal(r.value.expertise.areas[0]!.color, "#abcdef");
+    assert.equal("extra" in r.value.expertise.areas[0]!, false);
+    assert.equal(r.value.expertise.areas[0]!.subs[1]!.children!.length, 1);
+  }
+});
+
+test("expertise: rechaza colores, niveles, formas, ids repetidos y grupos vacios invalidos", () => {
+  const mk = (patch: (x: Record<string, unknown>) => void) => {
+    const c = base() as unknown as Record<string, unknown>;
+    const x = { title: l("E"), intro: l(""), shape: "neuron", areas: [{ id: "a-1", name: l("A"), color: "#112233", subs: [{ name: l("S"), level: "d" }] }] } as Record<string, unknown>;
+    patch(x);
+    c.expertise = x;
+    return validateContent(c).ok;
+  };
+  const area = (x: Record<string, unknown>) => (x.areas as Record<string, unknown>[])[0]!;
+  assert.equal(mk(() => undefined), true);
+  assert.equal(mk((x) => void (area(x).color = "rojo")), false);
+  assert.equal(mk((x) => void (x.shape = "cubo")), false);
+  assert.equal(mk((x) => void ((area(x).subs as Record<string, unknown>[])[0]!.level = "z")), false);
+  assert.equal(mk((x) => void ((area(x).subs as Record<string, unknown>[])[0]!.children = [])), false);
+  assert.equal(mk((x) => void (x.areas = [area(x), area(x)])), false);
+  assert.equal(mk((x) => void (area(x).id = "Con Espacios")), false);
 });
