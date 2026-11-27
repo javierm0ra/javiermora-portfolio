@@ -69,6 +69,7 @@ h2 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); font-weight: 800; letter-spacing: 
 .pill { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 4px 11px; white-space: nowrap; }
 .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .pill.good { color: var(--green); background: var(--green-bg); }
+.pill.own { color: #8a4a06; background: var(--orange-bg); }
 .pill.info { color: var(--blue-d); background: var(--blue-bg); }
 .pill.warn { color: #a85a0c; background: var(--orange-bg); }
 .desc { margin: 0; font-size: 15px; }

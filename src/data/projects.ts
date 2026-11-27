@@ -15,7 +15,7 @@ export interface Project {
   id: string;
   name: string;
   url: string;
-  status: "prod";
+  status: "prod" | "business";
   category: Category;
   tags: string[];
   screens: Screen[];
@@ -147,6 +147,26 @@ export const PROJECTS: Project[] = [
       en: {
         desc: "A PWA that finds the fairest meeting point for 2 to 10 people, with no sign-up or install. Everyone shares their location and the app suggests nearby places (bars, cafés, malls, parks, cinemas), ranked by how evenly the trip splits. Includes a buy-and-sell mode with safe meeting spots.",
         role: "The full flow with no sign-up or install, and the privacy rules: location is deleted when the meeting expires, in buy-and-sell mode others' locations are never shown, and the meeting point is blurred by about 500 m so nobody can work out where the other person is.",
+      },
+    },
+  },
+  {
+    id: "kupina",
+    name: "Kupina",
+    url: "https://kupina.com.mx",
+    status: "business",
+    category: "marketing",
+    tags: ["Video", "Podcast", "Newsletter"],
+    screens: [],
+    image: null,
+    copy: {
+      es: {
+        desc: "Pequeña agencia de marketing digital que fundé y opero hasta hoy. He atendido a cerca de 20 clientes y mantengo relaciones de más de 10 años. Genero contenido de todo tipo: imágenes, video, boletines informativos y, desde hace poco, podcast.",
+        role: "El nombre y la marca (una mora, por mi apellido), el servicio de contenido y la relación a largo plazo con cada cliente.",
+      },
+      en: {
+        desc: "A small digital marketing agency I founded and still run. I have served about 20 clients and keep relationships going for more than 10 years. I produce content of all kinds: images, video, newsletters and, more recently, podcasts.",
+        role: "The name and brand (a blackberry, after my surname), the content service and the long-term relationship with each client.",
       },
     },
   },

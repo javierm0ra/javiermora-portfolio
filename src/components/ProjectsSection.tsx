@@ -5,7 +5,7 @@ import { prefersReducedMotion } from "../hooks/motion";
 import { ProjectCard } from "./ProjectCard";
 import { Reveal } from "./Reveal";
 
-const ORDER: Filter[] = ["all", "finance", "realestate", "health", "events"];
+const ORDER: Filter[] = ["all", "finance", "realestate", "health", "events", "marketing"];
 const matches = (f: Filter, category: string) => f === "all" || f === category;
 
 export function ProjectsSection({ lang, t }: { lang: Lang; t: Strings }) {
