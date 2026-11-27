@@ -67,6 +67,10 @@ Las variables nuevas aplican al **siguiente deploy**: en **Deployments**, en el 
   reordenarlo y usa el boton de abajo para agregar.
 - Cada texto tiene su version en espanol y en ingles. Los proyectos se pueden ordenar, ocultar, agregar y eliminar.
 - El enlace de GitHub es opcional: vacio, no se muestra.
+- **Formacion**: cada estudio, posgrado, diplomado o curso es un registro (nombre en espanol e ingles, institucion, ano de termino, tipo,
+  peso y logo). La linea de tiempo se ordena sola por ano. El **tipo** decide en cual de las dos tarjetas de cifras cuenta («grados y
+  posgrados» o «cursos y diplomados»); el **peso** (alto, normal o discreto) solo decide cuanto resalta. Los logos se reducen solos
+  (maximo ~60 KB); sin logo se muestran las iniciales de la institucion.
 - Las imagenes se reducen y comprimen solas antes de subirse (maximo ~420 KB). Usa capturas sin datos reales de clientes ni de pacientes.
 - Si nunca publicas nada, el sitio usa los textos originales del codigo (`src/data`).
 - Los enlaces solo aceptan `https://`.

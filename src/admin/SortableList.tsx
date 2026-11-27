@@ -21,10 +21,14 @@ interface Props {
   rows: Row[];
   /** Se llama al soltar una fila en otro lugar o al usar las flechas ↑ ↓. */
   onMove: (from: number, to: number) => void;
-  /** Boton para agregar al final; la fila nueva se abre sola. */
+  /** Boton para agregar al final; la fila nueva se abre sola. Si se dan `rowKeys`, `onAdd` devuelve la llave de la fila nueva. */
   addLabel?: string;
-  onAdd?: () => void;
+  onAdd?: () => string | void;
   addDisabled?: boolean;
+  /** false: sin asa ni flechas (por ejemplo, una lista que se ordena sola). */
+  sortable?: boolean;
+  /** Llaves estables propias de cada fila (por ejemplo el id del registro). Sin ellas la lista lleva las suyas. */
+  rowKeys?: string[];
   label: string;
 }
 
@@ -35,31 +39,34 @@ const newKey = () => `r${++counter}`;
  * Lista de registros plegados que se pueden reordenar arrastrando el asa o con las flechas.
  * Las filas llevan una llave interna estable para que, al reordenar, cada una conserve si estaba abierta.
  */
-export function SortableList({ rows, onMove, addLabel, onAdd, addDisabled, label }: Props) {
-  const keys = useRef<string[]>([]);
-  while (keys.current.length < rows.length) keys.current.push(newKey());
-  if (keys.current.length > rows.length) keys.current.length = rows.length;
+export function SortableList({ rows, onMove, addLabel, onAdd, addDisabled, label, sortable = true, rowKeys }: Props) {
+  const own = useRef<string[]>([]);
+  while (own.current.length < rows.length) own.current.push(newKey());
+  if (own.current.length > rows.length) own.current.length = rows.length;
+  const keys = rowKeys ? { current: rowKeys } : own;
   const [open, setOpen] = useState<Set<string>>(() => new Set());
   const [drag, setDrag] = useState<{ from: number; before: number } | null>(null);
   const refs = useRef<(HTMLLIElement | null)[]>([]);
 
   function add() {
-    onAdd?.();
-    // La fila nueva va al final: se le da su llave y se abre para empezar a escribir.
-    const k = newKey();
-    keys.current.push(k);
-    setOpen((o) => new Set(o).add(k));
+    const made = onAdd?.();
+    // La fila nueva se abre para empezar a escribir. Con llaves propias la da quien agrega; si no, va al final.
+    const k = rowKeys ? (typeof made === "string" ? made : null) : newKey();
+    if (!rowKeys && k) own.current.push(k);
+    if (k) setOpen((o) => new Set(o).add(k));
   }
 
   function remove(i: number, fn: () => void) {
-    keys.current.splice(i, 1);
+    if (!rowKeys) own.current.splice(i, 1);
     fn();
   }
 
   function move(from: number, to: number) {
     if (from === to || to < 0 || to >= rows.length) return;
-    const [k] = keys.current.splice(from, 1);
-    keys.current.splice(to, 0, k!);
+    if (!rowKeys) {
+      const [k] = own.current.splice(from, 1);
+      own.current.splice(to, 0, k!);
+    }
     onMove(from, to);
   }
 
@@ -151,9 +158,11 @@ export function SortableList({ rows, onMove, addLabel, onAdd, addDisabled, label
               className={`sl-row${isOpen ? " open" : ""}${r.dim ? " dim" : ""}${dropBefore ? " drop-before" : ""}${dropEnd ? " drop-end" : ""}`}
             >
               <div className="sl-h">
-                <button type="button" className="sl-grip" aria-label={`Arrastrar para reordenar: ${r.title}`} onPointerDown={(e) => startDrag(e, i)}>
-                  ⋮⋮
-                </button>
+                {sortable && (
+                  <button type="button" className="sl-grip" aria-label={`Arrastrar para reordenar: ${r.title}`} onPointerDown={(e) => startDrag(e, i)}>
+                    ⋮⋮
+                  </button>
+                )}
                 {r.flat ? (
                   <div className="sl-flat">
                     <span className="sl-tt">{r.title}</span>
@@ -168,14 +177,16 @@ export function SortableList({ rows, onMove, addLabel, onAdd, addDisabled, label
                     {r.meta && <span className="sl-mt">{r.meta}</span>}
                   </button>
                 )}
-                <span className="sl-mv">
-                  <button type="button" disabled={i === 0} aria-label={`Subir ${r.title}`} onClick={() => move(i, i - 1)}>
-                    ↑
-                  </button>
-                  <button type="button" disabled={i === rows.length - 1} aria-label={`Bajar ${r.title}`} onClick={() => move(i, i + 1)}>
-                    ↓
-                  </button>
-                </span>
+                {sortable && (
+                  <span className="sl-mv">
+                    <button type="button" disabled={i === 0} aria-label={`Subir ${r.title}`} onClick={() => move(i, i - 1)}>
+                      ↑
+                    </button>
+                    <button type="button" disabled={i === rows.length - 1} aria-label={`Bajar ${r.title}`} onClick={() => move(i, i + 1)}>
+                      ↓
+                    </button>
+                  </span>
+                )}
               </div>
               {!r.flat && isOpen && (
                 <div className="sl-b">

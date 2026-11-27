@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { CATEGORY_IDS, validateContent, type CategoryId, type Content, type ContentProject, type L2, type LayoutId } from "../../shared/content";
+import { CATEGORY_IDS, EDU_KINDS, EDU_WEIGHTS, validateContent, type CategoryId, type Content, type ContentProject, type EducationItem, type EduKind, type EduWeight, type L2, type LayoutId } from "../../shared/content";
 import { defaultContent } from "../data/content";
 import { STRINGS } from "../data/i18n";
 import { explain, getJson, sendJson, uploadImage } from "./api";
@@ -25,13 +25,16 @@ const TAB_NAME: Record<TabId, string> = {
   portada: "Portada",
   trayectoria: "Trayectoria",
   proyectos: "Proyectos",
+  formacion: "Formación",
   como: "Cómo trabajo",
   sobre: "Sobre mí",
   contacto: "Contacto",
   buscadores: "Buscadores",
 };
 // Altura aproximada de cada seccion en la vista previa del orden (solo es un dibujo).
-const MINI_H: Record<LayoutId, number> = { trayectoria: 24, proyectos: 34, como: 22, sobre: 24, contacto: 22 };
+const MINI_H: Record<LayoutId, number> = { trayectoria: 24, proyectos: 34, formacion: 26, como: 22, sobre: 24, contacto: 22 };
+const KIND_LABEL: Record<EduKind, string> = { lic: "Licenciatura", mae: "Maestría", pos: "Posgrado o especialidad", dip: "Diplomado", cur: "Curso" };
+const WEIGHT_LABEL: Record<EduWeight, string> = { alto: "Alto", normal: "Normal", bajo: "Discreto" };
 const TAB_KEY = "ed-tab";
 const when = (ts: number) => new Date(ts * 1000).toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" });
 
@@ -107,6 +110,85 @@ function Panel({ title, note, children }: { title: string; note?: string; childr
       {note && <p className="ed-note">{note}</p>}
       <div className="ed-body">{children}</div>
     </section>
+  );
+}
+
+interface EduProps {
+  item: EducationItem;
+  busy: boolean;
+  onChange: (it: EducationItem) => void;
+  onLogo: (file: File) => void;
+}
+
+/** Campos de un registro de Formacion (se ven al abrir su fila). */
+function EducationBody({ item: it, busy, onChange, onLogo }: EduProps) {
+  const file = useRef<HTMLInputElement>(null);
+  const kind = useId();
+  const weight = useId();
+  return (
+    <div className="proj-body">
+      <L2Field label="Nombre" value={it.name} max={200} onChange={(name) => onChange({ ...it, name })} />
+      <div className="grid2">
+        <Field label="Institución" value={it.institution} max={80} onChange={(institution) => onChange({ ...it, institution })} />
+        <Field
+          label="Año de término"
+          type="number"
+          value={String(it.year)}
+          onChange={(v) => {
+            const y = Math.round(Number(v));
+            if (Number.isFinite(y)) onChange({ ...it, year: y });
+          }}
+        />
+        <div className="field">
+          <label htmlFor={kind}>Tipo</label>
+          <select id={kind} value={it.kind} onChange={(e) => onChange({ ...it, kind: e.target.value as EduKind })}>
+            {EDU_KINDS.map((k) => (
+              <option key={k} value={k}>
+                {KIND_LABEL[k]}
+              </option>
+            ))}
+          </select>
+          <small>Licenciatura, maestría y posgrado cuentan como «grados y posgrados»; diplomado y curso, como «cursos y diplomados».</small>
+        </div>
+        <div className="field">
+          <label htmlFor={weight}>Peso en la línea de tiempo</label>
+          <select id={weight} value={it.weight} onChange={(e) => onChange({ ...it, weight: e.target.value as EduWeight })}>
+            {EDU_WEIGHTS.map((w) => (
+              <option key={w} value={w}>
+                {WEIGHT_LABEL[w]}
+              </option>
+            ))}
+          </select>
+          <small>Cuánto resalta frente a los demás. No cambia el tipo.</small>
+        </div>
+      </div>
+      <div className="img-ed">
+        <strong>Logo de la institución</strong>
+        {it.logo ? <img className="icon-prev" src={it.logo} alt={`Logo de ${it.institution}`} /> : <p className="ed-note">Sin logo: se muestran las iniciales de la institución.</p>}
+        <div className="row-actions">
+          <input
+            ref={file}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            hidden
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) onLogo(f);
+              e.target.value = "";
+            }}
+          />
+          <button type="button" className="btn-s" disabled={busy} onClick={() => file.current?.click()}>
+            {it.logo ? "Cambiar logo" : "Subir logo"}
+          </button>
+          {it.logo && (
+            <button type="button" className="btn-s" onClick={() => onChange({ ...it, logo: null })}>
+              Quitar logo
+            </button>
+          )}
+        </div>
+        <small>Se reduce y comprime sola antes de subirla.</small>
+      </div>
+    </div>
   );
 }
 
@@ -349,6 +431,25 @@ export default function Editor() {
       setMsg({ kind: "ok", text: "Foto subida. Guarda el borrador para conservarla." });
     } catch (e) {
       setMsg({ kind: "err", text: e instanceof Error ? e.message : "No se pudo subir la foto." });
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function pickLogo(id: string, file: File) {
+    setBusy("image");
+    setMsg(null);
+    try {
+      const blob = await compressImage(file, 60_000, 256);
+      const r = await uploadImage(blob);
+      if (!r.ok) throw new Error(explain(r.error, r.status));
+      edit((c) => {
+        const it = c.education.items.find((x) => x.id === id);
+        if (it) it.logo = r.data.url;
+      });
+      setMsg({ kind: "ok", text: `Logo subido (${Math.round(blob.size / 1000)} KB). Guarda el borrador para conservarlo.` });
+    } catch (e) {
+      setMsg({ kind: "err", text: e instanceof Error ? e.message : "No se pudo subir el logo." });
     } finally {
       setBusy("");
     }
@@ -601,6 +702,55 @@ export default function Editor() {
             })
           }
         />
+      </Panel>
+    ),
+
+    formacion: (
+      <Panel title="Formación" note="Se ordena sola por año en la línea de tiempo. Toca la flecha de un registro para editarlo. El tipo decide si cuenta como «grados y posgrados» o como «cursos y diplomados» en las tarjetas de arriba; el peso decide cuánto resalta.">
+        <L2Field label="Título de la sección" value={draft.education.title} max={80} onChange={(v) => edit((c) => void (c.education.title = v))} />
+        <L2Field label="Frase de apoyo" value={draft.education.intro} max={400} multiline rows={2} onChange={(v) => edit((c) => void (c.education.intro = v))} />
+        <h3 className="sub-h">Registros</h3>
+        {(() => {
+          const list = draft.education.items.map((it, i) => ({ it, i })).sort((a, b) => b.it.year - a.it.year || a.i - b.i).map((x) => x.it);
+          return (
+            <SortableList
+              label="Registros de formación"
+              sortable={false}
+              rowKeys={list.map((it) => it.id)}
+              rows={list.map((it) => ({
+                title: it.name.es.trim() || "Sin nombre",
+                meta: `${it.year} · ${KIND_LABEL[it.kind]}`,
+                body: (
+                  <EducationBody
+                    item={it}
+                    busy={busy === "image"}
+                    onChange={(ni) => edit((c) => void (c.education.items[c.education.items.findIndex((x) => x.id === it.id)] = ni))}
+                    onLogo={(f) => void pickLogo(it.id, f)}
+                  />
+                ),
+                onRemove: () => edit((c) => void (c.education.items = c.education.items.filter((x) => x.id !== it.id))),
+              }))}
+              onMove={() => undefined}
+              addLabel="Agregar registro"
+              addDisabled={draft.education.items.length >= 40}
+              onAdd={() => {
+                const id = `edu-${Date.now().toString(36)}`;
+                edit((c) =>
+                  void c.education.items.push({
+                    id,
+                    name: { es: "Nuevo registro", en: "New entry" },
+                    institution: "Institución",
+                    logo: null,
+                    year: new Date().getFullYear(),
+                    kind: "cur",
+                    weight: "normal",
+                  }),
+                );
+                return id;
+              }}
+            />
+          );
+        })()}
       </Panel>
     ),
 

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
+import { isDegreeKind } from "../../shared/content";
 import type { Lang, Strings } from "../data/i18n";
 import { useSite } from "../data/SiteContext";
 import { prefersReducedMotion } from "../hooks/motion";
@@ -25,15 +26,21 @@ function Counter({ to, run }: { to: number; run: boolean }) {
 
 export function Stats({ t, lang }: { t: Strings; lang: Lang }) {
   const { projects, content } = useSite();
-  // Productos y sectores salen de los proyectos visibles; los anos de experiencia se editan en el panel.
+  // Productos y sectores salen de los proyectos visibles; los anos de experiencia se editan en el panel;
+  // grados y cursos salen de los registros de Formacion (solo si esa seccion se muestra).
+  const eduOn = content.layout.some((e) => e.id === "formacion" && e.show);
+  const degrees = content.education.items.filter((i) => isDegreeKind(i.kind)).length;
+  const courses = content.education.items.length - degrees;
   const items: { key: string; label: string; to: number; before?: string; after?: string }[] = [
     { key: "years", label: t.stats.years, to: content.years, before: lang === "es" ? "+" : "", after: lang === "es" ? "" : "+" },
     { key: "products", label: t.stats.products, to: projects.length },
     { key: "sectors", label: t.stats.sectors, to: new Set(projects.map((p) => p.category)).size },
+    ...(eduOn && degrees > 0 ? [{ key: "degrees", label: t.stats.degrees, to: degrees }] : []),
+    ...(eduOn && courses > 0 ? [{ key: "courses", label: t.stats.courses, to: courses }] : []),
   ];
   const { ref, shown } = useReveal<HTMLDListElement>();
   return (
-    <dl ref={ref} className={`stats reveal${shown ? " is-in" : ""}`}>
+    <dl ref={ref} className={`stats reveal${shown ? " is-in" : ""}`} style={{ "--n": items.length } as CSSProperties}>
       {items.map((it) => (
         <div key={it.key} className="stat">
           <dt>{it.label}</dt>

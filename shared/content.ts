@@ -78,7 +78,7 @@ export const DEFAULT_EXPERIENCE: ContentExperience = {
 export const DEFAULT_YEARS = 13;
 
 /** Secciones que se pueden ordenar. La portada (con las cifras) va siempre arriba y no forma parte de la lista. */
-export const LAYOUT_IDS = ["trayectoria", "proyectos", "como", "sobre", "contacto"] as const;
+export const LAYOUT_IDS = ["trayectoria", "proyectos", "formacion", "como", "sobre", "contacto"] as const;
 export type LayoutId = (typeof LAYOUT_IDS)[number];
 
 export interface LayoutEntry {
@@ -93,10 +93,68 @@ export interface LayoutEntry {
 export const DEFAULT_LAYOUT: LayoutEntry[] = [
   { id: "trayectoria", show: true, menu: true },
   { id: "proyectos", show: true, menu: true },
+  { id: "formacion", show: true, menu: true },
   { id: "como", show: true, menu: false },
   { id: "sobre", show: false, menu: true },
   { id: "contacto", show: true, menu: true },
 ];
+
+export const EDU_KINDS = ["lic", "mae", "pos", "dip", "cur"] as const;
+export type EduKind = (typeof EDU_KINDS)[number];
+export const EDU_WEIGHTS = ["alto", "normal", "bajo"] as const;
+export type EduWeight = (typeof EDU_WEIGHTS)[number];
+
+/** Licenciatura, maestria y posgrado cuentan como «grados y posgrados»; diplomados y cursos, como «cursos y diplomados». */
+export const isDegreeKind = (k: EduKind) => k === "lic" || k === "mae" || k === "pos";
+
+export interface EducationItem {
+  id: string;
+  name: L2;
+  institution: string;
+  /** Logo subido desde el panel; sin logo se muestran las iniciales. */
+  logo: string | null;
+  /** Ano de termino. */
+  year: number;
+  kind: EduKind;
+  /** Cuanto resalta en la linea de tiempo (no cambia su tipo). */
+  weight: EduWeight;
+}
+
+export interface ContentEducation {
+  title: L2;
+  intro: L2;
+  items: EducationItem[];
+}
+
+const edu = (id: string, es: string, en: string, institution: string, year: number, kind: EduKind, weight: EduWeight): EducationItem => ({
+  id,
+  name: { es, en },
+  institution,
+  logo: null,
+  year,
+  kind,
+  weight,
+});
+
+export const DEFAULT_EDUCATION: ContentEducation = {
+  title: { es: "Formación", en: "Education" },
+  intro: {
+    es: "Estudios, posgrados y cursos, de lo más antiguo a lo más reciente. Arrastra la línea: el registro que queda al centro se agranda y muestra su nombre completo.",
+    en: "Degrees, postgraduate studies and courses, from oldest to most recent. Drag the line: the entry in the center grows and shows its full name.",
+  },
+  items: [
+    edu("lic-iteso-2004", "Licenciatura en Administración de Empresas", "Bachelor's in Business Administration", "ITESO", 2004, "lic", "alto"),
+    edu("dip-fin-iteso-2010", "Diplomado en Administración Financiera", "Diploma in Financial Management", "ITESO", 2010, "dip", "normal"),
+    edu("cur-figura3-amib-2010", "Curso de Asesor Financiero en Estrategias de Inversión (Figura 3)", "Course: Financial Advisor in Investment Strategies (Figura 3)", "AMIB", 2010, "cur", "bajo"),
+    edu("dip-vb-proulex-2011", "Diplomado en Programación: Visual Basic, Delphi, HTML/JS, Java", "Diploma in Programming: Visual Basic, Delphi, HTML/JS, Java", "Proulex", 2011, "dip", "normal"),
+    edu("dip-php-iteso-2012", "Diplomado en Programación: PHP y MySQL", "Diploma in Programming: PHP & MySQL", "ITESO", 2012, "dip", "normal"),
+    edu("dip-web-brandhome-2012", "Diplomado en Desarrollo Web: Illustrator, Photoshop, HTML, CSS, JavaScript", "Diploma in Web Development: Illustrator, Photoshop, HTML, CSS, JavaScript", "Brandhome", 2012, "dip", "normal"),
+    edu("mae-iteso-2014", "Maestría en Informática Aplicada", "Master's in Applied Informatics", "ITESO", 2014, "mae", "alto"),
+    edu("pos-icami-2019", "Especialidad en Perfeccionamiento de Competencias Gerenciales", "Postgraduate Specialization in Managerial Skills Development", "ICAMI", 2019, "pos", "alto"),
+    edu("dip-analitica-iteso-2023", "Diplomado en Analítica para la Toma de Decisiones en los Negocios", "Diploma in Analytics for Business Decision-Making", "ITESO", 2023, "dip", "normal"),
+    edu("cur-ia-itam-2024", "Curso: Inteligencia Artificial Aplicada a los Negocios", "Course: Artificial Intelligence Applied to Business", "ITAM", 2024, "cur", "normal"),
+  ],
+};
 
 export interface Content {
   v: 1;
@@ -108,6 +166,7 @@ export interface Content {
   about: ContentAbout;
   /** Orden de las secciones y si se muestran / aparecen en el menu. */
   layout: LayoutEntry[];
+  education: ContentEducation;
   experience: ContentExperience;
   /** Anos de experiencia que muestra la tira de cifras. */
   years: number;
@@ -122,6 +181,7 @@ export const LIMITS = {
   maxProjects: 24,
   maxSteps: 8,
   maxPoints: 8,
+  maxEducation: 40,
   maxTags: 12,
 } as const;
 
@@ -251,9 +311,53 @@ export function validateContent(input: unknown): Validation {
         seenL.add(o.id);
         layout.push({ id: o.id as LayoutId, show: bool(o.show, `layout[${i}].show`), menu: bool(o.menu, `layout[${i}].menu`) });
       });
-      for (const d of DEFAULT_LAYOUT) if (!seenL.has(d.id)) layout.push({ ...d });
+      // Una seccion que falte se inserta despues de la que la precede en el orden de origen (o al principio si es la primera).
+      DEFAULT_LAYOUT.forEach((d, idx) => {
+        if (seenL.has(d.id)) return;
+        let at = 0;
+        for (let k = idx - 1; k >= 0; k--) {
+          const j = layout.findIndex((e) => e.id === DEFAULT_LAYOUT[k]!.id);
+          if (j >= 0) {
+            at = j + 1;
+            break;
+          }
+        }
+        layout.splice(at, 0, { ...d });
+      });
     }
     const aboutFinal: ContentAbout = { ...about, enabled: layout.find((e) => e.id === "sobre")!.show };
+
+    const ed = c.education === undefined ? null : obj(c.education, "education");
+    let education: ContentEducation = DEFAULT_EDUCATION;
+    if (ed) {
+      if (!Array.isArray(ed.items) || ed.items.length > LIMITS.maxEducation) fail("education.items", `puede tener hasta ${LIMITS.maxEducation} registros`);
+      const seenE = new Set<string>();
+      education = {
+        title: l2(ed.title, "education.title", 80, 1),
+        intro: l2(ed.intro, "education.intro", 400),
+        items: ed.items.map((raw, i) => {
+          const it = obj(raw, `education.items[${i}]`);
+          const id = str(it.id, `education.items[${i}].id`, 40, 2);
+          if (!/^[a-z0-9-]+$/.test(id)) fail(`education.items[${i}].id`, "solo minusculas, numeros y guiones");
+          if (seenE.has(id)) fail(`education.items[${i}].id`, `repetido (${id})`);
+          seenE.add(id);
+          if (typeof it.kind !== "string" || !(EDU_KINDS as readonly string[]).includes(it.kind)) fail(`education.items[${i}].kind`, "tipo no valido");
+          if (typeof it.weight !== "string" || !(EDU_WEIGHTS as readonly string[]).includes(it.weight)) fail(`education.items[${i}].weight`, "peso no valido");
+          if (typeof it.year !== "number" || !Number.isInteger(it.year) || it.year < 1950 || it.year > 2100) fail(`education.items[${i}].year`, "debe ser un ano entre 1950 y 2100");
+          const logo = it.logo === null || it.logo === undefined ? null : str(it.logo, `education.items[${i}].logo`, 60, 1);
+          if (logo !== null && !IMAGE_URL.test(logo)) fail(`education.items[${i}].logo`, "logo no valido");
+          return {
+            id,
+            name: l2(it.name, `education.items[${i}].name`, 200, 1),
+            institution: str(it.institution, `education.items[${i}].institution`, 80, 1),
+            logo,
+            year: it.year,
+            kind: it.kind as EduKind,
+            weight: it.weight as EduWeight,
+          };
+        }),
+      };
+    }
 
     const ex = c.experience === undefined ? null : obj(c.experience, "experience");
     let experience: ContentExperience = DEFAULT_EXPERIENCE;
@@ -300,6 +404,7 @@ export function validateContent(input: unknown): Validation {
       projects,
       about: aboutFinal,
       layout,
+      education,
       experience,
       years,
       // GitHub es opcional: vacio = no se muestra el enlace (por ejemplo, si los repositorios son privados).

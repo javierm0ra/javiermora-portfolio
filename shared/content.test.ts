@@ -1,7 +1,7 @@
 // Ejecutar: npm test
 import assert from "node:assert/strict";
 import test from "node:test";
-import { sniffImage, validateContent, type Content } from "./content.ts";
+import { isDegreeKind, sniffImage, validateContent, type Content } from "./content.ts";
 
 const l = (s: string) => ({ es: s, en: s });
 const base = (): Content => ({
@@ -155,7 +155,7 @@ test("orden de secciones: un documento viejo usa el de origen y Sobre mi sigue a
   const r = validateContent(c);
   assert.equal(r.ok, true);
   if (r.ok) {
-    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "proyectos", "como", "sobre", "contacto"]);
+    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "proyectos", "formacion", "como", "sobre", "contacto"]);
     assert.equal(r.value.layout.find((e) => e.id === "sobre")!.show, true); // base() tiene about.enabled = true
     assert.equal(r.value.layout.find((e) => e.id === "como")!.menu, false);
   }
@@ -171,8 +171,9 @@ test("orden de secciones: se respeta el orden guardado, se completa lo que falte
   const r = validateContent(c);
   assert.equal(r.ok, true);
   if (r.ok) {
-    assert.deepEqual(r.value.layout.map((e) => e.id), ["contacto", "proyectos", "trayectoria", "como", "sobre"]);
-    assert.equal(r.value.layout[1]!.show, false);
+    // Lo que falta se inserta despues de su vecina en el orden de origen (Trayectoria, al principio).
+    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "contacto", "proyectos", "formacion", "como", "sobre"]);
+    assert.equal(r.value.layout.find((e) => e.id === "proyectos")!.show, false);
   }
 });
 
@@ -200,4 +201,62 @@ test("orden de secciones: about.enabled queda igual al interruptor de Sobre mi e
   const rd = validateContent(d);
   assert.equal(rd.ok, true);
   if (rd.ok) assert.equal(rd.value.about.enabled, true);
+});
+
+test("un orden guardado antes de Formacion la recibe despues de Proyectos", () => {
+  const c = base() as unknown as Record<string, unknown>;
+  c.layout = [
+    { id: "trayectoria", show: true, menu: true },
+    { id: "proyectos", show: true, menu: true },
+    { id: "como", show: true, menu: false },
+    { id: "sobre", show: true, menu: true },
+    { id: "contacto", show: true, menu: true },
+  ];
+  const r = validateContent(c);
+  assert.equal(r.ok, true);
+  if (r.ok) {
+    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "proyectos", "formacion", "como", "sobre", "contacto"]);
+    assert.equal(r.value.layout.find((e) => e.id === "formacion")!.show, true);
+  }
+});
+
+test("formacion: un documento viejo trae los diez registros de origen", () => {
+  const c = base() as unknown as Record<string, unknown>;
+  delete c.education;
+  const r = validateContent(c);
+  assert.equal(r.ok, true);
+  if (r.ok) {
+    assert.equal(r.value.education.items.length, 10);
+    const grados = r.value.education.items.filter((i) => isDegreeKind(i.kind)).length;
+    assert.equal(grados, 3);
+    assert.equal(r.value.education.items.length - grados, 7);
+  }
+});
+
+test("formacion: se valida tipo, peso, ano, logo, ids repetidos y limite", () => {
+  const item = (o: Record<string, unknown> = {}) => ({ id: "uno", name: l("Maestria"), institution: "ITESO", logo: null, year: 2014, kind: "mae", weight: "alto", ...o });
+  const mk = (items: unknown[]) => {
+    const c = base() as unknown as Record<string, unknown>;
+    c.education = { title: l("Formacion"), intro: l(""), items };
+    return validateContent(c);
+  };
+  assert.equal(mk([item()]).ok, true);
+  assert.equal(mk([]).ok, true);
+  assert.equal(mk([item({ kind: "doctorado" })]).ok, false);
+  assert.equal(mk([item({ weight: "enorme" })]).ok, false);
+  assert.equal(mk([item({ year: 1900 })]).ok, false);
+  assert.equal(mk([item({ year: 2014.5 })]).ok, false);
+  assert.equal(mk([item({ logo: "https://evil.com/x.png" })]).ok, false);
+  assert.equal(mk([item({ logo: "/api/img/0123456789abcdef01234567" })]).ok, true);
+  assert.equal(mk([item(), item()]).ok, false);
+  assert.equal(mk([item({ id: "Mayusculas!" })]).ok, false);
+  assert.equal(mk(Array.from({ length: 41 }, (_, i) => item({ id: `r-${i}` }))).ok, false);
+});
+
+test("isDegreeKind: licenciatura, maestria y posgrado son grados; diplomado y curso no", () => {
+  assert.equal(isDegreeKind("lic"), true);
+  assert.equal(isDegreeKind("mae"), true);
+  assert.equal(isDegreeKind("pos"), true);
+  assert.equal(isDegreeKind("dip"), false);
+  assert.equal(isDegreeKind("cur"), false);
 });

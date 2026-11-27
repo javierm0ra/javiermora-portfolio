@@ -3,6 +3,7 @@ import type { LayoutId } from "../shared/content";
 import { ScreenFrame } from "./components/ScreenFrame";
 import { desktopScreen } from "./data/projects";
 import { useSite } from "./data/SiteContext";
+import { Education } from "./components/Education";
 import { Experience } from "./components/Experience";
 import { Method } from "./components/Method";
 import { Nav } from "./components/Nav";
@@ -28,6 +29,7 @@ export default function App() {
   const anchor: Record<LayoutId, [string, string]> = {
     trayectoria: ["trayectoria", content.experience.title[lang]],
     proyectos: ["proyectos", t.projTitle],
+    formacion: ["formacion", content.education.title[lang]],
     como: ["metodo", t.howTitle],
     sobre: ["sobre-mi", content.about.title[lang]],
     contacto: ["contacto", t.ctTitle],
@@ -54,6 +56,13 @@ export default function App() {
       <div className="gut">
         <div className="wrap">
           <ProjectsSection lang={lang} t={t} />
+        </div>
+      </div>
+    ),
+    formacion: (
+      <div className="gut">
+        <div className="wrap">
+          <Education lang={lang} t={t} />
         </div>
       </div>
     ),
