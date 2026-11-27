@@ -33,7 +33,7 @@ export function Stats({ t, lang }: { t: Strings; lang: Lang }) {
   const courses = content.education.items.length - degrees;
   const items: { key: string; label: string; to: number; before?: string; after?: string }[] = [
     { key: "years", label: t.stats.years, to: content.years, before: lang === "es" ? "+" : "", after: lang === "es" ? "" : "+" },
-    { key: "products", label: t.stats.products, to: projects.length },
+    { key: "products", label: t.stats.products, to: projects.filter((p) => p.status === "prod").length },
     { key: "sectors", label: t.stats.sectors, to: new Set(projects.map((p) => p.category)).size },
     ...(eduOn && degrees > 0 ? [{ key: "degrees", label: t.stats.degrees, to: degrees }] : []),
     ...(eduOn && courses > 0 ? [{ key: "courses", label: t.stats.courses, to: courses }] : []),

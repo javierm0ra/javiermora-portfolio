@@ -3,7 +3,7 @@
  * asi que las reglas de validacion viven aqui, en un solo lugar.
  */
 
-export const CATEGORY_IDS = ["finance", "realestate", "health", "events"] as const;
+export const CATEGORY_IDS = ["finance", "realestate", "health", "events", "marketing"] as const;
 export type CategoryId = (typeof CATEGORY_IDS)[number];
 
 export interface L2 {
@@ -17,6 +17,8 @@ export interface ContentProject {
   url: string;
   category: CategoryId;
   hidden: boolean;
+  /** Negocio propio (no es un producto de software): lleva su distintivo y no cuenta en «Productos propios». */
+  business: boolean;
   tags: string[];
   desc: L2;
   role: L2;
@@ -271,6 +273,8 @@ export function validateContent(input: unknown): Validation {
         url: httpsUrl(p.url, `projects[${i}].url`),
         category: category as CategoryId,
         hidden: bool(p.hidden, `projects[${i}].hidden`),
+        // Los documentos guardados antes de existir esta casilla no la traen: son productos.
+        business: p.business === undefined ? false : bool(p.business, `projects[${i}].business`),
         tags: (p.tags as unknown[]).map((t, k) => str(t, `projects[${i}].tags[${k}]`, 30, 1)),
         desc: l2(p.desc, `projects[${i}].desc`, 700, 1),
         role: l2(p.role, `projects[${i}].role`, 700, 1),

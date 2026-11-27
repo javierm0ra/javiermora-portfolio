@@ -260,3 +260,18 @@ test("isDegreeKind: licenciatura, maestria y posgrado son grados; diplomado y cu
   assert.equal(isDegreeKind("dip"), false);
   assert.equal(isDegreeKind("cur"), false);
 });
+
+test("negocio propio: los documentos viejos son productos y la categoria de marketing es valida", () => {
+  const a = validateContent(base());
+  assert.equal(a.ok, true);
+  if (a.ok) assert.equal(a.value.projects[0]!.business, false);
+  const b = base();
+  (b.projects[0] as { category: string; business?: boolean }).category = "marketing";
+  (b.projects[0] as { business?: boolean }).business = true;
+  const r = validateContent(b);
+  assert.equal(r.ok, true);
+  if (r.ok) assert.equal(r.value.projects[0]!.business, true);
+  const c = base();
+  (c.projects[0] as { business?: unknown }).business = "si";
+  assert.equal(validateContent(c).ok, false);
+});

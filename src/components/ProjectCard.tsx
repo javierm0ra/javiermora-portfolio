@@ -34,7 +34,7 @@ export function ProjectCard({ project, lang, t, index, leaving, hidden }: Props)
     >
       <div className="shot">
         <Mock project={project} />
-        <span className="fict">{t.fictional}</span>
+        {project.status === "prod" && <span className="fict">{t.fictional}</span>}
       </div>
       <div className="body">
         <div className="row">
@@ -44,7 +44,7 @@ export function ProjectCard({ project, lang, t, index, leaving, hidden }: Props)
             </span>
             <h3>{project.name}</h3>
           </div>
-          <span className="pill good">{t.status[project.status]}</span>
+          <span className={`pill ${project.status === "business" ? "own" : "good"}`}>{t.status[project.status]}</span>
         </div>
         <p className="desc">{copy.desc}</p>
         <p className="role">

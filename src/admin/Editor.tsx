@@ -211,6 +211,10 @@ function ProjectBody({ project: p, busy, onChange, onImage, onIcon }: ProjectPro
         <input type="checkbox" checked={!p.hidden} onChange={(e) => onChange({ ...p, hidden: !e.target.checked })} />
         <span>Mostrar en el sitio</span>
       </label>
+      <label className="check">
+        <input type="checkbox" checked={!p.business} onChange={(e) => onChange({ ...p, business: !e.target.checked })} />
+        <span>Cuenta como producto (apágala para un negocio propio: lleva el distintivo «Negocio propio» y no suma a «Productos propios»)</span>
+      </label>
       <div className="grid2">
         <Field label="Nombre" value={p.name} max={60} onChange={(name) => onChange({ ...p, name })} />
         <Field label="Dirección web" value={p.url} max={300} hint="Debe empezar con https://" onChange={(url) => onChange({ ...p, url })} />
@@ -590,6 +594,12 @@ export default function Editor() {
                   p.tags = o.tags;
                   n++;
                 }
+                // Los proyectos nuevos del sitio (por ejemplo Kupina) se agregan al final si aún no están.
+                for (const o of base.projects) {
+                  if (c.projects.length >= 24 || c.projects.some((x) => x.id === o.id)) continue;
+                  c.projects.push(o);
+                  n++;
+                }
                 c.about.title = base.about.title;
                 c.about.role = base.about.role;
                 c.about.text = base.about.text;
@@ -693,6 +703,7 @@ export default function Editor() {
                 url: "https://",
                 category: "finance",
                 hidden: false,
+                business: false,
                 tags: [],
                 desc: { es: "", en: "" },
                 role: { es: "", en: "" },

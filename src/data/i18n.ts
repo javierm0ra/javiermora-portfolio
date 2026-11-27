@@ -1,5 +1,5 @@
 export type Lang = "es" | "en";
-export type Category = "finance" | "realestate" | "health" | "events";
+export type Category = "finance" | "realestate" | "health" | "events" | "marketing";
 export type Filter = "all" | Category;
 
 export interface Strings {
@@ -13,7 +13,7 @@ export interface Strings {
   projSub: string;
   role: string;
   visit: string;
-  status: { prod: string };
+  status: { prod: string; business: string };
   howTitle: string;
   howSub: string;
   steps: { title: string; text: string }[];
@@ -54,7 +54,7 @@ export const STRINGS: Record<Lang, Strings> = {
     projSub: "Seis productos para México, desde finanzas personales hasta administración de clínicas e inmuebles.",
     role: "Lo que definí",
     visit: "Ver proyecto ↗",
-    status: { prod: "En producción" },
+    status: { prod: "En producción", business: "Negocio propio" },
     howTitle: "Cómo trabajo",
     howSub: "Un flujo corto y repetible, para que la IA acelere sin perder el control del producto.",
     steps: [
@@ -73,7 +73,7 @@ export const STRINGS: Record<Lang, Strings> = {
     privacy: "Este sitio cuenta visitas sin cookies ni datos personales.",
     navLabel: "Secciones",
     filterLabel: "Filtrar proyectos por sector",
-    filters: { all: "Todos", finance: "Finanzas", realestate: "Inmuebles", health: "Salud", events: "Eventos" },
+    filters: { all: "Todos", finance: "Finanzas", realestate: "Inmuebles", health: "Salud", events: "Eventos", marketing: "Marketing digital" },
     stats: { years: "Años de experiencia", products: "Productos propios", sectors: "Sectores", degrees: "Grados y posgrados", courses: "Cursos y diplomados" },
     edu: {
       toList: "Ver como lista",
@@ -98,7 +98,7 @@ export const STRINGS: Record<Lang, Strings> = {
     projSub: "Six products for Mexico, from personal finance to clinic and real estate management.",
     role: "What I defined",
     visit: "View project ↗",
-    status: { prod: "Live" },
+    status: { prod: "Live", business: "Own business" },
     howTitle: "How I work",
     howSub: "A short, repeatable flow so AI speeds things up without losing control of the product.",
     steps: [
@@ -117,7 +117,7 @@ export const STRINGS: Record<Lang, Strings> = {
     privacy: "This site counts visits without cookies or personal data.",
     navLabel: "Sections",
     filterLabel: "Filter projects by sector",
-    filters: { all: "All", finance: "Finance", realestate: "Real estate", health: "Health", events: "Events" },
+    filters: { all: "All", finance: "Finance", realestate: "Real estate", health: "Health", events: "Events", marketing: "Digital marketing" },
     stats: { years: "Years of experience", products: "Products built", sectors: "Industries", degrees: "Degrees & postgrad", courses: "Courses & diplomas" },
     edu: {
       toList: "View as list",
