@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { CATEGORY_IDS, validateContent, type CategoryId, type Content, type ContentProject, type L2 } from "../../shared/content";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { CATEGORY_IDS, validateContent, type CategoryId, type Content, type ContentProject, type L2, type LayoutId } from "../../shared/content";
 import { defaultContent } from "../data/content";
 import { STRINGS } from "../data/i18n";
 import { explain, getJson, sendJson, uploadImage } from "./api";
 import { compressImage } from "./image";
+import { SortableList } from "./SortableList";
+import { ConfirmButton } from "./ui";
 
 interface Payload {
   draft: Content | null;
@@ -15,9 +17,28 @@ interface Payload {
 
 type Busy = "" | "save" | "publish" | "discard" | "image";
 type Msg = { kind: "ok" | "err"; text: string } | null;
+type TabId = "orden" | "portada" | LayoutId | "buscadores";
 
 const SECTOR_LABEL = STRINGS.es.filters;
+const TAB_NAME: Record<TabId, string> = {
+  orden: "Orden y menú",
+  portada: "Portada",
+  trayectoria: "Trayectoria",
+  proyectos: "Proyectos",
+  como: "Cómo trabajo",
+  sobre: "Sobre mí",
+  contacto: "Contacto",
+  buscadores: "Buscadores",
+};
+// Altura aproximada de cada seccion en la vista previa del orden (solo es un dibujo).
+const MINI_H: Record<LayoutId, number> = { trayectoria: 24, proyectos: 34, como: 22, sobre: 24, contacto: 22 };
+const TAB_KEY = "ed-tab";
 const when = (ts: number) => new Date(ts * 1000).toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" });
+
+function arrMove<T>(a: T[], from: number, to: number) {
+  const [x] = a.splice(from, 1);
+  a.splice(to, 0, x!);
+}
 
 /** Convierte el error tecnico de la validacion en una frase que se entienda. */
 function friendly(error: string, c: Content | null): string {
@@ -89,63 +110,25 @@ function Panel({ title, note, children }: { title: string; note?: string; childr
   );
 }
 
-function ConfirmButton(props: { label: string; confirmLabel: string; onConfirm: () => void; danger?: boolean; disabled?: boolean }) {
-  const [asking, setAsking] = useState(false);
-  if (!asking)
-    return (
-      <button type="button" className={`btn-s${props.danger ? " danger" : ""}`} disabled={props.disabled} onClick={() => setAsking(true)}>
-        {props.label}
-      </button>
-    );
-  return (
-    <span className="confirm" role="group" aria-label="Confirmar">
-      <button type="button" className="btn-s danger" onClick={() => { setAsking(false); props.onConfirm(); }}>
-        {props.confirmLabel}
-      </button>
-      <button type="button" className="btn-s" onClick={() => setAsking(false)}>
-        Cancelar
-      </button>
-    </span>
-  );
-}
-
 interface ProjectProps {
   project: ContentProject;
-  index: number;
-  total: number;
   busy: boolean;
   onChange: (p: ContentProject) => void;
-  onMove: (dir: -1 | 1) => void;
-  onDelete: () => void;
   onImage: (file: File) => void;
   onIcon: (file: File) => void;
 }
 
-function ProjectEditor({ project: p, index, total, busy, onChange, onMove, onDelete, onImage, onIcon }: ProjectProps) {
+/** Campos de un proyecto (se ven al abrir su fila). */
+function ProjectBody({ project: p, busy, onChange, onImage, onIcon }: ProjectProps) {
   const file = useRef<HTMLInputElement>(null);
   const iconFile = useRef<HTMLInputElement>(null);
   const sector = useId();
   return (
-    <article className={`proj-ed${p.hidden ? " is-hidden" : ""}`}>
-      <header>
-        <h3>
-          <span className="num">{index + 1}</span> {p.name || "Sin nombre"}
-          {p.hidden && <em className="badge-off">Oculto</em>}
-        </h3>
-        <div className="row-actions">
-          <button type="button" className="btn-s" onClick={() => onMove(-1)} disabled={index === 0} aria-label={`Subir ${p.name}`}>
-            ↑
-          </button>
-          <button type="button" className="btn-s" onClick={() => onMove(1)} disabled={index === total - 1} aria-label={`Bajar ${p.name}`}>
-            ↓
-          </button>
-          <button type="button" className="btn-s" onClick={() => onChange({ ...p, hidden: !p.hidden })}>
-            {p.hidden ? "Mostrar" : "Ocultar"}
-          </button>
-          <ConfirmButton label="Eliminar" confirmLabel="Sí, eliminar" danger onConfirm={onDelete} />
-        </div>
-      </header>
-
+    <div className="proj-body">
+      <label className="check">
+        <input type="checkbox" checked={!p.hidden} onChange={(e) => onChange({ ...p, hidden: !e.target.checked })} />
+        <span>Mostrar en el sitio</span>
+      </label>
       <div className="grid2">
         <Field label="Nombre" value={p.name} max={60} onChange={(name) => onChange({ ...p, name })} />
         <Field label="Dirección web" value={p.url} max={300} hint="Debe empezar con https://" onChange={(url) => onChange({ ...p, url })} />
@@ -226,7 +209,7 @@ function ProjectEditor({ project: p, index, total, busy, onChange, onMove, onDel
         </div>
         <small>Se reduce y comprime sola antes de subirla. Usa capturas sin datos reales de clientes ni de pacientes.</small>
       </div>
-    </article>
+    </div>
   );
 }
 
@@ -238,12 +221,30 @@ export default function Editor() {
   const [busy, setBusy] = useState<Busy>("");
   const [msg, setMsg] = useState<Msg>(null);
   const [loadedNote, setLoadedNote] = useState<string | null>(null);
+  const [tab, setTabState] = useState<TabId>(() => {
+    try {
+      const saved = sessionStorage.getItem(TAB_KEY) as TabId | null;
+      if (saved && saved in TAB_NAME) return saved;
+    } catch {
+      // sin almacenamiento: se abre la primera pestana
+    }
+    return "orden";
+  });
+  const setTab = useCallback((t: TabId, focus = false) => {
+    setTabState(t);
+    try {
+      sessionStorage.setItem(TAB_KEY, t);
+    } catch {
+      // no pasa nada si no se puede recordar
+    }
+    if (focus) window.setTimeout(() => document.getElementById(`etab-${t}`)?.focus(), 0);
+  }, []);
 
   const apply = useCallback((d: Payload, resetDraft: boolean) => {
     setMeta({ updatedAt: d.updatedAt, publishedAt: d.publishedAt, unpublished: d.unpublished, hasPublished: d.published !== null, hasDraft: d.draft !== null });
     if (resetDraft) {
       const raw = d.draft ?? d.published ?? defaultContent();
-      // Un borrador guardado antes de existir alguna seccion (por ejemplo Sobre mi) no la trae: se completa con la de origen.
+      // Un borrador guardado antes de existir alguna seccion (por ejemplo Sobre mi o el orden) no la trae: se completa con la de origen.
       const checked = validateContent(raw);
       const base = checked.ok ? checked.value : raw;
       setDraft(base);
@@ -390,98 +391,86 @@ export default function Editor() {
         : "Sin cambios: el sitio usa los textos originales.";
   const canPublish = !busy && !problem && (dirty || meta.unpublished || (meta.hasDraft && !meta.hasPublished));
 
-  return (
-    <>
-      <div className="ed-bar" role="region" aria-label="Acciones del editor">
-        <p className={`ed-status${dirty || meta.unpublished ? " warn" : ""}`}>{status}</p>
-        <div className="row-actions">
-          <button type="button" className="btn-s" onClick={() => void preview()} disabled={!!busy || !!problem}>
-            Vista previa
-          </button>
-          <button type="button" className="btn-s" onClick={() => void save()} disabled={!!busy || !dirty || !!problem}>
-            {busy === "save" ? "Guardando…" : "Guardar borrador"}
-          </button>
-          <ConfirmButton label="Publicar" confirmLabel="Sí, publicar ahora" onConfirm={() => void publish()} disabled={!canPublish} />
-          <ConfirmButton label="Descartar cambios" confirmLabel="Sí, descartar" danger onConfirm={() => void discard()} disabled={!!busy || (!dirty && !meta.unpublished)} />
-        </div>
-      </div>
-      <div className="ed-msg" aria-live="polite">
-        {problem && <p className="msg err">Antes de guardar: {problem}</p>}
-        {!problem && msg && <p className={`msg ${msg.kind}`}>{msg.text}</p>}
-      </div>
+  // Las pestanas siguen el orden de las secciones del sitio.
+  const tabs: TabId[] = ["orden", "portada", ...draft.layout.map((e) => e.id), "buscadores"];
+  const hiddenTab = (id: TabId) => draft.layout.some((e) => e.id === id && !e.show);
+  const current: TabId = tabs.includes(tab) ? tab : "orden";
+  function onTabKey(e: KeyboardEvent) {
+    const i = tabs.indexOf(current);
+    const next = e.key === "ArrowRight" ? (i + 1) % tabs.length : e.key === "ArrowLeft" ? (i + tabs.length - 1) % tabs.length : e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : -1;
+    if (next >= 0) {
+      e.preventDefault();
+      setTab(tabs[next]!, true);
+    }
+  }
 
-      <Panel title="Portada" note="Lo primero que se ve. El texto resaltado del titular sale en azul.">
-        <L2Field label="Etiqueta superior" value={draft.hero.eyebrow} max={120} onChange={(v) => edit((c) => void (c.hero.eyebrow = v))} />
-        <div className="grid3">
-          <L2Field label="Titular: inicio" value={draft.hero.h1Before} max={120} onChange={(v) => edit((c) => void (c.hero.h1Before = v))} />
-          <L2Field label="Titular: texto resaltado" value={draft.hero.h1Em} max={120} onChange={(v) => edit((c) => void (c.hero.h1Em = v))} />
-          <L2Field label="Titular: final" value={draft.hero.h1After} max={120} onChange={(v) => edit((c) => void (c.hero.h1After = v))} />
-        </div>
-        <L2Field label="Texto de presentación" value={draft.hero.lede} max={400} multiline rows={3} onChange={(v) => edit((c) => void (c.hero.lede = v))} />
-        <label className="check">
-          <input type="checkbox" checked={draft.availability.enabled} onChange={(e) => edit((c) => void (c.availability.enabled = e.target.checked))} />
-          <span>Mostrar la etiqueta de disponibilidad bajo los botones</span>
-        </label>
-        {draft.availability.enabled && <L2Field label="Texto de la etiqueta" value={draft.availability.text} max={80} onChange={(v) => edit((c) => void (c.availability.text = v))} />}
-      </Panel>
+  function setShow(id: LayoutId, v: boolean) {
+    edit((c) => {
+      const e = c.layout.find((x) => x.id === id);
+      if (!e) return;
+      e.show = v;
+      if (id === "sobre") c.about.enabled = v;
+    });
+  }
+  function setMenu(id: LayoutId, v: boolean) {
+    edit((c) => {
+      const e = c.layout.find((x) => x.id === id);
+      if (e) e.menu = v;
+    });
+  }
 
-      <Panel title="Trayectoria" note="Sección nueva antes de Proyectos, con su enlace en el menú. Los años de experiencia también salen en la tira de cifras de la portada.">
-        <div className="grid2">
-          <Field
-            label="Años de experiencia"
-            type="number"
-            value={String(draft.years)}
-            hint="Número entero. En español se muestra «+13» y en inglés «13+»."
-            onChange={(v) => edit((c) => void (c.years = Math.max(0, Math.min(60, Math.round(Number(v) || 0)))))}
-          />
-        </div>
-        <L2Field label="Título" value={draft.experience.title} max={80} onChange={(v) => edit((c) => void (c.experience.title = v))} />
-        <L2Field label="Introducción" value={draft.experience.intro} max={600} multiline rows={5} onChange={(v) => edit((c) => void (c.experience.intro = v))} />
-        {draft.experience.points.map((pt, i) => (
-          <div className="step-ed" key={i}>
-            <header>
-              <h3>
-                <span className="num">{i + 1}</span> Punto
-              </h3>
-              <div className="row-actions">
-                <button type="button" className="btn-s" disabled={i === 0} aria-label={`Subir punto ${i + 1}`} onClick={() => edit((c) => void ([c.experience.points[i - 1], c.experience.points[i]] = [c.experience.points[i]!, c.experience.points[i - 1]!]))}>
-                  ↑
-                </button>
-                <button type="button" className="btn-s" disabled={i === draft.experience.points.length - 1} aria-label={`Bajar punto ${i + 1}`} onClick={() => edit((c) => void ([c.experience.points[i + 1], c.experience.points[i]] = [c.experience.points[i]!, c.experience.points[i + 1]!]))}>
-                  ↓
-                </button>
-                <ConfirmButton label="Eliminar" confirmLabel="Sí, eliminar" danger disabled={draft.experience.points.length <= 1} onConfirm={() => edit((c) => void c.experience.points.splice(i, 1))} />
-              </div>
-            </header>
-            <L2Field label="Texto" value={pt} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.experience.points[i] = v))} />
+  const panel: Record<TabId, React.ReactNode> = {
+    orden: (
+      <Panel title="Orden y menú" note="Arrastra el asa ⋮⋮ (o usa las flechas) para cambiar el orden de las secciones del sitio. Las pestañas de este editor siguen el mismo orden. Portada va siempre arriba.">
+        <div className="ordgrid">
+          <div>
+            <div className="pinned">
+              <b>Portada</b>
+              <span>Fija arriba. Incluye las cifras y el menú.</span>
+            </div>
+            <SortableList
+              label="Orden de las secciones"
+              rows={draft.layout.map((e) => ({
+                title: TAB_NAME[e.id],
+                dim: !e.show,
+                flat: (
+                  <>
+                    <label className="check sl-opt">
+                      <input type="checkbox" checked={e.show} onChange={(ev) => setShow(e.id, ev.target.checked)} />
+                      <span>Mostrar en el sitio</span>
+                    </label>
+                    <label className="check sl-opt">
+                      <input type="checkbox" checked={e.menu} onChange={(ev) => setMenu(e.id, ev.target.checked)} />
+                      <span>Aparece en el menú</span>
+                    </label>
+                  </>
+                ),
+              }))}
+              onMove={(from, to) => edit((c) => arrMove(c.layout, from, to))}
+            />
           </div>
-        ))}
-        <button type="button" className="btn-s add" disabled={draft.experience.points.length >= 8} onClick={() => edit((c) => void c.experience.points.push({ es: "", en: "" }))}>
-          + Agregar punto
-        </button>
-      </Panel>
+          <aside className="prevbox" aria-label="Vista previa del orden">
+            <h3>Así queda la página, de arriba abajo</h3>
+            <div className="mini">
+              <div className="fix" style={{ height: 38 }}>
+                <i>1</i>Portada y cifras
+              </div>
+              {draft.layout.map((e, i) => (
+                <div key={e.id} className={e.show ? "" : "off"} style={{ height: MINI_H[e.id] }}>
+                  <i>{i + 2}</i>
+                  {TAB_NAME[e.id]}
+                </div>
+              ))}
+            </div>
+            <h3>Menú del sitio</h3>
+            <div className="menuprev">
+              {draft.layout.filter((e) => e.show && e.menu).map((e) => <span key={e.id}>{TAB_NAME[e.id]}</span>)}
+              {!draft.layout.some((e) => e.show && e.menu) && <span>Sin enlaces</span>}
+            </div>
+          </aside>
+        </div>
 
-      <Panel title="Proyectos" note="El orden de aquí es el orden del sitio. Los proyectos ocultos no se muestran pero se conservan.">
-        {draft.projects.map((p, i) => (
-          <ProjectEditor
-            key={p.id}
-            project={p}
-            index={i}
-            total={draft.projects.length}
-            busy={busy === "image"}
-            onChange={(np) => edit((c) => void (c.projects[i] = np))}
-            onMove={(dir) =>
-              edit((c) => {
-                const j = i + dir;
-                if (j < 0 || j >= c.projects.length) return;
-                [c.projects[i], c.projects[j]] = [c.projects[j]!, c.projects[i]!];
-              })
-            }
-            onDelete={() => edit((c) => void c.projects.splice(i, 1))}
-            onImage={(f) => void pickImage(i, f)}
-            onIcon={(f) => void pickImage(i, f, "icon")}
-          />
-        ))}
+        <h3 className="sub-h">Textos originales</h3>
         <div className="row-actions">
           <ConfirmButton
             label="Cargar textos originales del sitio"
@@ -510,18 +499,90 @@ export default function Editor() {
                 c.years = base.years;
                 c.seo.description = base.seo.description;
               });
-              setLoadedNote(`Listo: se cargaron en el borrador los textos de ${base.projects.length} proyectos, Sobre mí, portada, Trayectoria y Contacto (aún sin guardar). Ahora toca «Guardar borrador» y luego «Publicar».`);
+              setLoadedNote(`Listo: se cargaron en el borrador los textos de ${base.projects.length} proyectos, Sobre mí, portada, Trayectoria, Contacto y buscadores (aún sin guardar). Ahora toca «Guardar borrador» y luego «Publicar».`);
               setMsg({ kind: "ok", text: `Se cargaron los textos y etiquetas de ${n} proyectos, Sobre mí, la portada, Trayectoria, el texto de Contacto y la descripción para buscadores. Tus imágenes e íconos no cambian. Guarda el borrador y publica para verlo en el sitio.` });
             }}
           />
         </div>
         {loadedNote && <p className="msg ok">{loadedNote}</p>}
         <p className="ed-note">Reemplaza por los que vienen con el sitio: descripción, «lo que definí» y etiquetas de los proyectos originales; título, rol y texto de Sobre mí; etiqueta y subtítulo de la portada; Trayectoria y años de experiencia; la frase de Contacto; y la descripción para buscadores. No toca imágenes, fotos, íconos, enlaces, orden ni lo que tengas oculto o apagado.</p>
-        <button
-          type="button"
-          className="btn-s add"
-          disabled={draft.projects.length >= 24}
-          onClick={() =>
+      </Panel>
+    ),
+
+    portada: (
+      <Panel title="Portada" note="Lo primero que se ve. El texto resaltado del titular sale en azul.">
+        <L2Field label="Etiqueta superior" value={draft.hero.eyebrow} max={120} onChange={(v) => edit((c) => void (c.hero.eyebrow = v))} />
+        <div className="grid3">
+          <L2Field label="Titular: inicio" value={draft.hero.h1Before} max={120} onChange={(v) => edit((c) => void (c.hero.h1Before = v))} />
+          <L2Field label="Titular: texto resaltado" value={draft.hero.h1Em} max={120} onChange={(v) => edit((c) => void (c.hero.h1Em = v))} />
+          <L2Field label="Titular: final" value={draft.hero.h1After} max={120} onChange={(v) => edit((c) => void (c.hero.h1After = v))} />
+        </div>
+        <L2Field label="Texto de presentación" value={draft.hero.lede} max={400} multiline rows={3} onChange={(v) => edit((c) => void (c.hero.lede = v))} />
+        <label className="check">
+          <input type="checkbox" checked={draft.availability.enabled} onChange={(e) => edit((c) => void (c.availability.enabled = e.target.checked))} />
+          <span>Mostrar la etiqueta de disponibilidad bajo los botones</span>
+        </label>
+        {draft.availability.enabled && <L2Field label="Texto de la etiqueta" value={draft.availability.text} max={80} onChange={(v) => edit((c) => void (c.availability.text = v))} />}
+      </Panel>
+    ),
+
+    trayectoria: (
+      <Panel title="Trayectoria" note="Los años de experiencia también salen en la tira de cifras de la portada. Los puntos se reordenan arrastrando el asa.">
+        <div className="grid2">
+          <Field
+            label="Años de experiencia"
+            type="number"
+            value={String(draft.years)}
+            hint="Número entero. En español se muestra «+13» y en inglés «13+»."
+            onChange={(v) => edit((c) => void (c.years = Math.max(0, Math.min(60, Math.round(Number(v) || 0)))))}
+          />
+        </div>
+        <L2Field label="Título" value={draft.experience.title} max={80} onChange={(v) => edit((c) => void (c.experience.title = v))} />
+        <L2Field label="Introducción" value={draft.experience.intro} max={600} multiline rows={5} onChange={(v) => edit((c) => void (c.experience.intro = v))} />
+        <h3 className="sub-h">Puntos</h3>
+        <SortableList
+          label="Puntos de la trayectoria"
+          rows={draft.experience.points.map((pt, i) => ({
+            title: pt.es.trim() ? (pt.es.length > 70 ? `${pt.es.slice(0, 70)}…` : pt.es) : "Punto sin texto",
+            meta: `Punto ${i + 1}`,
+            body: <L2Field label="Texto" value={pt} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.experience.points[i] = v))} />,
+            onRemove: () => edit((c) => void c.experience.points.splice(i, 1)),
+            removeDisabled: draft.experience.points.length <= 1,
+          }))}
+          onMove={(from, to) => edit((c) => arrMove(c.experience.points, from, to))}
+          addLabel="Agregar punto"
+          addDisabled={draft.experience.points.length >= 8}
+          onAdd={() => edit((c) => void c.experience.points.push({ es: "", en: "" }))}
+        />
+      </Panel>
+    ),
+
+    proyectos: (
+      <Panel title="Proyectos" note="El orden de aquí es el orden del sitio: arrastra el asa ⋮⋮ (o usa las flechas) para poner arriba lo que quieras destacar. Los proyectos ocultos no se muestran pero se conservan.">
+        <L2Field label="Título de la sección" value={draft.sections.projTitle} max={80} onChange={(v) => edit((c) => void (c.sections.projTitle = v))} />
+        <L2Field label="Frase de apoyo" value={draft.sections.projSub} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.sections.projSub = v))} />
+        <h3 className="sub-h">Proyectos</h3>
+        <SortableList
+          label="Proyectos"
+          rows={draft.projects.map((p, i) => ({
+            title: p.name || "Sin nombre",
+            meta: p.hidden ? "Oculto" : SECTOR_LABEL[p.category],
+            dim: p.hidden,
+            body: (
+              <ProjectBody
+                project={p}
+                busy={busy === "image"}
+                onChange={(np) => edit((c) => void (c.projects[i] = np))}
+                onImage={(f) => void pickImage(i, f)}
+                onIcon={(f) => void pickImage(i, f, "icon")}
+              />
+            ),
+            onRemove: () => edit((c) => void c.projects.splice(i, 1)),
+          }))}
+          onMove={(from, to) => edit((c) => arrMove(c.projects, from, to))}
+          addLabel="Agregar proyecto"
+          addDisabled={draft.projects.length >= 24}
+          onAdd={() =>
             edit((c) => {
               let n = c.projects.length + 1;
               while (c.projects.some((p) => p.id === `proyecto-${n}`)) n++;
@@ -539,20 +600,49 @@ export default function Editor() {
               });
             })
           }
-        >
-          + Agregar proyecto
-        </button>
+        />
       </Panel>
+    ),
 
-      <Panel title="Sobre mí" note="Una tarjeta con tu foto, un texto corto y tu LinkedIn, antes de Contacto. Está apagada hasta que la actives.">
-        <label className="check">
-          <input type="checkbox" checked={draft.about.enabled} onChange={(e) => edit((c) => void (c.about.enabled = e.target.checked))} />
-          <span>Mostrar la sección «Sobre mí» en el sitio</span>
-        </label>
+    como: (
+      <Panel title="Cómo trabajo" note="Los pasos se reordenan arrastrando el asa.">
+        <L2Field label="Título de la sección" value={draft.sections.howTitle} max={80} onChange={(v) => edit((c) => void (c.sections.howTitle = v))} />
+        <L2Field label="Frase de apoyo" value={draft.sections.howSub} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.sections.howSub = v))} />
+        <h3 className="sub-h">Pasos</h3>
+        <SortableList
+          label="Pasos del método"
+          rows={draft.steps.map((s, i) => ({
+            title: s.title.es.trim() || "Paso sin título",
+            meta: `Paso ${i + 1}`,
+            body: (
+              <>
+                <L2Field label="Título" value={s.title} max={80} onChange={(v) => edit((c) => void (c.steps[i]!.title = v))} />
+                <L2Field label="Texto" value={s.text} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.steps[i]!.text = v))} />
+              </>
+            ),
+            onRemove: () => edit((c) => void c.steps.splice(i, 1)),
+            removeDisabled: draft.steps.length <= 1,
+          }))}
+          onMove={(from, to) => edit((c) => arrMove(c.steps, from, to))}
+          addLabel="Agregar paso"
+          addDisabled={draft.steps.length >= 8}
+          onAdd={() => edit((c) => void c.steps.push({ title: { es: "", en: "" }, text: { es: "", en: "" } }))}
+        />
+      </Panel>
+    ),
+
+    sobre: (
+      <Panel title="Sobre mí" note="Una tarjeta con tu foto, un texto y tu LinkedIn. Si se muestra o no, y en qué lugar va, se decide en la pestaña «Orden y menú».">
+        <p className={`state-line${draft.layout.find((e) => e.id === "sobre")?.show ? " on" : ""}`}>
+          {draft.layout.find((e) => e.id === "sobre")?.show ? "Se muestra en el sitio." : "Está oculta: no se muestra en el sitio."}{" "}
+          <button type="button" className="link-btn" onClick={() => setTab("orden", true)}>
+            Cambiar en Orden y menú
+          </button>
+        </p>
         <L2Field label="Título" value={draft.about.title} max={80} onChange={(v) => edit((c) => void (c.about.title = v))} />
         <L2Field label="Rol y ciudad" value={draft.about.role} max={120} onChange={(v) => edit((c) => void (c.about.role = v))} />
         <L2Field label="Texto" value={draft.about.text} max={1500} multiline rows={12} onChange={(v) => edit((c) => void (c.about.text = v))} />
-        <Field label="Enlace de LinkedIn" value={draft.about.linkedin} max={300} hint="Aparece aquí y también junto a tu correo en Contacto, aunque esta sección esté apagada. Debe empezar con https://www.linkedin.com/" onChange={(v) => edit((c) => void (c.about.linkedin = v))} />
+        <Field label="Enlace de LinkedIn" value={draft.about.linkedin} max={300} hint="Aparece aquí y también junto a tu correo en Contacto, aunque esta sección esté oculta. Debe empezar con https://www.linkedin.com/" onChange={(v) => edit((c) => void (c.about.linkedin = v))} />
         <div className="img-ed">
           <strong>Foto</strong>
           {draft.about.photo ? <img src={draft.about.photo} alt="Tu foto" /> : <p className="ed-note">Sin foto: se muestran tus iniciales (JM). Se recorta en cuadrado; usa una donde se vea bien tu cara.</p>}
@@ -579,50 +669,68 @@ export default function Editor() {
           </div>
         </div>
       </Panel>
+    ),
 
-      <Panel title="Cómo trabajo">
-        <L2Field label="Título de la sección" value={draft.sections.howTitle} max={80} onChange={(v) => edit((c) => void (c.sections.howTitle = v))} />
-        <L2Field label="Frase de apoyo" value={draft.sections.howSub} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.sections.howSub = v))} />
-        {draft.steps.map((s, i) => (
-          <div className="step-ed" key={i}>
-            <header>
-              <h3>
-                <span className="num">{i + 1}</span> Paso
-              </h3>
-              <div className="row-actions">
-                <button type="button" className="btn-s" disabled={i === 0} aria-label={`Subir paso ${i + 1}`} onClick={() => edit((c) => void ([c.steps[i - 1], c.steps[i]] = [c.steps[i]!, c.steps[i - 1]!]))}>
-                  ↑
-                </button>
-                <button type="button" className="btn-s" disabled={i === draft.steps.length - 1} aria-label={`Bajar paso ${i + 1}`} onClick={() => edit((c) => void ([c.steps[i + 1], c.steps[i]] = [c.steps[i]!, c.steps[i + 1]!]))}>
-                  ↓
-                </button>
-                <ConfirmButton label="Eliminar" confirmLabel="Sí, eliminar" danger disabled={draft.steps.length <= 1} onConfirm={() => edit((c) => void c.steps.splice(i, 1))} />
-              </div>
-            </header>
-            <L2Field label="Título" value={s.title} max={80} onChange={(v) => edit((c) => void (c.steps[i]!.title = v))} />
-            <L2Field label="Texto" value={s.text} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.steps[i]!.text = v))} />
-          </div>
-        ))}
-        <button type="button" className="btn-s add" disabled={draft.steps.length >= 8} onClick={() => edit((c) => void c.steps.push({ title: { es: "", en: "" }, text: { es: "", en: "" } }))}>
-          + Agregar paso
-        </button>
-      </Panel>
-
-      <Panel title="Contacto y títulos de sección">
+    contacto: (
+      <Panel title="Contacto" note="Solo los campos de contacto.">
+        <L2Field label="Título de la sección" value={draft.sections.ctTitle} max={80} onChange={(v) => edit((c) => void (c.sections.ctTitle = v))} />
+        <L2Field label="Texto" value={draft.sections.ctText} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.sections.ctText = v))} />
         <div className="grid2">
           <Field label="Correo de contacto" type="email" value={draft.contact.email} max={120} onChange={(v) => edit((c) => void (c.contact.email = v))} />
           <Field label="Enlace de GitHub" value={draft.contact.github} max={300} hint="Opcional. Déjalo vacío si tus repositorios son privados y no quieres mostrar el enlace. Si lo pones, debe empezar con https://" onChange={(v) => edit((c) => void (c.contact.github = v))} />
         </div>
-        <L2Field label="Título de Proyectos" value={draft.sections.projTitle} max={80} onChange={(v) => edit((c) => void (c.sections.projTitle = v))} />
-        <L2Field label="Frase de apoyo de Proyectos" value={draft.sections.projSub} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.sections.projSub = v))} />
-        <L2Field label="Título de Contacto" value={draft.sections.ctTitle} max={80} onChange={(v) => edit((c) => void (c.sections.ctTitle = v))} />
-        <L2Field label="Texto de Contacto" value={draft.sections.ctText} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.sections.ctText = v))} />
       </Panel>
+    ),
 
+    buscadores: (
       <Panel title="Buscadores" note="Lo que aparece en Google y en la pestaña del navegador.">
         <L2Field label="Título de la página" value={draft.seo.title} max={70} onChange={(v) => edit((c) => void (c.seo.title = v))} />
         <L2Field label="Descripción" value={draft.seo.description} max={200} multiline rows={3} onChange={(v) => edit((c) => void (c.seo.description = v))} />
       </Panel>
+    ),
+  };
+
+  return (
+    <>
+      <div className="ed-bar" role="region" aria-label="Acciones del editor">
+        <p className={`ed-status${dirty || meta.unpublished ? " warn" : ""}`}>{status}</p>
+        <div className="row-actions">
+          <button type="button" className="btn-s" onClick={() => void preview()} disabled={!!busy || !!problem}>
+            Vista previa
+          </button>
+          <button type="button" className="btn-s" onClick={() => void save()} disabled={!!busy || !dirty || !!problem}>
+            {busy === "save" ? "Guardando…" : "Guardar borrador"}
+          </button>
+          <ConfirmButton label="Publicar" confirmLabel="Sí, publicar ahora" onConfirm={() => void publish()} disabled={!canPublish} />
+          <ConfirmButton label="Descartar cambios" confirmLabel="Sí, descartar" danger onConfirm={() => void discard()} disabled={!!busy || (!dirty && !meta.unpublished)} />
+        </div>
+      </div>
+      <div className="ed-msg" aria-live="polite">
+        {problem && <p className="msg err">Antes de guardar: {problem}</p>}
+        {!problem && msg && <p className={`msg ${msg.kind}`}>{msg.text}</p>}
+      </div>
+
+      <div className="etabs" role="tablist" aria-label="Secciones del editor" onKeyDown={onTabKey}>
+        {tabs.map((id) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            id={`etab-${id}`}
+            className="etab"
+            aria-selected={id === current}
+            aria-controls="epanel"
+            tabIndex={id === current ? 0 : -1}
+            onClick={() => setTab(id)}
+          >
+            {TAB_NAME[id]}
+            {hiddenTab(id) && <span className="etab-off">oculta</span>}
+          </button>
+        ))}
+      </div>
+      <div role="tabpanel" id="epanel" aria-labelledby={`etab-${current}`}>
+        {panel[current]}
+      </div>
     </>
   );
 }

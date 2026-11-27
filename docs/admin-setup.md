@@ -60,7 +60,13 @@ Las variables nuevas aplican al **siguiente deploy**: en **Deployments**, en el 
 - **Guardar borrador**: guarda sin publicar. **Vista previa**: abre el sitio real con tu borrador (las visitas ahi no se cuentan).
 - **Publicar**: lo que hay en el borrador pasa a verse en el sitio (tarda uno o dos minutos por la cache).
 - **Descartar cambios**: el borrador vuelve a ser igual a lo publicado.
+- El editor tiene una **pestana por seccion**, en el mismo orden en que aparecen en el sitio. La primera, **Orden y menu**, sirve para
+  cambiar ese orden (arrastrando el asa o con las flechas), mostrar u ocultar cada seccion y decidir si tiene enlace en el menu de arriba.
+  Portada va siempre arriba.
+- Donde hay varios registros (proyectos, pasos, puntos) cada uno es un titulo plegado: toca la flecha para abrirlo, arrastra el asa para
+  reordenarlo y usa el boton de abajo para agregar.
 - Cada texto tiene su version en espanol y en ingles. Los proyectos se pueden ordenar, ocultar, agregar y eliminar.
+- El enlace de GitHub es opcional: vacio, no se muestra.
 - Las imagenes se reducen y comprimen solas antes de subirse (maximo ~420 KB). Usa capturas sin datos reales de clientes ni de pacientes.
 - Si nunca publicas nada, el sitio usa los textos originales del codigo (`src/data`).
 - Los enlaces solo aceptan `https://`.

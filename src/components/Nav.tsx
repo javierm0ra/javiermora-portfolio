@@ -1,27 +1,16 @@
 import type { Lang, Strings } from "../data/i18n";
 
-export const SECTION_IDS = ["trayectoria", "proyectos", "metodo", "sobre-mi", "contacto"] as const;
-
 interface Props {
   lang: Lang;
   t: Strings;
   setLang: (l: Lang) => void;
   active: string | null;
   scrolled: boolean;
-  /** Texto del enlace «Sobre mí»; si no viene, la seccion esta apagada y no hay enlace. */
-  aboutLabel?: string;
-  /** Texto del enlace «Trayectoria». */
-  expLabel?: string;
+  /** Enlaces del menu, en el orden de las secciones: [ancla, texto]. */
+  links: [string, string][];
 }
 
-export function Nav({ lang, t, setLang, active, scrolled, aboutLabel, expLabel }: Props) {
-  const links: [string, string][] = [
-    ...(expLabel ? ([["trayectoria", expLabel]] as [string, string][]) : []),
-    ["proyectos", t.projTitle],
-    ["metodo", t.howTitle],
-    ...(aboutLabel ? ([["sobre-mi", aboutLabel]] as [string, string][]) : []),
-    ["contacto", t.ctTitle],
-  ];
+export function Nav({ lang, t, setLang, active, scrolled, links }: Props) {
   return (
     <header className={`nav${scrolled ? " scrolled" : ""}`}>
       <div className="gut navin">

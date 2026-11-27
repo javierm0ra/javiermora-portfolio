@@ -77,6 +77,27 @@ export const DEFAULT_EXPERIENCE: ContentExperience = {
 
 export const DEFAULT_YEARS = 13;
 
+/** Secciones que se pueden ordenar. La portada (con las cifras) va siempre arriba y no forma parte de la lista. */
+export const LAYOUT_IDS = ["trayectoria", "proyectos", "como", "sobre", "contacto"] as const;
+export type LayoutId = (typeof LAYOUT_IDS)[number];
+
+export interface LayoutEntry {
+  id: LayoutId;
+  /** Si la seccion se muestra en el sitio. */
+  show: boolean;
+  /** Si tiene enlace en el menu de arriba. */
+  menu: boolean;
+}
+
+/** Orden de origen. «Sobre mi» sale apagada hasta que se active. */
+export const DEFAULT_LAYOUT: LayoutEntry[] = [
+  { id: "trayectoria", show: true, menu: true },
+  { id: "proyectos", show: true, menu: true },
+  { id: "como", show: true, menu: false },
+  { id: "sobre", show: false, menu: true },
+  { id: "contacto", show: true, menu: true },
+];
+
 export interface Content {
   v: 1;
   hero: { eyebrow: L2; h1Before: L2; h1Em: L2; h1After: L2; lede: L2 };
@@ -85,6 +106,8 @@ export interface Content {
   steps: ContentStep[];
   projects: ContentProject[];
   about: ContentAbout;
+  /** Orden de las secciones y si se muestran / aparecen en el menu. */
+  layout: LayoutEntry[];
   experience: ContentExperience;
   /** Anos de experiencia que muestra la tira de cifras. */
   years: number;
@@ -213,6 +236,25 @@ export function validateContent(input: unknown): Validation {
         }
       : DEFAULT_ABOUT;
 
+    // Orden de secciones: los documentos viejos no lo traen y usan el de origen. Una seccion que falte se agrega al final;
+    // una que no se conozca se ignora. «Sobre mi» sigue a la casilla vieja `about.enabled` mientras no haya orden guardado.
+    const layout: LayoutEntry[] = [];
+    if (c.layout === undefined) {
+      for (const d of DEFAULT_LAYOUT) layout.push({ ...d, show: d.id === "sobre" ? about.enabled : d.show });
+    } else {
+      if (!Array.isArray(c.layout)) fail("layout", "debe ser una lista");
+      const seenL = new Set<string>();
+      c.layout.forEach((raw, i) => {
+        const o = obj(raw, `layout[${i}]`);
+        if (typeof o.id !== "string" || !(LAYOUT_IDS as readonly string[]).includes(o.id)) return;
+        if (seenL.has(o.id)) fail(`layout[${i}].id`, `repetida (${o.id})`);
+        seenL.add(o.id);
+        layout.push({ id: o.id as LayoutId, show: bool(o.show, `layout[${i}].show`), menu: bool(o.menu, `layout[${i}].menu`) });
+      });
+      for (const d of DEFAULT_LAYOUT) if (!seenL.has(d.id)) layout.push({ ...d });
+    }
+    const aboutFinal: ContentAbout = { ...about, enabled: layout.find((e) => e.id === "sobre")!.show };
+
     const ex = c.experience === undefined ? null : obj(c.experience, "experience");
     let experience: ContentExperience = DEFAULT_EXPERIENCE;
     if (ex) {
@@ -256,7 +298,8 @@ export function validateContent(input: unknown): Validation {
         return { title: l2(s.title, `steps[${i}].title`, 80, 1), text: l2(s.text, `steps[${i}].text`, 300, 1) };
       }),
       projects,
-      about,
+      about: aboutFinal,
+      layout,
       experience,
       years,
       // GitHub es opcional: vacio = no se muestra el enlace (por ejemplo, si los repositorios son privados).

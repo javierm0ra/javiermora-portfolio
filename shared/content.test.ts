@@ -148,3 +148,56 @@ test("GitHub es opcional: vacio se acepta y se deja vacio; con valor debe ser ht
   delete (d.contact as Record<string, unknown>).github;
   assert.equal(validateContent(d).ok, true);
 });
+
+test("orden de secciones: un documento viejo usa el de origen y Sobre mi sigue a la casilla vieja", () => {
+  const c = base() as unknown as Record<string, unknown>;
+  delete c.layout;
+  const r = validateContent(c);
+  assert.equal(r.ok, true);
+  if (r.ok) {
+    assert.deepEqual(r.value.layout.map((e) => e.id), ["trayectoria", "proyectos", "como", "sobre", "contacto"]);
+    assert.equal(r.value.layout.find((e) => e.id === "sobre")!.show, true); // base() tiene about.enabled = true
+    assert.equal(r.value.layout.find((e) => e.id === "como")!.menu, false);
+  }
+});
+
+test("orden de secciones: se respeta el orden guardado, se completa lo que falte y se ignora lo desconocido", () => {
+  const c = base() as unknown as Record<string, unknown>;
+  c.layout = [
+    { id: "contacto", show: true, menu: true },
+    { id: "inventada", show: true, menu: true },
+    { id: "proyectos", show: false, menu: false },
+  ];
+  const r = validateContent(c);
+  assert.equal(r.ok, true);
+  if (r.ok) {
+    assert.deepEqual(r.value.layout.map((e) => e.id), ["contacto", "proyectos", "trayectoria", "como", "sobre"]);
+    assert.equal(r.value.layout[1]!.show, false);
+  }
+});
+
+test("orden de secciones: repetidas y valores que no son booleanos se rechazan", () => {
+  const a = base() as unknown as Record<string, unknown>;
+  a.layout = [{ id: "proyectos", show: true, menu: true }, { id: "proyectos", show: true, menu: true }];
+  assert.equal(validateContent(a).ok, false);
+  const b = base() as unknown as Record<string, unknown>;
+  b.layout = [{ id: "proyectos", show: "si", menu: true }];
+  assert.equal(validateContent(b).ok, false);
+  const d = base() as unknown as Record<string, unknown>;
+  d.layout = "no es lista";
+  assert.equal(validateContent(d).ok, false);
+});
+
+test("orden de secciones: about.enabled queda igual al interruptor de Sobre mi en el orden", () => {
+  const c = base() as unknown as Record<string, unknown>;
+  c.layout = [{ id: "sobre", show: false, menu: true }];
+  const r = validateContent(c);
+  assert.equal(r.ok, true);
+  if (r.ok) assert.equal(r.value.about.enabled, false);
+  const d = base() as unknown as Record<string, unknown>;
+  (d.about as Record<string, unknown>).enabled = false;
+  d.layout = [{ id: "sobre", show: true, menu: true }];
+  const rd = validateContent(d);
+  assert.equal(rd.ok, true);
+  if (rd.ok) assert.equal(rd.value.about.enabled, true);
+});

@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import type { LayoutId } from "../shared/content";
 import { ScreenFrame } from "./components/ScreenFrame";
 import { desktopScreen } from "./data/projects";
 import { useSite } from "./data/SiteContext";
 import { Experience } from "./components/Experience";
 import { Method } from "./components/Method";
-import { Nav, SECTION_IDS } from "./components/Nav";
+import { Nav } from "./components/Nav";
 import { ProjectsSection } from "./components/ProjectsSection";
 import { Reveal } from "./components/Reveal";
 import { Stats } from "./components/Stats";
@@ -23,7 +24,16 @@ export default function App() {
   const heroRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
   const scrolled = useScrollChrome(barRef);
-  const active = useActiveSection(SECTION_IDS);
+  // Enlaces del menu: solo las secciones visibles con «Aparece en el menu», en el orden elegido.
+  const anchor: Record<LayoutId, [string, string]> = {
+    trayectoria: ["trayectoria", content.experience.title[lang]],
+    proyectos: ["proyectos", t.projTitle],
+    como: ["metodo", t.howTitle],
+    sobre: ["sobre-mi", content.about.title[lang]],
+    contacto: ["contacto", t.ctTitle],
+  };
+  const navLinks = content.layout.filter((e) => e.show && e.menu).map((e) => anchor[e.id]);
+  const active = useActiveSection(navLinks.map((l) => l[0]));
   useHeroParallax(heroRef);
   useEffect(() => trackView(), []);
 
@@ -38,12 +48,81 @@ export default function App() {
     }
   }
 
+  const sections: Record<LayoutId, ReactNode> = {
+    trayectoria: <Experience lang={lang} />,
+    proyectos: (
+      <div className="gut">
+        <div className="wrap">
+          <ProjectsSection lang={lang} t={t} />
+        </div>
+      </div>
+    ),
+    como: <Method t={t} />,
+    sobre: (
+      <div className="gut">
+        <div className="wrap">
+          <Reveal className="about-wrap">
+            <section className="about" id="sobre-mi">
+              <div className="photo" aria-hidden={content.about.photo ? undefined : true}>
+                {content.about.photo ? <img src={content.about.photo} alt="Javier Mora" decoding="async" /> : "JM"}
+              </div>
+              <div>
+                <h2>{content.about.title[lang]}</h2>
+                {content.about.role[lang] && <p className="arole">{content.about.role[lang]}</p>}
+                <p className="atext">{content.about.text[lang]}</p>
+                {content.about.linkedin && (
+                  <a className="alink" href={content.about.linkedin} target="_blank" rel="noopener noreferrer" onClick={() => track("linkedin_click")}>
+                    LinkedIn ↗
+                  </a>
+                )}
+              </div>
+            </section>
+          </Reveal>
+        </div>
+      </div>
+    ),
+    contacto: (
+      <div className="gut">
+        <div className="wrap">
+          <Reveal className="contact-wrap">
+            <section className="contact" id="contacto">
+              <div>
+                <h2>{t.ctTitle}</h2>
+                <p>{t.ctText}</p>
+              </div>
+              <div className="contact-links">
+                <a className="mail" href={`mailto:${EMAIL}`} onClick={() => track("contact_mail")}>
+                  {EMAIL}
+                </a>
+                <div className="contact-actions">
+                  <button type="button" className="copy" onClick={copyEmail}>
+                    {copied ? t.copied : t.copy}
+                  </button>
+                  {GITHUB && (
+                    <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")}>
+                      {GITHUB.replace(/^https:\/\//, "")} ↗
+                    </a>
+                  )}
+                  {content.about.linkedin && (
+                    <a className="link" href={content.about.linkedin} target="_blank" rel="noopener noreferrer" onClick={() => track("linkedin_click")}>
+                      LinkedIn ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            </section>
+          </Reveal>
+        </div>
+      </div>
+    ),
+  };
+
   return (
     <>
       <div className="progress" aria-hidden="true">
         <span ref={barRef} />
       </div>
-      <Nav lang={lang} t={t} setLang={setLang} active={active} scrolled={scrolled} aboutLabel={content.about.enabled ? content.about.title[lang] : undefined} expLabel={content.experience.title[lang]} />
+      <Nav lang={lang} t={t} setLang={setLang} active={active} scrolled={scrolled} links={navLinks} />
 
       <div className="heroBand gut" id="top" ref={heroRef}>
         <div className="wrap">
@@ -102,70 +181,14 @@ export default function App() {
           </div>
         </div>
 
-        <Experience lang={lang} />
+        {content.layout
+          .filter((e) => e.show)
+          .map((e) => (
+            <Fragment key={e.id}>{sections[e.id]}</Fragment>
+          ))}
 
         <div className="gut">
           <div className="wrap">
-            <ProjectsSection lang={lang} t={t} />
-          </div>
-        </div>
-
-        <Method t={t} />
-
-        {content.about.enabled && (
-          <div className="gut">
-            <div className="wrap">
-              <Reveal className="about-wrap">
-                <section className="about" id="sobre-mi">
-                  <div className="photo" aria-hidden={content.about.photo ? undefined : true}>
-                    {content.about.photo ? <img src={content.about.photo} alt={`Javier Mora`} decoding="async" /> : "JM"}
-                  </div>
-                  <div>
-                    <h2>{content.about.title[lang]}</h2>
-                    {content.about.role[lang] && <p className="arole">{content.about.role[lang]}</p>}
-                    <p className="atext">{content.about.text[lang]}</p>
-                    {content.about.linkedin && (
-                      <a className="alink" href={content.about.linkedin} target="_blank" rel="noopener noreferrer" onClick={() => track("linkedin_click")}>
-                        LinkedIn ↗
-                      </a>
-                    )}
-                  </div>
-                </section>
-              </Reveal>
-            </div>
-          </div>
-        )}
-
-        <div className="gut">
-          <div className="wrap">
-            <Reveal className="contact-wrap">
-              <section className="contact" id="contacto">
-                <div>
-                  <h2>{t.ctTitle}</h2>
-                  <p>{t.ctText}</p>
-                </div>
-                <div className="contact-links">
-                  <a className="mail" href={`mailto:${EMAIL}`} onClick={() => track("contact_mail")}>
-                    {EMAIL}
-                  </a>
-                  <div className="contact-actions">
-                    <button type="button" className="copy" onClick={copyEmail}>
-                      {copied ? t.copied : t.copy}
-                    </button>
-                    {GITHUB && (
-                      <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")}>
-                        {GITHUB.replace(/^https:\/\//, "")} ↗
-                      </a>
-                    )}
-                    {content.about.linkedin && (
-                      <a className="link" href={content.about.linkedin} target="_blank" rel="noopener noreferrer" onClick={() => track("linkedin_click")}>
-                        LinkedIn ↗
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </section>
-            </Reveal>
             <footer>
               © {new Date().getFullYear()} {t.foot}
               <span className="privacy">{t.privacy}</span>
