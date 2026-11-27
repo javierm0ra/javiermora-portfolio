@@ -65,12 +65,12 @@ export interface ContentExperience {
 export const DEFAULT_EXPERIENCE: ContentExperience = {
   title: { es: "Trayectoria", en: "Experience" },
   intro: {
-    es: "En Zell llevo más de 13 años construyendo y llevando a producción plataformas de crédito para SOFOMES y fintechs en México. Mi trabajo une a desarrollo, operaciones, contabilidad y cumplimiento alrededor de un mismo producto, desde definir los requerimientos de cada cliente hasta verlo operando en producción.",
-    en: "At Zell, I've spent 13+ years building and shipping lending platforms for Mexican non-bank lenders (SOFOMES) and fintechs. My work brings development, operations, accounting and compliance together around a single product, from defining each client's requirements to seeing it run in production.",
+    es: "Escucho al cliente, analizo lo que necesita y lo convierto en requerimientos claros para el equipo de desarrollo. En Zell llevo más de 13 años construyendo y llevando a producción plataformas de crédito para SOFOMES y fintechs en México, uniendo a desarrollo, operaciones, contabilidad y cumplimiento alrededor de un mismo producto, hasta verlo operando.",
+    en: "I listen to the client, analyze what they need and turn it into clear requirements for the development team. At Zell, I've spent 13+ years building and shipping lending platforms for Mexican non-bank lenders (SOFOMES) and fintechs, bringing development, operations, accounting and compliance together around a single product until it runs in production.",
   },
   points: [
     { es: "Crédito simple, líneas estructuradas, arrendamiento, factoraje y créditos de segundo piso.", en: "Term loans, structured credit lines, leasing, factoring and second-tier lending." },
-    { es: "Implementación de la plataforma en cerca de 12 SOFOMES, desde el levantamiento de requerimientos hasta la salida a producción.", en: "Platform rollouts at about 12 SOFOMES, from requirements gathering to go-live." },
+    { es: "Más de 10 implementaciones de la plataforma lideradas, desde el levantamiento de requerimientos hasta la salida a producción, y soporte a más de 50 SOFOMES y fintechs.", en: "Led more than 10 platform implementations, from requirements gathering to go-live, and supported more than 50 SOFOMES and fintechs." },
     { es: "Acompañamiento en al menos 6 auditorías de PLD/FT.", en: "Supported at least 6 AML/CFT (PLD/FT) audits." },
     { es: "Integraciones con SPEI/STP, servicios web SOAP y Buró de Crédito.", en: "SPEI/STP, SOAP web services and credit bureau (Buró de Crédito) integrations." },
     { es: "Backlog, user stories y cotizaciones técnicas; coordinación entre desarrollo, operaciones, contabilidad y cumplimiento.", en: "Backlog, user stories and technical estimates; coordinating development, operations, accounting and compliance teams." },
