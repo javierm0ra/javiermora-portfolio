@@ -16,7 +16,7 @@ export function Nav({ lang, t, setLang, active, scrolled, links }: Props) {
       <div className="gut navin">
         <div className="wrap navrow">
           <a className="brand" href="#top" aria-label="Javier Mora">
-            <span className="logo">JM</span>Javier Mora
+            <img className="logo" src="/logo-jm.png" alt="" width="30" height="30" decoding="async" />Javier Mora
           </a>
           <nav className="links" aria-label={t.navLabel}>
             {links.map(([id, label]) => (
