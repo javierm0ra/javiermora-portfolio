@@ -241,7 +241,7 @@ footer .privacy { display: block; margin-top: 4px; }
 .etl-scroll { cursor: grab; touch-action: pan-y; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 44px, #000 calc(100% - 44px), transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 44px, #000 calc(100% - 44px), transparent 100%); }
 .etl-scroll.grab, .etl-scroll.grab .etl-item { cursor: grabbing; }
 .etl-scroll:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; border-radius: 18px; }
-.etl-track { display: flex; position: relative; width: max-content; min-width: 100%; padding-inline: calc(50% - var(--cw) / 2); }
+.etl-track { display: flex; position: relative; width: max-content; min-width: 100%; padding-inline: calc(var(--cw) * .6); }
 .etl-track::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 3px; margin-top: -1px; border-radius: 3px; background: linear-gradient(90deg, #cfe3ef, var(--blue)); }
 .etl-col { flex: none; width: var(--cw); height: 580px; display: grid; grid-template-rows: minmax(0, 1fr) 30px minmax(0, 1fr); justify-items: center; position: relative; scroll-snap-align: center; scroll-snap-stop: always; --z: 1; }
 .etl-dot { grid-row: 2; align-self: center; border-radius: 50%; background: var(--white); border: 3px solid var(--blue); z-index: 1; transform: scale(var(--z)); }

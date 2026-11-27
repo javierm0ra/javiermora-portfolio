@@ -59,16 +59,28 @@ export function Education({ lang, t }: { lang: Lang; t: Strings }) {
     const tr = trackRef.current;
     if (!sc || !tr) return;
     const r = sc.getBoundingClientRect();
-    const mid = r.left + r.width / 2;
+    const trr = tr.getBoundingClientRect();
     const cols = Array.from(tr.children) as HTMLElement[];
     const cw = cols[0]?.offsetWidth ?? 160;
     const amp = r.width < 640 ? 0.36 : 0.5;
     const sigma = Math.max(100, cw * 0.95);
+    // Sin relleno grande a los lados, la primera y la ultima fila no pueden quedar al centro:
+    // cerca de los extremos el «centro de enfoque» se desplaza hasta ellas.
+    const W = r.width;
+    const sl = sc.scrollLeft;
+    const maxS = Math.max(0, sc.scrollWidth - W);
+    const cx = (c: HTMLElement) => c.getBoundingClientRect().left - trr.left + c.offsetWidth / 2;
+    const first = cols.length ? cx(cols[0]!) : 0;
+    const last = cols.length ? cx(cols[cols.length - 1]!) : 0;
+    const m = sl + W / 2;
+    let focusX = m;
+    if (maxS > 0 && maxS < W) focusX = first + ((last - first) * sl) / maxS;
+    else if (maxS >= W && sl < W / 2) focusX = first + ((W - first) * sl) / (W / 2);
+    else if (maxS >= W && sl > maxS - W / 2) focusX = maxS + ((last - maxS) * (sl - (maxS - W / 2))) / (W / 2);
     let best = Infinity;
     let bestId: string | null = null;
     for (const c of cols) {
-      const b = c.getBoundingClientRect();
-      const d = Math.abs(b.left + b.width / 2 - mid);
+      const d = Math.abs(cx(c) - focusX);
       c.style.setProperty("--z", (1 + amp * Math.exp(-Math.pow(d / sigma, 2))).toFixed(3));
       if (d < best) {
         best = d;
