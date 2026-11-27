@@ -279,3 +279,22 @@ footer .privacy { display: block; margin-top: 4px; }
 .edu-list b { color: var(--blue); font-variant-numeric: tabular-nums; }
 .edu-meta { color: var(--muted); font-size: 14px; }
 @media (max-width: 640px) { .etl { --cw: 112px; } .etl-col { height: 580px; } }
+
+/* Expertise: red 3D en canvas sobre banda oscura */
+.xp-band { background: radial-gradient(ellipse at 50% 40%, #234577 0%, #16294b 62%, #11203b 100%); color: #fff; border-radius: 22px; padding: 22px 20px; position: relative; overflow: hidden; margin-top: 22px; }
+.xp-net { display: block; width: 100%; height: 620px; touch-action: pan-y; cursor: grab; border-radius: 14px; }
+.xp-net.drag { cursor: grabbing; } .xp-net.hot { cursor: pointer; }
+.xp-net:focus-visible, .xp-areas button:focus-visible, .xp-chip.grp:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.xp-areas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.xp-areas button { font: 600 13px var(--font); color: #fff; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.28); border-radius: 999px; padding: 7px 14px; cursor: pointer; min-height: 40px; }
+.xp-areas button:hover { background: rgba(255,255,255,.18); }
+.xp-areas button[aria-pressed="true"] { background: #fff; color: var(--navy); border-color: #fff; }
+.xp-detail { margin-top: 12px; min-height: 44px; font-size: 14px; color: #dbe6f6; }
+.xp-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.xp-chip { display: inline-flex; align-items: center; gap: 7px; background: #fff; color: var(--navy); border-radius: 999px; padding: 4px 12px 4px 9px; font: 600 13px var(--font); border: 0; }
+.xp-chip.grp { cursor: pointer; background: #e6f2f9; box-shadow: inset 0 0 0 2px #2aa0e0; min-height: 32px; }
+.xp-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 10px; font-size: 12px; color: #c9d6ea; }
+.xp-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.lv { width: 9px; height: 9px; border-radius: 50%; flex: none; display: inline-block; }
+.lv-d { background: #2aa0e0; } .lv-e { background: #fff; box-shadow: inset 0 0 0 2px #2aa0e0; } .lv-s { background: #b9c4d0; }
+@media (max-width: 640px) { .xp-band { padding: 16px 12px; border-radius: 18px; } .xp-net { height: 560px; } }

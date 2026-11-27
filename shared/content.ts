@@ -80,7 +80,7 @@ export const DEFAULT_EXPERIENCE: ContentExperience = {
 export const DEFAULT_YEARS = 13;
 
 /** Secciones que se pueden ordenar. La portada (con las cifras) va siempre arriba y no forma parte de la lista. */
-export const LAYOUT_IDS = ["trayectoria", "proyectos", "formacion", "como", "sobre", "contacto"] as const;
+export const LAYOUT_IDS = ["trayectoria", "proyectos", "expertise", "formacion", "como", "sobre", "contacto"] as const;
 export type LayoutId = (typeof LAYOUT_IDS)[number];
 
 export interface LayoutEntry {
@@ -95,6 +95,7 @@ export interface LayoutEntry {
 export const DEFAULT_LAYOUT: LayoutEntry[] = [
   { id: "trayectoria", show: true, menu: true },
   { id: "proyectos", show: true, menu: true },
+  { id: "expertise", show: true, menu: true },
   { id: "formacion", show: true, menu: true },
   { id: "como", show: true, menu: false },
   { id: "sobre", show: false, menu: true },
@@ -158,6 +159,105 @@ export const DEFAULT_EDUCATION: ContentEducation = {
   ],
 };
 
+/** Nivel de una subarea: uso diario, con experiencia o estudiado. */
+export const EXPERTISE_LEVELS = ["d", "e", "s"] as const;
+export type ExpertiseLevel = (typeof EXPERTISE_LEVELS)[number];
+export const EXPERTISE_SHAPES = ["neuron", "chip"] as const;
+export type ExpertiseShape = (typeof EXPERTISE_SHAPES)[number];
+
+/** Una subarea. Si trae `children` es un grupo (por ejemplo «Lenguajes estudiados») y su nivel no se usa. */
+export interface ExpertiseSub {
+  name: L2;
+  level: ExpertiseLevel;
+  children?: { name: L2; level: ExpertiseLevel }[];
+}
+
+export interface ExpertiseArea {
+  id: string;
+  name: L2;
+  /** Color del nodo, #rrggbb. */
+  color: string;
+  subs: ExpertiseSub[];
+}
+
+export interface ContentExpertise {
+  title: L2;
+  intro: L2;
+  /** Forma de los nodos de area: neurona o chip. */
+  shape: ExpertiseShape;
+  areas: ExpertiseArea[];
+}
+
+const sb = (es: string, en: string, level: ExpertiseLevel): ExpertiseSub => ({ name: { es, en }, level });
+
+export const DEFAULT_EXPERTISE: ContentExpertise = {
+  title: { es: "Áreas de expertise", en: "Areas of expertise" },
+  intro: {
+    es: "Una red que gira lentamente. Toca un nodo para abrir sus subáreas; arrastra para girarla tú.",
+    en: "A slowly turning network. Tap a node to open its sub-areas; drag to turn it yourself.",
+  },
+  shape: "neuron",
+  areas: [
+    {
+      id: "credito",
+      name: { es: "Crédito", en: "Credit" },
+      color: "#568cff",
+      subs: [
+        sb("Crédito simple", "Simple loans", "d"),
+        sb("Líneas estructuradas", "Structured credit lines", "d"),
+        sb("Arrendamiento", "Leasing", "d"),
+        sb("Factoraje", "Factoring", "d"),
+        sb("Créditos de segundo piso", "Second-tier lending", "d"),
+        sb("Crédito de nómina", "Payroll loans", "d"),
+        sb("PLD/FT", "AML/CFT", "d"),
+      ],
+    },
+    {
+      id: "producto",
+      name: { es: "Producto", en: "Product" },
+      color: "#3abeeb",
+      subs: [
+        sb("Backlog", "Backlog", "d"),
+        sb("User stories", "User stories", "d"),
+        sb("Roadmap", "Roadmap", "d"),
+        sb("Scrum / Kanban", "Scrum / Kanban", "d"),
+        sb("Stakeholders", "Stakeholders", "d"),
+        sb("Documentación", "Documentation", "d"),
+        sb("UX", "UX", "e"),
+        sb("KPIs y dashboards", "KPIs and dashboards", "d"),
+      ],
+    },
+    {
+      id: "ia",
+      name: { es: "Inteligencia artificial", en: "Artificial intelligence" },
+      color: "#f7a046",
+      subs: [sb("Claude Code", "Claude Code", "d"), sb("Gemini", "Gemini", "e"), sb("Lovable", "Lovable", "d"), sb("NotebookLM", "NotebookLM", "e"), sb("ElevenLabs", "ElevenLabs", "e")],
+    },
+    {
+      id: "tecnologia",
+      name: { es: "Tecnología y plataformas", en: "Technology and platforms" },
+      color: "#9678f0",
+      subs: [
+        sb("GitHub", "GitHub", "e"),
+        sb("Cloudflare", "Cloudflare", "e"),
+        sb("Supabase", "Supabase", "e"),
+        sb("Integración de APIs", "API integration", "d"),
+        {
+          name: { es: "Lenguajes estudiados", en: "Languages studied" },
+          level: "s",
+          children: ["HTML", "CSS", "JavaScript", "Java", "PHP", "MySQL", "Visual Basic", "Delphi"].map((n) => ({ name: { es: n, en: n }, level: "s" as const })),
+        },
+      ],
+    },
+    {
+      id: "contenido",
+      name: { es: "Contenido y marketing digital", en: "Content and digital marketing" },
+      color: "#46c8a0",
+      subs: [sb("Imagen", "Imagery", "d"), sb("Video", "Video", "d"), sb("Boletines", "Newsletters", "d"), sb("Podcast", "Podcast", "e")],
+    },
+  ],
+};
+
 export interface Content {
   v: 1;
   hero: { eyebrow: L2; h1Before: L2; h1Em: L2; h1After: L2; lede: L2 };
@@ -169,6 +269,7 @@ export interface Content {
   /** Orden de las secciones y si se muestran / aparecen en el menu. */
   layout: LayoutEntry[];
   education: ContentEducation;
+  expertise: ContentExpertise;
   experience: ContentExperience;
   /** Anos de experiencia que muestra la tira de cifras. */
   years: number;
@@ -184,6 +285,9 @@ export const LIMITS = {
   maxSteps: 8,
   maxPoints: 8,
   maxEducation: 40,
+  maxAreas: 12,
+  maxSubs: 24,
+  maxGroupItems: 24,
   maxTags: 12,
 } as const;
 
@@ -363,6 +467,52 @@ export function validateContent(input: unknown): Validation {
       };
     }
 
+    const xp = c.expertise === undefined ? null : obj(c.expertise, "expertise");
+    let expertise: ContentExpertise = DEFAULT_EXPERTISE;
+    if (xp) {
+      if (!Array.isArray(xp.areas) || xp.areas.length > LIMITS.maxAreas) fail("expertise.areas", `puede tener hasta ${LIMITS.maxAreas} areas`);
+      if (typeof xp.shape !== "string" || !(EXPERTISE_SHAPES as readonly string[]).includes(xp.shape)) fail("expertise.shape", "forma no valida");
+      const level = (v: unknown, path: string): ExpertiseLevel => {
+        if (typeof v !== "string" || !(EXPERTISE_LEVELS as readonly string[]).includes(v)) fail(path, "nivel no valido");
+        return v as ExpertiseLevel;
+      };
+      const seenA = new Set<string>();
+      expertise = {
+        title: l2(xp.title, "expertise.title", 80, 1),
+        intro: l2(xp.intro, "expertise.intro", 400),
+        shape: xp.shape as ExpertiseShape,
+        areas: xp.areas.map((raw, i) => {
+          const a = obj(raw, `expertise.areas[${i}]`);
+          const id = str(a.id, `expertise.areas[${i}].id`, 40, 2);
+          if (!/^[a-z0-9-]+$/.test(id)) fail(`expertise.areas[${i}].id`, "solo minusculas, numeros y guiones");
+          if (seenA.has(id)) fail(`expertise.areas[${i}].id`, `repetido (${id})`);
+          seenA.add(id);
+          const color = str(a.color, `expertise.areas[${i}].color`, 7, 7);
+          if (!/^#[0-9a-fA-F]{6}$/.test(color)) fail(`expertise.areas[${i}].color`, "color no valido (#rrggbb)");
+          if (!Array.isArray(a.subs) || a.subs.length > LIMITS.maxSubs) fail(`expertise.areas[${i}].subs`, `puede tener hasta ${LIMITS.maxSubs} subareas`);
+          return {
+            id,
+            name: l2(a.name, `expertise.areas[${i}].name`, 60, 1),
+            color: color.toLowerCase(),
+            subs: a.subs.map((rs, j) => {
+              const sp = `expertise.areas[${i}].subs[${j}]`;
+              const o = obj(rs, sp);
+              const out: ExpertiseSub = { name: l2(o.name, `${sp}.name`, 60, 1), level: level(o.level, `${sp}.level`) };
+              if (o.children !== undefined && o.children !== null) {
+                if (!Array.isArray(o.children) || o.children.length < 1 || o.children.length > LIMITS.maxGroupItems)
+                  fail(`${sp}.children`, `un grupo lleva de 1 a ${LIMITS.maxGroupItems} elementos`);
+                out.children = o.children.map((rc, k) => {
+                  const ch = obj(rc, `${sp}.children[${k}]`);
+                  return { name: l2(ch.name, `${sp}.children[${k}].name`, 60, 1), level: level(ch.level, `${sp}.children[${k}].level`) };
+                });
+              }
+              return out;
+            }),
+          };
+        }),
+      };
+    }
+
     const ex = c.experience === undefined ? null : obj(c.experience, "experience");
     let experience: ContentExperience = DEFAULT_EXPERIENCE;
     if (ex) {
@@ -409,6 +559,7 @@ export function validateContent(input: unknown): Validation {
       about: aboutFinal,
       layout,
       education,
+      expertise,
       experience,
       years,
       // GitHub es opcional: vacio = no se muestra el enlace (por ejemplo, si los repositorios son privados).

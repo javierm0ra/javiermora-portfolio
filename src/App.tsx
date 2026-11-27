@@ -4,6 +4,7 @@ import { ScreenFrame } from "./components/ScreenFrame";
 import { desktopScreen } from "./data/projects";
 import { useSite } from "./data/SiteContext";
 import { Education } from "./components/Education";
+import { Expertise } from "./components/Expertise";
 import { Experience } from "./components/Experience";
 import { Method } from "./components/Method";
 import { Nav } from "./components/Nav";
@@ -29,6 +30,7 @@ export default function App() {
   const anchor: Record<LayoutId, [string, string]> = {
     trayectoria: ["trayectoria", content.experience.title[lang]],
     proyectos: ["proyectos", t.projTitle],
+    expertise: ["expertise", content.expertise.title[lang]],
     formacion: ["formacion", content.education.title[lang]],
     como: ["metodo", t.howTitle],
     sobre: ["sobre-mi", content.about.title[lang]],
@@ -56,6 +58,13 @@ export default function App() {
       <div className="gut">
         <div className="wrap">
           <ProjectsSection lang={lang} t={t} />
+        </div>
+      </div>
+    ),
+    expertise: (
+      <div className="gut">
+        <div className="wrap">
+          <Expertise lang={lang} t={t} />
         </div>
       </div>
     ),
