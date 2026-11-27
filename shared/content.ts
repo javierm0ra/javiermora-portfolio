@@ -259,7 +259,8 @@ export function validateContent(input: unknown): Validation {
       about,
       experience,
       years,
-      contact: { email, github: httpsUrl(contact.github, "contact.github") },
+      // GitHub es opcional: vacio = no se muestra el enlace (por ejemplo, si los repositorios son privados).
+      contact: { email, github: typeof contact.github === "string" && contact.github.trim() !== "" ? httpsUrl(contact.github, "contact.github") : "" },
       seo: { title: l2(seo.title, "seo.title", 70, 1), description: l2(seo.description, "seo.description", 200, 1) },
     };
     return { ok: true, value };

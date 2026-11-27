@@ -611,7 +611,7 @@ export default function Editor() {
       <Panel title="Contacto y títulos de sección">
         <div className="grid2">
           <Field label="Correo de contacto" type="email" value={draft.contact.email} max={120} onChange={(v) => edit((c) => void (c.contact.email = v))} />
-          <Field label="Enlace de GitHub" value={draft.contact.github} max={300} hint="Debe empezar con https://" onChange={(v) => edit((c) => void (c.contact.github = v))} />
+          <Field label="Enlace de GitHub" value={draft.contact.github} max={300} hint="Opcional. Déjalo vacío si tus repositorios son privados y no quieres mostrar el enlace. Si lo pones, debe empezar con https://" onChange={(v) => edit((c) => void (c.contact.github = v))} />
         </div>
         <L2Field label="Título de Proyectos" value={draft.sections.projTitle} max={80} onChange={(v) => edit((c) => void (c.sections.projTitle = v))} />
         <L2Field label="Frase de apoyo de Proyectos" value={draft.sections.projSub} max={300} multiline rows={2} onChange={(v) => edit((c) => void (c.sections.projSub = v))} />
