@@ -1,9 +1,10 @@
 // Genera los iconos y la imagen para compartir del sitio:
-//   public/favicon-32.png, public/favicon.ico, public/apple-touch-icon.png, public/og-image.png
+//   public/logo-jm.png, public/favicon-32.png, public/favicon.ico, public/apple-touch-icon.png, public/og-image.png
+// El monograma sale de brand/jm-icon-1024.png (cuadrado completo, sin esquinas redondeadas): aqui se redondea y se reduce.
 // Uso (necesita Playwright y la fuente Inter instalada en el sistema):
 //   npm i --no-save playwright && node scripts/render-brand.mjs
 import { createRequire } from "node:module";
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -12,11 +13,12 @@ const BLUE = "#177eb9";
 const NAVY = "#1a335d";
 const FONT = `Inter, "Helvetica Neue", Arial, sans-serif`;
 
+const SRC = `data:image/png;base64,${readFileSync("brand/jm-icon-1024.png").toString("base64")}`;
+
 const iconHtml = (size, radius) => `<!doctype html><meta charset="utf-8"><style>
   html,body{margin:0;background:transparent}
-  .i{width:${size}px;height:${size}px;border-radius:${radius}px;background:linear-gradient(135deg,${BLUE},${NAVY});
-     display:grid;place-items:center;color:#fff;font:700 ${Math.round(size * 0.44)}px ${FONT};letter-spacing:-.02em}
-</style><div class="i">JM</div>`;
+  img{display:block;width:${size}px;height:${size}px;border-radius:${radius}px}
+</style><img src="${SRC}" alt="">`;
 
 const ogHtml = `<!doctype html><meta charset="utf-8"><style>
   html,body{margin:0}
@@ -27,13 +29,12 @@ const ogHtml = `<!doctype html><meta charset="utf-8"><style>
   .c::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(26,51,93,.10) 1.5px,transparent 1.5px);
      background-size:28px 28px;opacity:.55}
   .in{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:space-between}
-  .logo{width:132px;height:132px;border-radius:30px;background:linear-gradient(135deg,${BLUE},${NAVY});color:#fff;
-     display:grid;place-items:center;font-weight:700;font-size:58px;letter-spacing:-.02em;box-shadow:0 18px 40px -16px rgba(26,51,93,.5)}
+  .logo{display:block;width:132px;height:132px;border-radius:30px;box-shadow:0 18px 40px -16px rgba(26,51,93,.5)}
   h1{margin:0;font-size:132px;line-height:1;font-weight:800;letter-spacing:-.04em}
   .sub{margin:22px 0 0;font-size:46px;font-weight:600;color:${BLUE};letter-spacing:-.01em}
   .url{font-size:26px;font-weight:500;color:#5b6b82}
 </style><div class="c"><div class="in">
-  <div class="logo">JM</div>
+  <img class="logo" src="${SRC}" alt="">
   <div><h1>Javier Mora</h1><p class="sub">Product Owner · Fintech · +13 años</p></div>
   <div class="url">javiermora.pages.dev</div>
 </div></div>`;
@@ -69,14 +70,16 @@ async function shot(html, w, h, transparent = false) {
   return png;
 }
 
-const f32 = await shot(iconHtml(32, 8), 32, 32, true);
-const f48 = await shot(iconHtml(48, 12), 48, 48, true);
+const logo = await shot(iconHtml(256, 0), 256, 256);
+const f32 = await shot(iconHtml(32, 10), 32, 32, true);
+const f48 = await shot(iconHtml(48, 14), 48, 48, true);
 const apple = await shot(iconHtml(180, 0), 180, 180);
 const og = await shot(ogHtml, 1200, 627);
 await browser.close();
 
+writeFileSync("public/logo-jm.png", logo);
 writeFileSync("public/favicon-32.png", f32);
 writeFileSync("public/favicon.ico", ico([{ size: 32, png: f32 }, { size: 48, png: f48 }]));
 writeFileSync("public/apple-touch-icon.png", apple);
 writeFileSync("public/og-image.png", og);
-console.log("listo: favicon-32.png, favicon.ico, apple-touch-icon.png, og-image.png");
+console.log("listo: logo-jm.png, favicon-32.png, favicon.ico, apple-touch-icon.png, og-image.png");
