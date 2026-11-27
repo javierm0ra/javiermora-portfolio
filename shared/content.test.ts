@@ -129,3 +129,22 @@ test("Trayectoria y anos: limites y formato", () => {
   assert.equal(r.ok, true);
   if (r.ok) assert.equal(r.value.experience.points.length, 2);
 });
+
+test("GitHub es opcional: vacio se acepta y se deja vacio; con valor debe ser https", () => {
+  const a = base();
+  a.contact.github = "";
+  const r = validateContent(a);
+  assert.equal(r.ok, true);
+  if (r.ok) assert.equal(r.value.contact.github, "");
+  const b = base();
+  b.contact.github = "   ";
+  const rb = validateContent(b);
+  assert.equal(rb.ok, true);
+  if (rb.ok) assert.equal(rb.value.contact.github, "");
+  const c = base();
+  c.contact.github = "http://github.com/yo";
+  assert.equal(validateContent(c).ok, false);
+  const d = base() as unknown as Record<string, unknown>;
+  delete (d.contact as Record<string, unknown>).github;
+  assert.equal(validateContent(d).ok, true);
+});

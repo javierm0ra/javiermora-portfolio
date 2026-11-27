@@ -152,9 +152,11 @@ export default function App() {
                     <button type="button" className="copy" onClick={copyEmail}>
                       {copied ? t.copied : t.copy}
                     </button>
-                    <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")}>
-                      {GITHUB.replace(/^https:\/\//, "")} ↗
-                    </a>
+                    {GITHUB && (
+                      <a className="link" href={GITHUB} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")}>
+                        {GITHUB.replace(/^https:\/\//, "")} ↗
+                      </a>
+                    )}
                     {content.about.linkedin && (
                       <a className="link" href={content.about.linkedin} target="_blank" rel="noopener noreferrer" onClick={() => track("linkedin_click")}>
                         LinkedIn ↗
