@@ -11,6 +11,16 @@ export interface L2 {
   en: string;
 }
 
+/** Color de la etiqueta de un proyecto. «auto»: verde si es producto y naranja si es negocio propio. */
+export const BADGE_TONES = ["auto", "green", "orange", "blue", "gray"] as const;
+export type BadgeTone = (typeof BADGE_TONES)[number];
+
+export interface ProjectBadge {
+  /** Texto de la etiqueta. Vacio en un idioma = se usa el automatico («En producción» / «Negocio propio»). */
+  text: L2;
+  tone: BadgeTone;
+}
+
 export interface ContentProject {
   id: string;
   name: string;
@@ -19,6 +29,7 @@ export interface ContentProject {
   hidden: boolean;
   /** Negocio propio (no es un producto de software): lleva su distintivo y no cuenta en «Productos propios». */
   business: boolean;
+  badge: ProjectBadge;
   tags: string[];
   desc: L2;
   role: L2;
@@ -379,6 +390,12 @@ export function validateContent(input: unknown): Validation {
         hidden: bool(p.hidden, `projects[${i}].hidden`),
         // Los documentos guardados antes de existir esta casilla no la traen: son productos.
         business: p.business === undefined ? false : bool(p.business, `projects[${i}].business`),
+        badge: ((): ProjectBadge => {
+          if (p.badge === undefined || p.badge === null) return { text: { es: "", en: "" }, tone: "auto" };
+          const bd = obj(p.badge, `projects[${i}].badge`);
+          if (typeof bd.tone !== "string" || !(BADGE_TONES as readonly string[]).includes(bd.tone)) fail(`projects[${i}].badge.tone`, "color no valido");
+          return { text: l2(bd.text, `projects[${i}].badge.text`, 30), tone: bd.tone as BadgeTone };
+        })(),
         tags: (p.tags as unknown[]).map((t, k) => str(t, `projects[${i}].tags[${k}]`, 30, 1)),
         desc: l2(p.desc, `projects[${i}].desc`, 700, 1),
         role: l2(p.role, `projects[${i}].role`, 700, 1),
