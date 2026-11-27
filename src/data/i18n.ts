@@ -28,7 +28,18 @@ export interface Strings {
   navLabel: string;
   filterLabel: string;
   filters: Record<Filter, string>;
-  stats: { years: string; products: string; sectors: string };
+  stats: { years: string; products: string; sectors: string; degrees: string; courses: string };
+  edu: {
+    toList: string;
+    toTimeline: string;
+    hint: string;
+    prev: string;
+    next: string;
+    timelineLabel: string;
+    legendDegrees: string;
+    legendCourses: string;
+    kinds: Record<"lic" | "mae" | "pos" | "dip" | "cur", string>;
+  };
 }
 
 export const STRINGS: Record<Lang, Strings> = {
@@ -63,7 +74,18 @@ export const STRINGS: Record<Lang, Strings> = {
     navLabel: "Secciones",
     filterLabel: "Filtrar proyectos por sector",
     filters: { all: "Todos", finance: "Finanzas", realestate: "Inmuebles", health: "Salud", events: "Eventos" },
-    stats: { years: "Años de experiencia", products: "Productos propios", sectors: "Sectores" },
+    stats: { years: "Años de experiencia", products: "Productos propios", sectors: "Sectores", degrees: "Grados y posgrados", courses: "Cursos y diplomados" },
+    edu: {
+      toList: "Ver como lista",
+      toTimeline: "Ver como línea de tiempo",
+      hint: "← Arrastra para ver más →",
+      prev: "Registro anterior",
+      next: "Registro siguiente",
+      timelineLabel: "Línea de tiempo de formación. Arrastra o usa las flechas del teclado.",
+      legendDegrees: "Grados y posgrados",
+      legendCourses: "Cursos y diplomados",
+      kinds: { lic: "Licenciatura", mae: "Maestría", pos: "Posgrado", dip: "Diplomado", cur: "Curso" },
+    },
   },
   en: {
     docTitle: "Javier Mora · Product owner",
@@ -96,6 +118,17 @@ export const STRINGS: Record<Lang, Strings> = {
     navLabel: "Sections",
     filterLabel: "Filter projects by sector",
     filters: { all: "All", finance: "Finance", realestate: "Real estate", health: "Health", events: "Events" },
-    stats: { years: "Years of experience", products: "Products built", sectors: "Industries" },
+    stats: { years: "Years of experience", products: "Products built", sectors: "Industries", degrees: "Degrees & postgrad", courses: "Courses & diplomas" },
+    edu: {
+      toList: "View as list",
+      toTimeline: "View as timeline",
+      hint: "← Drag to see more →",
+      prev: "Previous entry",
+      next: "Next entry",
+      timelineLabel: "Education timeline. Drag or use the keyboard arrow keys.",
+      legendDegrees: "Degrees & postgraduate",
+      legendCourses: "Courses & diplomas",
+      kinds: { lic: "Bachelor's", mae: "Master's", pos: "Postgraduate", dip: "Diploma", cur: "Course" },
+    },
   },
 };
