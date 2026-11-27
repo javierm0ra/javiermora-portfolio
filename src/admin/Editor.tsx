@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { CATEGORY_IDS, EDU_KINDS, EDU_WEIGHTS, EXPERTISE_LEVELS, validateContent, type CategoryId, type Content, type ContentProject, type EducationItem, type EduKind, type EduWeight, type ExpertiseArea, type ExpertiseLevel, type ExpertiseSub, type L2, type LayoutId } from "../../shared/content";
+import { CATEGORY_IDS, EDU_KINDS, BADGE_TONES, EDU_WEIGHTS, EXPERTISE_LEVELS, validateContent, type BadgeTone, type CategoryId, type Content, type ContentProject, type EducationItem, type EduKind, type EduWeight, type ExpertiseArea, type ExpertiseLevel, type ExpertiseSub, type L2, type LayoutId } from "../../shared/content";
 import { defaultContent } from "../data/content";
 import { STRINGS } from "../data/i18n";
 import { explain, getJson, sendJson, uploadImage } from "./api";
@@ -114,6 +114,7 @@ function Panel({ title, note, children }: { title: string; note?: string; childr
   );
 }
 
+const TONE_LABEL: Record<BadgeTone, string> = { auto: "Automático", green: "Verde", orange: "Naranja", blue: "Azul", gray: "Gris" };
 const LEVEL_LABEL: Record<ExpertiseLevel, string> = { d: "Uso diario", e: "Con experiencia", s: "Estudiado" };
 /** Colores sugeridos para los nodos (se ven bien sobre el fondo azul oscuro de la red). */
 const NODE_COLORS = ["#568cff", "#3abeeb", "#46c8a0", "#7ad36b", "#e8c547", "#f7a046", "#f0627a", "#9678f0", "#d58bf0", "#ffffff"];
@@ -324,6 +325,7 @@ function ProjectBody({ project: p, busy, onChange, onImage, onIcon }: ProjectPro
   const file = useRef<HTMLInputElement>(null);
   const iconFile = useRef<HTMLInputElement>(null);
   const sector = useId();
+  const tone = useId();
   return (
     <div className="proj-body">
       <label className="check">
@@ -334,6 +336,22 @@ function ProjectBody({ project: p, busy, onChange, onImage, onIcon }: ProjectPro
         <input type="checkbox" checked={!p.business} onChange={(e) => onChange({ ...p, business: !e.target.checked })} />
         <span>Cuenta como producto (apágala para un negocio propio: lleva el distintivo «Negocio propio» y no suma a «Productos propios»)</span>
       </label>
+      <fieldset className="l2">
+        <legend>Etiqueta del proyecto</legend>
+        <Field label="Español" value={p.badge.text.es} max={30} hint="Vacío = automático" onChange={(es) => onChange({ ...p, badge: { ...p.badge, text: { ...p.badge.text, es } } })} />
+        <Field label="English" value={p.badge.text.en} max={30} hint="Empty = automatic" onChange={(en) => onChange({ ...p, badge: { ...p.badge, text: { ...p.badge.text, en } } })} />
+        <div className="field">
+          <label htmlFor={tone}>Color de la etiqueta</label>
+          <select id={tone} value={p.badge.tone} onChange={(e) => onChange({ ...p, badge: { ...p.badge, tone: e.target.value as BadgeTone } })}>
+            {BADGE_TONES.map((t) => (
+              <option key={t} value={t}>
+                {TONE_LABEL[t]}
+              </option>
+            ))}
+          </select>
+          <small>Automático: verde «En producción» para productos y naranja «Negocio propio» para negocios.</small>
+        </div>
+      </fieldset>
       <div className="grid2">
         <Field label="Nombre" value={p.name} max={60} onChange={(name) => onChange({ ...p, name })} />
         <Field label="Dirección web" value={p.url} max={300} hint="Debe empezar con https://" onChange={(url) => onChange({ ...p, url })} />
@@ -823,6 +841,7 @@ export default function Editor() {
                 category: "finance",
                 hidden: false,
                 business: false,
+                badge: { text: { es: "", en: "" }, tone: "auto" },
                 tags: [],
                 desc: { es: "", en: "" },
                 role: { es: "", en: "" },

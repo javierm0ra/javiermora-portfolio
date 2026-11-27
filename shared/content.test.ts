@@ -318,3 +318,19 @@ test("expertise: rechaza colores, niveles, formas, ids repetidos y grupos vacios
   assert.equal(mk((x) => void (x.areas = [area(x), area(x)])), false);
   assert.equal(mk((x) => void (area(x).id = "Con Espacios")), false);
 });
+
+test("etiqueta del proyecto: los documentos viejos usan la automatica y se valida el color y el largo", () => {
+  const a = validateContent(base());
+  assert.equal(a.ok, true);
+  if (a.ok) assert.deepEqual(a.value.projects[0]!.badge, { text: { es: "", en: "" }, tone: "auto" });
+  const mk = (badge: unknown) => {
+    const c = base() as unknown as { projects: Record<string, unknown>[] };
+    c.projects[0]!.badge = badge;
+    return validateContent(c);
+  };
+  const ok = mk({ text: l("En desarrollo"), tone: "blue" });
+  assert.equal(ok.ok, true);
+  if (ok.ok) assert.equal(ok.value.projects[0]!.badge.tone, "blue");
+  assert.equal(mk({ text: l("x"), tone: "rojo" }).ok, false);
+  assert.equal(mk({ text: l("x".repeat(31)), tone: "auto" }).ok, false);
+});

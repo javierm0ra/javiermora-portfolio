@@ -14,6 +14,13 @@ interface Props {
   hidden: boolean;
 }
 
+const TONE_CLASS = { green: "good", orange: "own", blue: "info", gray: "mute" } as const;
+/** Color de la etiqueta: el elegido en el panel o, en «auto», verde para productos y naranja para negocios propios. */
+const badgeClass = (p: Project) => {
+  const tone = p.badge?.tone ?? "auto";
+  return tone === "auto" ? (p.status === "business" ? "own" : "good") : TONE_CLASS[tone];
+};
+
 export function ProjectCard({ project, lang, t, index, leaving, hidden }: Props) {
   const copy = project.copy[lang];
   const { ref, shown } = useReveal<HTMLAnchorElement>();
@@ -44,7 +51,7 @@ export function ProjectCard({ project, lang, t, index, leaving, hidden }: Props)
             </span>
             <h3>{project.name}</h3>
           </div>
-          <span className={`pill ${project.status === "business" ? "own" : "good"}`}>{t.status[project.status]}</span>
+          <span className={`pill ${badgeClass(project)}`}>{project.badge?.text[lang].trim() || t.status[project.status]}</span>
         </div>
         <p className="desc">{copy.desc}</p>
         <p className="role">

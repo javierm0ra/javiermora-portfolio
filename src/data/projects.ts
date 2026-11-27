@@ -1,3 +1,4 @@
+import type { ProjectBadge } from "../../shared/content";
 import type { Category, Lang } from "./i18n";
 import screensManifest from "./screens.json";
 
@@ -16,6 +17,8 @@ export interface Project {
   name: string;
   url: string;
   status: "prod" | "business";
+  /** Etiqueta editada desde el panel; sin ella se usa el texto y color automaticos segun `status`. */
+  badge?: ProjectBadge;
   category: Category;
   tags: string[];
   screens: Screen[];
